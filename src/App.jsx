@@ -10,10 +10,24 @@ import ClientDashboard from "./views/ClientDashboard";
 import AppointmentMaker from "./views/AppointmentMaker";
 
 const App = () => {
+  const clientAuthenticated = localStorage.getItem("clientAuthenticated");
+  const adminAuthenticated = localStorage.getItem("adminAuthenticated");
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            clientAuthenticated ? (
+              <ClientDashboard />
+            ) : adminAuthenticated ? (
+              <AdminDashboard />
+            ) : (
+              <Login />
+            )
+          }
+        />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/clients" element={<Clients />} />
