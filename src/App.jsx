@@ -8,6 +8,7 @@ import RestDays from "./views/RestDays";
 import Register from "./views/Register";
 import ClientDashboard from "./views/ClientDashboard";
 import AppointmentMaker from "./views/AppointmentMaker";
+import Menu from "./views/Menu";
 
 const App = () => {
   const clientAuthenticated = localStorage.getItem("clientAuthenticated");
@@ -35,6 +36,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/clientdashboard" element={<ClientDashboard />} />
         <Route path="/appointmentmaker" element={<AppointmentMaker />} />
+        <Route path="/menu" element={<Menu />} />
       </Routes>
     </Router>
   );
