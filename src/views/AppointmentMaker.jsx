@@ -13,11 +13,21 @@ const AppointmentMaker = () => {
   const [extraServicesArray, setExtraServicesArray] = useState([]);
 
   //estos son los arrays que contienen los servicios que el USUARIO quiere
-  const [userOrders, setUserOrders] = useState([]); //cada objeto service es una card
-  //const [userExtraServices, setUserExtraServices] = useState([]);
+  //los vamos a displayear en la carta de hasta abajo
+  const [wantedServices, setWantedServices] = useState([]);
+  const [wantedExtraServices, setWantedExtraServices] = useState([]);
 
-  //variables
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedExtraService, setSelectedExtraService] = useState(null);
+
+  //Estas variables conformarán un objeto appointment, para darme una idea aqui estan
+  const [servicesCart, setServicesCart] = useState([]);
+  const [extraServicesCart, setExtraServicesCart] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
+  const [downPaymentTotal, setDownPaymentTotal] = useState(0);
+  const [downPaymentDone, setDownPaymentDone] = useState(false);
+  const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
+  const [selectedHairLength, setSelectedHairLength] = useState("");
 
   //useEffect
   useEffect(() => {
@@ -56,73 +66,121 @@ const AppointmentMaker = () => {
     fetchExtraServices();
   }, []);
 
-  useEffect(() => {
-    if (servicesLoaded) {
-      console.log(servicesArray);
-    }
-  }, [servicesLoaded]);
+  // useEffect(() => {
+  //   if (servicesLoaded) {
+  //     console.log(servicesArray);
+  //   }
+  // }, [servicesLoaded]);
+
+  // useEffect(() => {
+  //   if (extraServicesLoaded) {
+  //     console.log(extraServicesArray);
+  //   }
+  // }, [extraServicesLoaded]);
+
+  // useEffect(() => {
+  //   console.log("servicesCart: ", servicesCart);
+  // }, [servicesCart]);
+
+  // useEffect(() => {
+  //   console.log("extraServicesCart: ", extraServicesCart);
+  // }, [extraServicesCart]);
+
+  // useEffect(() => {
+  //   console.log("selectedService: ", selectedService);
+  // }, [selectedService]);
+
+  // useEffect(() => {
+  //   console.log("selectedExtraService: ", selectedExtraService);
+  // }, [selectedExtraService]);
 
   useEffect(() => {
-    if (extraServicesLoaded) {
-      console.log(extraServicesArray);
-    }
-  }, [extraServicesLoaded]);
+    const handleBeforeUnload = (event) => {
+      // Mensaje de advertencia
+      event.preventDefault();
+      event.returnValue = ""; // Es necesario para mostrar el mensaje en algunos navegadores
+    };
+
+    // Agregar el evento antes de salir
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      // Limpiar el evento al desmontar el componente
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   useEffect(() => {
-    console.log(userOrders);
-  }, [userOrders]);
+    calculateTotalCost();
+  }, [servicesCart, extraServicesCart]);
 
   //funciones
 
-  const addService = () => {
-    const orderObject = {
-      serviceName: "", //nombre del servicio
-      restTime: 0, //tiempo de descanso
-      hairLength: "", //dependiendo de si es true o false cambian price y duration
-      price: 0,
-      priceShort: 0,
-      priceMedium: 0,
-      priceLong: 0,
-      duration: 0,
-      durationShort: 0,
-      durationMedium: 0,
-      durationLong: 0,
-    };
-
-    setUserOrders([...userOrders, orderObject]);
-  };
-
-  const updateUserOrdersArray = ({ serviceName, orderIndex }) => {
-    const updatedUserOrders = [...userOrders];
-    const orderObject = userOrders.find((order, id) => id === orderIndex);
-    const serviceObject = servicesArray.find(
-      (service) => service.name === serviceName
-    );
-    orderObject.serviceName = serviceObject.name;
-    orderObject.restTime = serviceObject.restTime;
-    orderObject.hairLength = serviceObject.hairLength;
-    if (orderObject.hairLength) {
-      orderObject.priceShort = serviceObject.priceShort;
-      orderObject.priceMedium = serviceObject.priceMedium;
-      orderObject.priceLong = serviceObject.priceLong;
-      orderObject.durationShort = serviceObject.durationShort;
-      orderObject.durationMedium = serviceObject.durationMedium;
-      orderObject.durationLong = serviceObject.durationLong;
-    } else {
-      orderObject.price = serviceObject.price;
-      orderObject.duration = serviceObject.duration;
+  const addAllServicesToCart = () => {
+    if (!selectedService && !selectedExtraService) {
+      alert("Por favor selecciona algún servicio y/o servicio extra primero");
+      return;
     }
 
-    updatedUserOrders[orderIndex] = orderObject;
-    setUserOrders(updatedUserOrders);
+    if (selectedExtraService) {
+      setExtraServicesCart([...extraServicesCart, selectedExtraService]);
+      alert(
+        "Servicio extra agregado exitosamente: " + selectedExtraService.name
+      );
+      setSelectedExtraService(null);
+    }
 
-    // const orderObject = {
-    //   serviceName: "", //nombre del servicio
-    //   restTime: 0, //tiempo de descanso
-    //   hairLength: "", //dependiendo de si es true o false cambian price y duration
-    //   price: 0,
-    //   duration: 0,
-    // };
+    if (selectedService) {
+      const serviceFormatted = {
+        name: selectedService.name,
+        price: 0,
+        duration: 0,
+        restTime: selectedService.restTime,
+      };
+
+      if (selectedService.hairLength === true) {
+        if (!selectedHairLength) {
+          alert("Por favor selecciona la longitud de tu cabello primero");
+          return;
+        }
+        switch (selectedHairLength) {
+          case "short":
+            serviceFormatted.price = selectedService.priceShort;
+            serviceFormatted.duration = selectedService.durationShort;
+            break;
+          case "medium":
+            serviceFormatted.price = selectedService.priceMedium;
+            serviceFormatted.duration = selectedService.durationMedium;
+            break;
+          case "long":
+            serviceFormatted.price = selectedService.priceLong;
+            serviceFormatted.duration = selectedService.durationLong;
+            break;
+        }
+      } else {
+        serviceFormatted.price = selectedService.price;
+        serviceFormatted.duration = selectedService.duration;
+      }
+
+      setServicesCart([...servicesCart, serviceFormatted]);
+      alert("Servicio agregado exitosamente: " + selectedService.name);
+      setSelectedService(null);
+      setSelectedHairLength(null);
+    }
+  };
+
+  const calculateTotalCost = () => {
+    let total = 0;
+
+    servicesCart.forEach((service) => {
+      total += service.price;
+    });
+
+    extraServicesCart.forEach((extraService) => {
+      total += extraService.price;
+    });
+
+    setTotalCost(total);
   };
 
   return (
@@ -132,74 +190,171 @@ const AppointmentMaker = () => {
       </h1>
 
       <div className="flex flex-col justify-center items-center w-[65%]">
-        {userOrders.map((orderObject, orderIndex) => {
-          return (
-            <div
-              id={orderIndex}
-              className="relative w-[100%] border border-gray-900 mt-6 mb-2 flex flex-col p-5 rounded-md shadow-xl bg-gray-100"
-            >
-              <p>
-                Seleccione el servicio que desee (
-                <span className="text-red">*</span>)
-              </p>
-              <select
-                onChange={(e) => updateUserOrdersArray(e.value, orderIndex)}
-                name="serviceName"
-                id=""
-                className="w-full border-2 border-black rounded-md text-center my-2 mb-6"
-              >
-                {/* <option value="1">Corte de cabello</option> */}
-                {servicesArray.map((service, serviceIndex) => {
-                  return (
-                    <>
-                      <option id={serviceIndex} value={service.name}>
-                        {service.name}
-                      </option>
-                    </>
-                  );
-                })}
-              </select>
+        <div className="relative w-[100%] border border-gray-900 mt-6 mb-2 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+          <p>
+            Seleccione el servicio que desee (
+            <span className="text-red">*</span>)
+          </p>
+          <select
+            value={(selectedService && selectedService.name) || ""}
+            onChange={(e) =>
+              setSelectedService(
+                servicesArray.find((service) => service.name === e.target.value)
+              )
+            }
+            name="serviceName"
+            className="w-full border-2 border-black rounded-md text-center my-2 mb-6"
+          >
+            <option value="">Seleccione una opción</option>
+            {servicesArray.map((service, serviceIndex) => {
+              return (
+                <>
+                  <option id={serviceIndex} value={service.name}>
+                    {service.name}
+                  </option>
+                </>
+              );
+            })}
+          </select>
+          {selectedService && selectedService.hairLength === true ? (
+            <>
               <p>
                 Seleccione la longitud de su cabello (
                 <span className="text-red">*</span>)
               </p>
               <select
+                value={selectedHairLength || ""}
                 name="serviceName"
-                id=""
+                onChange={(e) => setSelectedHairLength(e.target.value)}
                 className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
               >
+                <option value="">Seleccione una opción</option>
                 <option value="short">Corto</option>
                 <option value="medium">Mediano</option>
                 <option value="long">Largo</option>
               </select>
-              <p>¿Algún servicio extra?</p>
-              <select
-                name="serviceName"
-                id=""
-                className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
-              >
-                {extraServicesArray.map((extraService, index) => {
-                  return (
-                    <option id={index} value={extraService.name}>
-                      {extraService.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          );
-        })}
+            </>
+          ) : null}
+          <p>¿Algún servicio extra?</p>
+          <select
+            value={(selectedExtraService && selectedExtraService.name) || ""}
+            onChange={(e) =>
+              setSelectedExtraService(
+                extraServicesArray.find(
+                  (extraService) => extraService.name === e.target.value
+                )
+              )
+            }
+            name="serviceName"
+            className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
+          >
+            <option value="">Seleccione una opción</option>
+            {extraServicesArray.map((extraService, extraServiceIndex) => {
+              return (
+                <option id={extraServiceIndex} value={extraService.name}>
+                  {extraService.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        <button
+          onClick={addAllServicesToCart}
+          className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[140px]"
+        >
+          Añadir Servicios Seleccionados
+        </button>
+
+        <h1 className="text-xl mt-10 mb-2">Servicios Seleccionados</h1>
+        <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
+          <thead>
+            <tr>
+              <td className="border border-black">Nombre del Servicio</td>
+              <td className="border border-black">Precio del Servicio</td>
+              <td className="border border-black">Acción</td>
+            </tr>
+          </thead>
+          <tbody>
+            {servicesCart.map((service, serviceIndex) => (
+              <tr key={serviceIndex}>
+                <td className="border border-black">{service.name}</td>
+                <td className="border border-black">
+                  <span className="text-green font-black">
+                    ${service.price}
+                  </span>
+                </td>
+                <td className="border border-black">
+                  <button
+                    className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
+                    onClick={() => {
+                      const userConfirmation = confirm(
+                        `¿Eliminar servicio: ${service.name}?`
+                      );
+                      if (userConfirmation) {
+                        setServicesCart(
+                          servicesCart.filter(
+                            (serviceFiltered) => serviceFiltered !== service
+                          )
+                        );
+                      }
+                    }}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h1 className="text-xl mt-10 mb-2">Servicios Extra Seleccionados</h1>
+        <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
+          <thead>
+            <tr>
+              <td className="border border-black">Nombre del Servicio</td>
+              <td className="border border-black">Precio del Servicio</td>
+              <td className="border border-black">Acción</td>
+            </tr>
+          </thead>
+          <tbody>
+            {extraServicesCart.map((extraService, extraServiceIndex) => (
+              <tr key={extraServiceIndex}>
+                <td className="border border-black">{extraService.name}</td>
+                <td className="border border-black">
+                  <span className="text-green font-black">
+                    ${extraService.price}
+                  </span>
+                </td>
+                <td className="border border-black">
+                  <button
+                    className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
+                    onClick={() => {
+                      const userConfirmation = confirm(
+                        `¿Eliminar servicio extra: ${extraService.name}?`
+                      );
+                      if (userConfirmation) {
+                        setExtraServicesCart(
+                          extraServicesCart.filter(
+                            (extraServiceFiltered) =>
+                              extraServiceFiltered !== extraService
+                          )
+                        );
+                      }
+                    }}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         <h1 className="text-xl mt-6 ">
           Costo Total:{" "}
           <span className="text-green font-black">${totalCost}</span>
         </h1>
-        <button
-          onClick={addService}
-          className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[140px]"
-        >
-          Añadir Servicio
-        </button>
 
         <h1 className="text-xl my-10">Fecha de su Cita</h1>
         <CustomCalendar />

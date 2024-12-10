@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Login from "./views/Login";
 import AdminDashboard from "./views/AdminDashboard";
 import Appointments from "./views/Appointments";
@@ -29,13 +34,55 @@ const App = () => {
             )
           }
         />
-        <Route path="/admindashboard" element={<AdminDashboard />} />
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/clients" element={<Clients />} />
-        <Route path="/restdays" element={<RestDays />} />
+        <Route
+          path="/admindashboard"
+          element={
+            adminAuthenticated ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/appointments"
+          element={
+            adminAuthenticated ? <Appointments /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            adminAuthenticated ? <Clients /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/restdays"
+          element={
+            adminAuthenticated ? <RestDays /> : <Navigate to="/" replace />
+          }
+        />
         <Route path="/register" element={<Register />} />
-        <Route path="/clientdashboard" element={<ClientDashboard />} />
-        <Route path="/appointmentmaker" element={<AppointmentMaker />} />
+        <Route
+          path="/clientdashboard"
+          element={
+            clientAuthenticated ? (
+              <ClientDashboard />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/appointmentmaker"
+          element={
+            clientAuthenticated ? (
+              <AppointmentMaker />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         {/* <Route path="/menu" element={<Menu />} /> */}
       </Routes>
     </Router>

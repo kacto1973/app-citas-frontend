@@ -11,11 +11,9 @@ const Login = () => {
 
   //useEffects
   useEffect(() => {
-    if (
-      username === "monicabazasalonadmin197354" &&
-      password === "myadminpassword197354"
-    ) {
+    if (username === "monica" && password === "baza") {
       localStorage.setItem("adminAuthenticated", "true");
+      window.location.reload();
       navigate("/admindashboard");
     }
   }, [username, password]);
@@ -30,6 +28,7 @@ const Login = () => {
       const result = await validateClient(username, password);
 
       if (result) {
+        window.location.reload();
         navigate("/clientdashboard");
       } else {
         setUsername("");

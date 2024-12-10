@@ -21,15 +21,29 @@ export const registerClient = async (
     //creamos referencia a la coleccion clients en la database
     const clientsRef = ref(database, "clients");
 
-    //creamos una clave unica para ese cliente usando push
-    const newClientRef = push(clientsRef);
+    //obtenemos los datos de la coleccion clients
+    const snapshot = await get(clientsRef);
 
-    // Guardar el cliente en la base de datos
-    await set(newClientRef, clientObject);
+    // Comprobamos si el username y password coinciden con alguno de los clientes
+    const clientFound = Object.values(snapshot.val()).some(
+      (childData) => childData.username === username
+    );
+    //
 
-    alert("Usuario registrado con éxito");
+    if (clientFound) {
+      alert("Ese nombre de usuario no está disponible, intente con otro");
+      return false;
+    } else {
+      //creamos una clave unica para ese cliente usando push
+      const newClientRef = push(clientsRef);
 
-    return true;
+      // Guardar el cliente en la base de datos
+      await set(newClientRef, clientObject);
+
+      alert("Usuario registrado con éxito");
+
+      return true;
+    }
   } catch (error) {
     console.error("Error: ", error);
     return false;
