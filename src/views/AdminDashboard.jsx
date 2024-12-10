@@ -31,14 +31,14 @@ const AdminDashboard = () => {
         >
           Mis Clientes
         </button>
-        <button
+        {/* <button
           className="px-2 py-1 rounded-md  mb-6  bg-blue text-white w-full"
           onClick={() => {
             navigate("/menu");
           }}
         >
           Menú de Servicios
-        </button>
+        </button> */}
       </div>
     </div>
   );

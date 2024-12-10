@@ -62,3 +62,41 @@ export const validateClient = async (username, password) => {
     return false;
   }
 };
+
+export const getExtraServices = async () => {
+  try {
+    //get Database reference
+    const extraServicesRef = ref(database, "menu/extraServices");
+
+    //get data from the reference
+    const extraServicesSnapshot = await get(extraServicesRef);
+
+    if (extraServicesSnapshot.exists()) {
+      return extraServicesSnapshot.val();
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error ocurrido al fetchear extraServices: " + error.message);
+    return false;
+  }
+};
+
+export const getServices = async () => {
+  try {
+    //get Database reference
+    const servicesRef = ref(database, "menu/services");
+
+    //get data from the reference
+    const servicesSnapshot = await get(servicesRef);
+
+    if (servicesSnapshot.exists()) {
+      return servicesSnapshot.val();
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error ocurrido al fetchear services: " + error.message);
+    return false;
+  }
+};

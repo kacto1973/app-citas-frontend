@@ -1,7 +1,58 @@
 import React from "react";
 import CustomCalendar from "../components/CustomCalendar";
+import { useState, useEffect } from "react";
+import { getServices, getExtraServices } from "../../firebaseFunctions";
 
 const AppointmentMaker = () => {
+  //use states
+  const [servicesLoaded, setServicesLoaded] = useState(false);
+  const [extraServicesLoaded, setExtraServicesLoaded] = useState(false);
+
+  //estos son los arrays que contienen Todos los servicios en general
+  const [servicesArray, setServicesArray] = useState([]);
+  const [extraServicesArray, setExtraServicesArray] = useState([]);
+
+  //estos son los arrays que contienen los servicios que el USUARIO quiere
+  const [userServices, setUserServices] = useState([]);
+  const [userExtraServices, setUserExtraServices] = useState([]);
+
+  //useEffect
+  useEffect(() => {
+    const fetchServices = async () => {
+      const services = await getServices();
+      if (services) {
+        setServicesArray(services);
+        setServicesLoaded(true);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  useEffect(() => {
+    const fetchExtraServices = async () => {
+      const extraServices = await getExtraServices();
+      if (extraServices) {
+        setExtraServicesArray(extraServices);
+        setExtraServicesLoaded(true);
+      }
+    };
+    fetchExtraServices();
+  }, []);
+
+  useEffect(() => {
+    if (servicesLoaded) {
+      console.log(servicesArray);
+    }
+  }, [servicesLoaded]);
+
+  useEffect(() => {
+    if (extraServicesLoaded) {
+      console.log(extraServicesArray);
+    }
+  }, [extraServicesLoaded]);
+
+  //funciones
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
       <h1 className="text-2xl font-black mt-10 mb-2 text-center">
@@ -48,46 +99,7 @@ const AppointmentMaker = () => {
           </select>
         </div>
 
-        <div className="relative w-[100%] border border-gray-900 mt-6 mb-7 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
-          <p>
-            Seleccione el servicio que desee (
-            <span className="text-red">*</span>)
-          </p>
-          <select
-            name="serviceName"
-            id=""
-            className="w-full border-2 border-black rounded-md text-center my-2 mb-6"
-          >
-            <option value="1">Corte de cabello</option>
-            <option value="2">Tinte de cabello</option>
-            <option value="3">Peinado</option>
-          </select>
-          <p>
-            Seleccione la longitud de su cabello (
-            <span className="text-red">*</span>)
-          </p>
-          <select
-            name="serviceName"
-            id=""
-            className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
-          >
-            <option value="1">Corto</option>
-            <option value="2">Mediano</option>
-            <option value="3">Largo</option>
-          </select>
-          <p>¿Algún servicio extra?</p>
-          <select
-            name="serviceName"
-            id=""
-            className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
-          >
-            <option value="1">Corte de cabello</option>
-            <option value="2">Tinte de cabello</option>
-            <option value="3">Peinado</option>
-          </select>
-        </div>
-
-        <h1 className="text-xl ">
+        <h1 className="text-xl mt-6 ">
           Costo Total: <span className="text-green font-black">$340</span>
         </h1>
         <button className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[140px]">
