@@ -39,11 +39,14 @@ const AppointmentMaker = () => {
   const [downPaymentDone, setDownPaymentDone] = useState(false);
   const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
   const [selectedHairLength, setSelectedHairLength] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [appointmentsMap, setAppointmentsMap] = useState({});
+  const [availableTimes, setAvailableTimes] = useState([]);
 
   //ya aqui luego lo veo con mi ma y cargar los dias festivos que ella elija
   const [holidays, setHolidays] = useState([]);
+
+  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   //useEffect
 
@@ -170,28 +173,64 @@ const AppointmentMaker = () => {
     calculateTotalCost();
   }, [servicesCart, extraServicesCart]);
 
+  useEffect(() => {
+    const interval = 15;
+    const startHour = 9;
+    const endHour = 17;
+    const timeBlocksArray = [];
+
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += interval) {
+        const formattedHour = hour < 10 ? `0${hour}` : hour;
+        const formattedMinute = minute < 10 ? `0${minute}` : minute;
+
+        const time = `${formattedHour}:${formattedMinute}`;
+        timeBlocksArray.push(time);
+      }
+    }
+    setAvailableTimes(timeBlocksArray);
+  }, []);
+
+  useEffect(() => {
+    console.log("availableTimes: ", availableTimes);
+  }, [availableTimes]);
+
   //funciones
 
+  const handleTileDisabled = ({ date, view }) => {
+    if (date.getDay() === 0 || date < new Date()) {
+      return true;
+    }
+    false;
+  };
+
   const getTileClassName = ({ date, view }) => {
-    // Obtén el día de la semana para mas tarde comparar domingos
-    const dayOfWeek = date.getDay();
+    if (date.getDay() === 0 || date < new Date()) {
+      return "bg-gray-200 text-gray-500 border border-gray-300";
+    }
+    if (
+      selectedDate.toISOString().split("T")[0] ===
+      date.toISOString().split("T")[0]
+    ) {
+      return "!bg-blue !text-white";
+    }
 
     //nomas sirvio para pasarlo como clave al mapa de citas
     const formattedDate = date.toISOString().split("T")[0];
 
-    if (
-      !appointmentsMap[formattedDate] ||
-      appointmentsMap[formattedDate].length < 1
-    ) {
-      //si no hay citas ese dia o hay menos de 3 entonces es dia disponible
-      return "!bg-green !text-white";
-    } else if (appointmentsMap[formattedDate].length >= 1) {
-      //si hay 3 o mas citas es dia ocupado
-      return "!bg-yellow !text-white";
-    } else if (dayOfWeek === 0) {
-      //si es domingo no se puede agendar o si es dia festivo, etc
-      return "!bg-red !text-white";
-    }
+    // if (
+    //   !appointmentsMap[formattedDate] ||
+    //   appointmentsMap[formattedDate].length < 1
+    // ) {
+    //   //si no hay citas ese dia o hay menos de 3 entonces es dia disponible
+    //   return "!bg-green !text-white ";
+    // } else if (appointmentsMap[formattedDate].length >= 1) {
+    //   //si hay 3 o mas citas es dia ocupado
+    //   return "!bg-yellow !text-white";
+    // } else if (dayOfWeek === 0) {
+    //   //si es domingo no se puede agendar o si es dia festivo, etc
+    //   return "!bg-red !text-white";
+    // }
   };
 
   const handleDateClick = (newDateObject) => {
@@ -355,7 +394,7 @@ const AppointmentMaker = () => {
           Añadir Servicios Seleccionados
         </button>
 
-        <h1 className="text-xl mt-10 mb-2">Servicios Seleccionados</h1>
+        <h1 className="text-lg mt-10 mb-2">Servicios Seleccionados</h1>
         <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
           <thead>
             <tr>
@@ -397,7 +436,7 @@ const AppointmentMaker = () => {
           </tbody>
         </table>
 
-        <h1 className="text-xl mt-10 mb-2">Servicios Extra Seleccionados</h1>
+        <h1 className="text-lg mt-10 mb-2">Servicios Extra Seleccionados</h1>
         <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
           <thead>
             <tr>
@@ -447,12 +486,41 @@ const AppointmentMaker = () => {
 
         <h1 className="text-xl my-10">Fecha de su Cita</h1>
 
-        <Calendar
-          onClickDay={(value) => {
-            handleDateClick(value);
-          }}
-          tileClassName={getTileClassName}
-        />
+        {/* <div className="border-2 border-gray-500 p-2 rounded-md shadow-xl ">
+          <Calendar
+            tileDisabled={handleTileDisabled}
+            onClickDay={(value) => {
+              handleDateClick(value);
+            }}
+            tileClassName={getTileClassName}
+          />
+        </div> */}
+        <div className="border-2 border-gray-400  rounded-md shadow-xl">
+          <Calendar
+            view="month"
+            value={selectedDate}
+            tileDisabled={handleTileDisabled}
+            onClickDay={(value) => {
+              handleDateClick(value);
+            }}
+            tileClassName={getTileClassName}
+            nextLabel=">"
+            prevLabel="<"
+            next2Label={null} // Elimina el botón para moverse entre años
+            prev2Label={null} // Elimina el botón para moverse entre años
+            navigationLabel={({ date }) => {
+              return (
+                <p className="text-center text-lg font-bold uppercase">
+                  {date.toLocaleDateString("es-MX", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              );
+            }}
+          />
+        </div>
+
         <p className="mt-3 text-center">
           Día Seleccionado: <br />
           {dateDisplayText}
@@ -461,29 +529,50 @@ const AppointmentMaker = () => {
         <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 
         <select
+          value={selectedTime}
+          onChange={(e) => setSelectedTime(e.target.value)}
           name="selectedTime"
           id=""
           className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
         >
-          <option value="1">9:00 AM</option>
-          <option value="2">10:00 AM</option>
+          {availableTimes &&
+            availableTimes.map((time, timeIndex) => {
+              return (
+                <option id={timeIndex} value={time}>
+                  {time}
+                </option>
+              );
+            })}
         </select>
       </div>
       <h1 className="text-xl mt-10 mb-2">Su cita quedaría así:</h1>
 
       <div className=" w-[80%] border border-gray-900 my-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
         <div className="flex flex-row mb-2">
-          <p>Martes 13 de Diciembre - 10:30 AM</p>
+          <p>
+            {dateDisplayText} <br /> a las{" "}
+            <span className="font-black">{selectedTime}</span> horas
+          </p>
           {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                 Transfer
               </span> */}
           <p className="ml-auto">
-            <span className="text-green font-black">$150</span>
+            <span className="text-green font-black">${totalCost}</span>
           </p>
         </div>
-        <p>1 x Corte de cabello - ($50) = $50</p>
+        {/* <p>1 x Corte de cabello - ($50) = $50</p>
         <p>1 x Tinte de cabello - ($60) = $60</p>
-        <p>1 x Peinado - ($40) = $40</p>
+        <p>1 x Peinado - ($40) = $40</p> */}
+        {servicesCart.map((service, serviceIndex) => (
+          <p key={serviceIndex}>
+            • {service.name} (${service.price})
+          </p>
+        ))}
+        {extraServicesCart.map((extraService, extraServiceIndex) => (
+          <p key={extraServiceIndex}>
+            • {extraService.name} (${extraService.price})
+          </p>
+        ))}
       </div>
       <button
         type="submit"

@@ -66,6 +66,7 @@ export const validateClient = async (username, password) => {
 
     if (clientFound) {
       localStorage.setItem("clientAuthenticated", "true");
+      localStorage.setItem("username", username);
       return true; // Usuario encontrado, devolver true
     }
 
