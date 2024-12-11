@@ -37,6 +37,9 @@ const AppointmentMaker = () => {
   const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
     useState(0);
 
+  const [durationInHours, setDurationInHours] = useState(0);
+  const [durationInMinutes, setDurationInMinutes] = useState(0);
+
   //Estas variables conformarán un objeto appointment, para darme una idea aqui estan
   const [servicesCart, setServicesCart] = useState([]);
   const [extraServicesCart, setExtraServicesCart] = useState([]);
@@ -483,6 +486,10 @@ const AppointmentMaker = () => {
       total += extraService.duration + extraService.restTime;
     });
 
+    let horas = Math.floor(total / 60);
+    let minutos = total % 60;
+    setDurationInHours(horas);
+    setDurationInMinutes(minutos);
     setTotalDurationOfAppointment(total);
   };
 
@@ -739,7 +746,9 @@ const AppointmentMaker = () => {
             <div className="flex flex-row mb-2">
               <p>
                 {dateDisplayText} <br /> a las{" "}
-                <span className="font-black">{selectedTime}</span> horas
+                <span className="font-black">{selectedTime}</span> hora(s)
+                (duración aproximada de {durationInHours ? durationInHours : 0}{" "}
+                hora(s) con {durationInMinutes ? durationInMinutes : 0} minutos)
               </p>
               {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                   Transfer
@@ -768,20 +777,28 @@ const AppointmentMaker = () => {
             //Deberia aqui en vez de pasar selected date/time,
             // combinarlos en un date object y pasar eso
             //ademas me falta agregar cosas del anticipo, como true o cuanto es
-            onClick={() => {
-              if (
-                addAppointment(
-                  servicesCart,
-                  extraServicesCart,
-                  totalCost,
-                  selectedDate,
-                  selectedTime,
-                  username,
-                  userFullName,
-                  totalDurationOfAppointment
-                )
-              ) {
+            onClick={async () => {
+              const success = await addAppointment(
+                servicesCart,
+                extraServicesCart,
+                totalCost,
+                selectedDate,
+                selectedTime,
+                username,
+                userFullName,
+                totalDurationOfAppointment,
+                availableTimes
+              );
+              if (success) {
+                alert(
+                  "Cita agendada con éxito, usted recibirá un recordatorio previo a su cita en su whatsapp 😊. También puede consultar " +
+                    "sus citas activas en el menú principal"
+                );
                 navigate("/downpayment");
+              } else {
+                alert(
+                  "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
+                );
               }
             }}
           >

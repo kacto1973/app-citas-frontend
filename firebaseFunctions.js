@@ -1,6 +1,25 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
+const addMinutesToTime = (time, minutes) => {
+  const [hoursNum, minutesNum] = time.split(":").map(Number);
+
+  const date = new Date(
+    new Date(1970, 0, 1, 0, 0, 0, 0).setHours(hoursNum, minutesNum)
+  );
+
+  date.setTime(date.getTime() + minutes * 60 * 1000);
+
+  const hourFormatted = `${
+    date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+  }:${
+    date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+  }`;
+
+  //return hour formatted as a string and with the minutes added
+  return hourFormatted;
+};
+
 //Functions that interact with firebase
 
 export const addAppointment = async (
@@ -11,39 +30,67 @@ export const addAppointment = async (
   selectedTime,
   username,
   userFullName,
-  totalDurationOfAppointment
+  totalDurationOfAppointment,
+  availableTimesArray
 ) => {
-  try {
-    const dateString = selectedDate.toISOString().split("T")[0];
-    const appointmentObject = {
-      servicesCart,
-      extraServicesCart,
-      totalCost,
-      selectedDate: dateString,
-      selectedTime,
-      username,
-      userFullName,
-      totalDurationOfAppointment,
-    };
+  //antes de todo, checar si si caben esos servicios en el horario seleccionado
 
-    console.log(
-      "appointmentObj antes de agregarlo a Firebase: ",
-      appointmentObject
-    );
+  let selectedTimeIndex = 0;
+  let fits = true;
+  availableTimesArray.some((time, index) => {
+    if (time === selectedTime) {
+      selectedTimeIndex = index;
+      return true;
+    }
+    return false;
+  });
 
-    const appointmentsRef = ref(database, "activeAppointments");
+  let j = selectedTimeIndex + 1;
+  let initialTime = availableTimesArray[selectedTimeIndex];
+  for (let i = 15; i <= totalDurationOfAppointment; i += 15) {
+    initialTime = addMinutesToTime(initialTime, 15);
+    if (availableTimesArray[j] && availableTimesArray[j] !== initialTime) {
+      fits = false;
+      break;
+    }
+    if (!availableTimesArray[j]) {
+      fits = false;
+      break;
+    }
+    j += 1;
+  }
 
-    const newAppointmentsRef = push(appointmentsRef);
+  if (fits) {
+    try {
+      const dateString = selectedDate.toISOString().split("T")[0];
+      const appointmentObject = {
+        servicesCart,
+        extraServicesCart,
+        totalCost,
+        selectedDate: dateString,
+        selectedTime,
+        username,
+        userFullName,
+        totalDurationOfAppointment,
+      };
 
-    await set(newAppointmentsRef, appointmentObject);
+      // console.log(
+      //   "appointmentObj antes de agregarlo a Firebase: ",
+      //   appointmentObject
+      // );
 
-    alert(
-      "Cita agendada con éxito, usted recibirá un recordatorio previo a su cita en su whatsapp 😊. También puede consultar " +
-        "sus citas activas en el menú principal"
-    );
-    return true;
-  } catch (error) {
-    console.error("Error: ", error);
+      const appointmentsRef = ref(database, "activeAppointments");
+
+      const newAppointmentsRef = push(appointmentsRef);
+
+      await set(newAppointmentsRef, appointmentObject);
+
+      return true;
+    } catch (error) {
+      console.error("Error: ", error);
+      return false;
+    }
+  } else {
     return false;
   }
 };
