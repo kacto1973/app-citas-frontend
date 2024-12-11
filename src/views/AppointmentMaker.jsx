@@ -1,10 +1,21 @@
 import React from "react";
-import CustomCalendar from "../components/CustomCalendar";
+import Calendar from "react-calendar";
 import { useState, useEffect } from "react";
-import { getServices, getExtraServices } from "../../firebaseFunctions";
+import {
+  getServices,
+  getExtraServices,
+  getAppointments,
+} from "../../firebaseFunctions";
+import { set } from "firebase/database";
 
 const AppointmentMaker = () => {
   //use states
+  const [dateDisplayText, setDateDisplayText] = useState("");
+
+  const [appointmentsArray, setAppointmentsArray] = useState([]);
+  const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
+  const [holidaysLoaded, setHolidaysLoaded] = useState(false);
+
   const [servicesLoaded, setServicesLoaded] = useState(false);
   const [extraServicesLoaded, setExtraServicesLoaded] = useState(false);
 
@@ -28,8 +39,53 @@ const AppointmentMaker = () => {
   const [downPaymentDone, setDownPaymentDone] = useState(false);
   const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
   const [selectedHairLength, setSelectedHairLength] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [appointmentsMap, setAppointmentsMap] = useState({});
+
+  //ya aqui luego lo veo con mi ma y cargar los dias festivos que ella elija
+  const [holidays, setHolidays] = useState([]);
 
   //useEffect
+
+  useEffect(() => {
+    //cargar citas, dias festivos
+    const fetchAppointments = async () => {
+      const appointments = await getAppointments();
+      if (appointments) {
+        //console.log(appointments);
+        setAppointmentsArray(appointments);
+        setAppointmentsLoaded(true);
+      }
+    };
+    fetchAppointments();
+  }, []);
+
+  useEffect(() => {
+    //una vez cargados, estan listos para transformarse en un objeto
+    //que contendra claves (fechas) y valores (arreglos de citas)
+    const appointmentsPerDayObject = appointmentsArray.reduce(
+      (finalObject, appointment) => {
+        const formattedDate = new Date(appointment.date)
+          .toISOString()
+          .split("T")[0];
+        if (!finalObject[formattedDate]) {
+          finalObject[formattedDate] = [];
+        }
+
+        finalObject[formattedDate].push(appointment);
+
+        return finalObject;
+      },
+      {}
+    );
+    //console.log("appointmentsMap object: ", appointmentsPerDayObject);
+    setAppointmentsMap(appointmentsPerDayObject);
+  }, [appointmentsLoaded]);
+
+  useEffect(() => {
+    console.log("selectedDate: ", selectedDate);
+  }, [selectedDate]);
+
   useEffect(() => {
     const fetchServices = async () => {
       const services = await getServices();
@@ -115,6 +171,27 @@ const AppointmentMaker = () => {
   }, [servicesCart, extraServicesCart]);
 
   //funciones
+
+  const getTileClassName = ({ date, view }) => {
+    const dayOfWeek = date.getDay(); // Obtén el día de la semana
+    const formattedDate = date.toISOString().split("T")[0];
+    appointmentsMap[date.toISOString().split("T")];
+
+    return "bg-red text-white";
+    return "bg-green text-white";
+    return "bg-yellow text-white";
+  };
+
+  const handleDateClick = (newDateObject) => {
+    setSelectedDate(newDateObject);
+    const formattedDate = new Intl.DateTimeFormat("es-MX", {
+      weekday: "long", // Día de la semana (lunes, martes, etc.)
+      year: "numeric", // Año (2024)
+      month: "long", // Mes (diciembre)
+      day: "numeric", // Día del mes (10)
+    }).format(newDateObject);
+    setDateDisplayText(formattedDate);
+  };
 
   const addAllServicesToCart = () => {
     if (!selectedService && !selectedExtraService) {
@@ -357,7 +434,17 @@ const AppointmentMaker = () => {
         </h1>
 
         <h1 className="text-xl my-10">Fecha de su Cita</h1>
-        <CustomCalendar />
+
+        <Calendar
+          onClickDay={(value) => {
+            handleDateClick(value);
+          }}
+          tileClassName={getTileClassName}
+        />
+        <p className="mt-3 text-center">
+          Día Seleccionado: <br />
+          {dateDisplayText}
+        </p>
 
         <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 

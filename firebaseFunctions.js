@@ -1,5 +1,5 @@
 import database from "./firebaseConfig";
-import { ref, push, set, get } from "firebase/database";
+import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
@@ -74,6 +74,50 @@ export const validateClient = async (username, password) => {
   } catch (error) {
     console.error("Error: ", error);
     return false;
+  }
+};
+
+export const getAppointments = async () => {
+  try {
+    const appointmentsRef = ref(database, "activeAppointments");
+
+    const appointmentsArraySnap = await get(appointmentsRef);
+
+    if (appointmentsArraySnap.exists()) {
+      const array = Object.values(appointmentsArraySnap.val());
+
+      return array;
+    } else {
+      console.log("No hay citas activas");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error ocurrido al fetchear appointments: " + error.message);
+    return false;
+  }
+};
+
+export const moveData = async () => {
+  try {
+    const oldRef = ref(database, "menu/activeAppointments"); // Ruta original
+    const newRef = ref(database, "activeAppointments"); // Nueva ruta
+
+    // 1. Obtener los datos desde la ubicación original
+    const snapshot = await get(oldRef);
+
+    if (snapshot.exists()) {
+      // 2. Escribir los datos en la nueva ubicación
+      await set(newRef, snapshot.val());
+
+      // 3. Eliminar los datos originales
+      await remove(oldRef);
+
+      console.log("Datos movidos con éxito.");
+    } else {
+      console.log("No hay datos para mover.");
+    }
+  } catch (error) {
+    console.error("Error al mover datos: ", error.message);
   }
 };
 
