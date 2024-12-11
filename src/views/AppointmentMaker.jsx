@@ -64,8 +64,96 @@ const AppointmentMaker = () => {
 
   //useEffect
 
+  // useEffect(() => {
+  //   //cargamos dinamicamente los bloques de tiempo disponibles
+  //   //segun las citas que haya en ese dia y sus time y duraciones totales
+
+  //   //console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
+
+  //   const interval = 15;
+  //   const startHour = 9;
+  //   const endHour = 17;
+  //   const timeBlocksArray = [];
+
+  //   if (appointmentsOnSelectedDate.length === 0) {
+  //     for (let hour = startHour; hour < endHour; hour++) {
+  //       for (let minute = 0; minute < 60; minute += interval) {
+  //         const formattedHour = hour < 10 ? `0${hour}` : hour;
+  //         const formattedMinute = minute < 10 ? `0${minute}` : minute;
+
+  //         const time = `${formattedHour}:${formattedMinute}`;
+  //         timeBlocksArray.push(time);
+  //       }
+  //     }
+  //     setAvailableTimes(timeBlocksArray);
+  //   }else{//en el caso que tenga mas de 0 citas
+  //     //aqui tengo que hacer un algoritmo para que me quite los bloques de tiempo
+  //     //que ya estan ocupados por las citas
+  //     //y que me deje solo los que estan disponibles
+
+  //   }
+  // }, [appointmentsOnSelectedDate]);
+
   useEffect(() => {
     console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
+
+    // Declaramos variables
+    const interval = 15;
+    const startHour = 9;
+    const endHour = 17;
+
+    // Obtenemos un objeto del momento actual
+    const currentDate = new Date();
+
+    // Obtenemos la hora actual en formato HH:MM en modo 24 horas
+    const currentTime = `${
+      currentDate.getHours() < 10
+        ? `0${currentDate.getHours()}`
+        : `${currentDate.getHours()}`
+    }:${
+      currentDate.getMinutes() < 10
+        ? `0${currentDate.getMinutes()}`
+        : currentDate.getMinutes()
+    }`;
+    console.log("currentTime: ", currentTime);
+
+    // Array de horas disponibles
+    const timeBlocksArray = [];
+
+    // Cargar los horarios de 09:00 a 17:00 en intervalos de 15 minutos
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += interval) {
+        //le damos formato a las horas que vamos a subir en HH:MM
+        const formattedHour = hour < 10 ? `0${hour}` : hour;
+        const formattedMinute = minute < 10 ? `0${minute}` : minute;
+        const time = `${formattedHour}:${formattedMinute}`;
+
+        // Verificar si la hora ya pasó
+        if (isToday(selectedDate)) {
+          if (time < currentTime) {
+            continue;
+          }
+        }
+
+        // Inhabilitar las horas que ya están ocupadas por citas
+        const isTimeBlocked = appointmentsOnSelectedDate.some((appointment) => {
+          // Compara si el timeBlock se solapa con alguna cita
+          const appointmentStart = appointment.selectedTime;
+          const appointmentEnd = addMinutesToTime(
+            appointmentStart,
+            appointment.totalDurationOfAppointment
+          );
+
+          return time >= appointmentStart && time < appointmentEnd;
+        });
+
+        if (!isTimeBlocked) {
+          timeBlocksArray.push(time);
+        }
+      }
+    }
+
+    setAvailableTimes(timeBlocksArray);
   }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
@@ -197,24 +285,6 @@ const AppointmentMaker = () => {
   }, [servicesCart, extraServicesCart]);
 
   useEffect(() => {
-    const interval = 15;
-    const startHour = 9;
-    const endHour = 17;
-    const timeBlocksArray = [];
-
-    for (let hour = startHour; hour < endHour; hour++) {
-      for (let minute = 0; minute < 60; minute += interval) {
-        const formattedHour = hour < 10 ? `0${hour}` : hour;
-        const formattedMinute = minute < 10 ? `0${minute}` : minute;
-
-        const time = `${formattedHour}:${formattedMinute}`;
-        timeBlocksArray.push(time);
-      }
-    }
-    setAvailableTimes(timeBlocksArray);
-  }, []);
-
-  useEffect(() => {
     console.log("availableTimes: ", availableTimes);
   }, [availableTimes]);
 
@@ -223,6 +293,40 @@ const AppointmentMaker = () => {
   }, [totalDurationOfAppointment]);
 
   //funciones
+
+  const addMinutesToTime = (time, minutes) => {
+    const [hoursNum, minutesNum] = time.split(":").map(Number);
+
+    const date = new Date(
+      new Date(1970, 0, 1, 0, 0, 0, 0).setHours(hoursNum, minutesNum)
+    );
+
+    date.setTime(date.getTime() + minutes * 60 * 1000);
+
+    const hourFormatted = `${
+      date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+    }:${
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+    }`;
+
+    //return hour formatted as a string and with the minutes added
+    return hourFormatted;
+  };
+
+  const isToday = (dateValue) => {
+    const today = new Date();
+
+    if (
+      dateValue &&
+      dateValue.getDate() === today.getDate() &&
+      dateValue.getMonth() === today.getMonth() &&
+      dateValue.getFullYear() === today.getFullYear()
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   // const validateConfirmAppointment = () => {
   //   if (
@@ -295,7 +399,9 @@ const AppointmentMaker = () => {
 
       //aqui lo seteamos a un nuevo arreglo que contiene las citas de ese X dia selected
       setAppointmentsOnSelectedDate(appointmentsOfTheSelectedDate);
-    } else [setAppointmentsOnSelectedDate([])];
+    } else {
+      setAppointmentsOnSelectedDate([]);
+    }
   };
 
   const addAllServicesToCart = () => {
