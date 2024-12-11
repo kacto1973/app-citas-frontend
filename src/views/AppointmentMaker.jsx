@@ -173,13 +173,25 @@ const AppointmentMaker = () => {
   //funciones
 
   const getTileClassName = ({ date, view }) => {
-    const dayOfWeek = date.getDay(); // Obtén el día de la semana
-    const formattedDate = date.toISOString().split("T")[0];
-    appointmentsMap[date.toISOString().split("T")];
+    // Obtén el día de la semana para mas tarde comparar domingos
+    const dayOfWeek = date.getDay();
 
-    return "bg-red text-white";
-    return "bg-green text-white";
-    return "bg-yellow text-white";
+    //nomas sirvio para pasarlo como clave al mapa de citas
+    const formattedDate = date.toISOString().split("T")[0];
+
+    if (
+      !appointmentsMap[formattedDate] ||
+      appointmentsMap[formattedDate].length < 1
+    ) {
+      //si no hay citas ese dia o hay menos de 3 entonces es dia disponible
+      return "!bg-green !text-white";
+    } else if (appointmentsMap[formattedDate].length >= 1) {
+      //si hay 3 o mas citas es dia ocupado
+      return "!bg-yellow !text-white";
+    } else if (dayOfWeek === 0) {
+      //si es domingo no se puede agendar o si es dia festivo, etc
+      return "!bg-red !text-white";
+    }
   };
 
   const handleDateClick = (newDateObject) => {
