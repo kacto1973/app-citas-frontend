@@ -5,11 +5,14 @@ import {
   getServices,
   getExtraServices,
   getAppointments,
+  addAppointment,
 } from "../../firebaseFunctions";
 import { set } from "firebase/database";
+import { useNavigate } from "react-router-dom";
 
 const AppointmentMaker = () => {
   //use states
+  const navigate = useNavigate();
   const [dateDisplayText, setDateDisplayText] = useState("");
 
   const [appointmentsArray, setAppointmentsArray] = useState([]);
@@ -31,6 +34,9 @@ const AppointmentMaker = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedExtraService, setSelectedExtraService] = useState(null);
 
+  const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
+    useState(0);
+
   //Estas variables conformarán un objeto appointment, para darme una idea aqui estan
   const [servicesCart, setServicesCart] = useState([]);
   const [extraServicesCart, setExtraServicesCart] = useState([]);
@@ -40,13 +46,16 @@ const AppointmentMaker = () => {
   const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
   const [selectedHairLength, setSelectedHairLength] = useState("");
   const [appointmentsMap, setAppointmentsMap] = useState({});
+  const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
+    []
+  );
   const [availableTimes, setAvailableTimes] = useState([]);
 
   //ya aqui luego lo veo con mi ma y cargar los dias festivos que ella elija
   const [holidays, setHolidays] = useState([]);
 
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [userFullName, setUserFullName] = useState(
@@ -54,6 +63,10 @@ const AppointmentMaker = () => {
   );
 
   //useEffect
+
+  useEffect(() => {
+    console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
+  }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
     //cargar citas, dias festivos
@@ -73,7 +86,7 @@ const AppointmentMaker = () => {
     //que contendra claves (fechas) y valores (arreglos de citas)
     const appointmentsPerDayObject = appointmentsArray.reduce(
       (finalObject, appointment) => {
-        const formattedDate = new Date(appointment.date)
+        const formattedDate = new Date(appointment.selectedDate)
           .toISOString()
           .split("T")[0];
         if (!finalObject[formattedDate]) {
@@ -93,6 +106,10 @@ const AppointmentMaker = () => {
   useEffect(() => {
     console.log("selectedDate: ", selectedDate);
   }, [selectedDate]);
+
+  useEffect(() => {
+    console.log("selectedTime: ", selectedTime);
+  }, [selectedTime]);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -176,6 +193,7 @@ const AppointmentMaker = () => {
 
   useEffect(() => {
     calculateTotalCost();
+    calculateTotalDurationOfAppointment();
   }, [servicesCart, extraServicesCart]);
 
   useEffect(() => {
@@ -200,22 +218,45 @@ const AppointmentMaker = () => {
     console.log("availableTimes: ", availableTimes);
   }, [availableTimes]);
 
+  useEffect(() => {
+    console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
+  }, [totalDurationOfAppointment]);
+
   //funciones
 
+  // const validateConfirmAppointment = () => {
+  //   if (
+  //     (servicesCart.length > 0 || extraServicesCart.length > 0) &&
+  //     selectedDate &&
+  //     selectedTime
+  //   ) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
+
   const handleTileDisabled = ({ date, view }) => {
-    if (date.getDay() === 0 || date < new Date()) {
+    if (
+      date.getDay() === 0 ||
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
+    ) {
       return true;
     }
     false;
   };
 
   const getTileClassName = ({ date, view }) => {
-    if (date.getDay() === 0 || date < new Date()) {
+    if (
+      date.getDay() === 0 ||
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
+    ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
     if (
+      selectedDate &&
       selectedDate.toISOString().split("T")[0] ===
-      date.toISOString().split("T")[0]
+        date.toISOString().split("T")[0]
     ) {
       return "!bg-blue !text-white";
     }
@@ -247,6 +288,14 @@ const AppointmentMaker = () => {
       day: "numeric", // Día del mes (10)
     }).format(newDateObject);
     setDateDisplayText(formattedDate);
+
+    if (appointmentsMap[newDateObject.toISOString().split("T")[0]]) {
+      const appointmentsOfTheSelectedDate =
+        appointmentsMap[newDateObject.toISOString().split("T")[0]];
+
+      //aqui lo seteamos a un nuevo arreglo que contiene las citas de ese X dia selected
+      setAppointmentsOnSelectedDate(appointmentsOfTheSelectedDate);
+    } else [setAppointmentsOnSelectedDate([])];
   };
 
   const addAllServicesToCart = () => {
@@ -260,6 +309,7 @@ const AppointmentMaker = () => {
       alert(
         "Servicio extra agregado exitosamente: " + selectedExtraService.name
       );
+
       setSelectedExtraService(null);
     }
 
@@ -314,6 +364,20 @@ const AppointmentMaker = () => {
     });
 
     setTotalCost(total);
+  };
+
+  const calculateTotalDurationOfAppointment = () => {
+    let total = 0;
+
+    servicesCart.forEach((service) => {
+      total += service.duration + service.restTime;
+    });
+
+    extraServicesCart.forEach((extraService) => {
+      total += extraService.duration + extraService.restTime;
+    });
+
+    setTotalDurationOfAppointment(total);
   };
 
   return (
@@ -399,161 +463,170 @@ const AppointmentMaker = () => {
           Añadir Servicios Seleccionados
         </button>
 
-        <h1 className="text-lg mt-10 mb-2">Servicios Seleccionados</h1>
-        <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
-          <thead>
-            <tr>
-              <td className="border border-black">Nombre del Servicio</td>
-              <td className="border border-black">Precio del Servicio</td>
-              <td className="border border-black">Acción</td>
-            </tr>
-          </thead>
-          <tbody>
-            {servicesCart.map((service, serviceIndex) => (
-              <tr key={serviceIndex}>
-                <td className="border border-black">{service.name}</td>
-                <td className="border border-black">
-                  <span className="text-green font-black">
-                    ${service.price}
-                  </span>
-                </td>
-                <td className="border border-black">
-                  <button
-                    className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
-                    onClick={() => {
-                      const userConfirmation = confirm(
-                        `¿Eliminar servicio: ${service.name}?`
-                      );
-                      if (userConfirmation) {
-                        setServicesCart(
-                          servicesCart.filter(
-                            (serviceFiltered) => serviceFiltered !== service
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {servicesCart && servicesCart.length > 0 ? (
+          <>
+            <h1 className="text-lg mt-10 mb-2">Servicios Seleccionados</h1>
+            <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
+              <thead>
+                <tr>
+                  <td className="border border-black">Nombre del Servicio</td>
+                  <td className="border border-black">Precio del Servicio</td>
+                  <td className="border border-black">Acción</td>
+                </tr>
+              </thead>
+              <tbody>
+                {servicesCart.map((service, serviceIndex) => (
+                  <tr key={serviceIndex}>
+                    <td className="border border-black">{service.name}</td>
+                    <td className="border border-black">
+                      <span className="text-green font-black">
+                        ${service.price}
+                      </span>
+                    </td>
+                    <td className="border border-black">
+                      <button
+                        className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
+                        onClick={() => {
+                          const userConfirmation = confirm(
+                            `¿Eliminar servicio: ${service.name}?`
+                          );
+                          if (userConfirmation) {
+                            setServicesCart(
+                              servicesCart.filter(
+                                (serviceFiltered) => serviceFiltered !== service
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : null}
 
-        <h1 className="text-lg mt-10 mb-2">Servicios Extra Seleccionados</h1>
-        <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
-          <thead>
-            <tr>
-              <td className="border border-black">Nombre del Servicio</td>
-              <td className="border border-black">Precio del Servicio</td>
-              <td className="border border-black">Acción</td>
-            </tr>
-          </thead>
-          <tbody>
-            {extraServicesCart.map((extraService, extraServiceIndex) => (
-              <tr key={extraServiceIndex}>
-                <td className="border border-black">{extraService.name}</td>
-                <td className="border border-black">
-                  <span className="text-green font-black">
-                    ${extraService.price}
-                  </span>
-                </td>
-                <td className="border border-black">
-                  <button
-                    className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
-                    onClick={() => {
-                      const userConfirmation = confirm(
-                        `¿Eliminar servicio extra: ${extraService.name}?`
-                      );
-                      if (userConfirmation) {
-                        setExtraServicesCart(
-                          extraServicesCart.filter(
-                            (extraServiceFiltered) =>
-                              extraServiceFiltered !== extraService
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {extraServicesCart && extraServicesCart.length > 0 ? (
+          <>
+            <h1 className="text-lg mt-10 mb-2">
+              Servicios Extra Seleccionados
+            </h1>
+            <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
+              <thead>
+                <tr>
+                  <td className="border border-black">Nombre del Servicio</td>
+                  <td className="border border-black">Precio del Servicio</td>
+                  <td className="border border-black">Acción</td>
+                </tr>
+              </thead>
+              <tbody>
+                {extraServicesCart.map((extraService, extraServiceIndex) => (
+                  <tr key={extraServiceIndex}>
+                    <td className="border border-black">{extraService.name}</td>
+                    <td className="border border-black">
+                      <span className="text-green font-black">
+                        ${extraService.price}
+                      </span>
+                    </td>
+                    <td className="border border-black">
+                      <button
+                        className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
+                        onClick={() => {
+                          const userConfirmation = confirm(
+                            `¿Eliminar servicio extra: ${extraService.name}?`
+                          );
+                          if (userConfirmation) {
+                            setExtraServicesCart(
+                              extraServicesCart.filter(
+                                (extraServiceFiltered) =>
+                                  extraServiceFiltered !== extraService
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : null}
 
         <h1 className="text-xl mt-6 ">
           Costo Total:{" "}
           <span className="text-green font-black">${totalCost}</span>
         </h1>
 
-        <h1 className="text-xl my-10">Fecha de su Cita</h1>
+        {(servicesCart && servicesCart.length > 0) ||
+        (extraServicesCart && extraServicesCart.length > 0) ? (
+          <>
+            <h1 className="text-xl my-10">Fecha de su Cita</h1>
 
-        {/* <div className="border-2 border-gray-500 p-2 rounded-md shadow-xl ">
-          <Calendar
-            tileDisabled={handleTileDisabled}
-            onClickDay={(value) => {
-              handleDateClick(value);
-            }}
-            tileClassName={getTileClassName}
-          />
-        </div> */}
-        <div className="border-2 border-gray-400  rounded-md shadow-xl">
-          <Calendar
-            view="month"
-            value={selectedDate}
-            tileDisabled={handleTileDisabled}
-            onClickDay={(value) => {
-              handleDateClick(value);
-            }}
-            tileClassName={getTileClassName}
-            nextLabel=">"
-            prevLabel="<"
-            next2Label={null} // Elimina el botón para moverse entre años
-            prev2Label={null} // Elimina el botón para moverse entre años
-            navigationLabel={({ date }) => {
-              return (
-                <p className="text-center text-lg font-bold uppercase">
-                  {date.toLocaleDateString("es-MX", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              );
-            }}
-          />
-        </div>
+            <div className="border-2 border-gray-400  rounded-md shadow-xl">
+              <Calendar
+                view="month"
+                value={selectedDate}
+                tileDisabled={handleTileDisabled}
+                onClickDay={(value) => {
+                  handleDateClick(value);
+                }}
+                tileClassName={getTileClassName}
+                nextLabel=">"
+                prevLabel="<"
+                next2Label={null} // Elimina el botón para moverse entre años
+                prev2Label={null} // Elimina el botón para moverse entre años
+                navigationLabel={({ date }) => {
+                  return (
+                    <p className="text-center text-lg font-bold uppercase">
+                      {date.toLocaleDateString("es-MX", {
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  );
+                }}
+              />
+            </div>
 
-        <p className="mt-3 text-center">
-          Día Seleccionado: <br />
-          {dateDisplayText}
-        </p>
+            <p className="mt-3 text-center">
+              Día Seleccionado: <br />
+              {dateDisplayText}
+            </p>
 
-        <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
+            <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 
-        <select
-          value={selectedTime}
-          onChange={(e) => setSelectedTime(e.target.value)}
-          name="selectedTime"
-          id=""
-          className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
-        >
-          {availableTimes &&
-            availableTimes.map((time, timeIndex) => {
-              return (
-                <option id={timeIndex} value={time}>
-                  {time}
-                </option>
-              );
-            })}
-        </select>
+            <select
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              name="selectedTime"
+              id=""
+              className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
+            >
+              <option value="">Seleccione una opción</option>
+              {availableTimes &&
+                availableTimes.map((time, timeIndex) => {
+                  return (
+                    <option id={timeIndex} value={time}>
+                      {time}
+                    </option>
+                  );
+                })}
+            </select>
+          </>
+        ) : null}
       </div>
 
-      {(servicesCart.length > 0 || extraServicesCart.length > 0) &&
-      selectedDate &&
-      selectedTime ? (
+      {((servicesCart && servicesCart.length > 0) ||
+        (extraServicesCart && extraServicesCart.length > 0)) &&
+      selectedDate !== null &&
+      selectedTime !== null &&
+      selectedTime !== "" ? (
         <>
           <h1 className="text-xl mt-10 mb-2">Su cita quedaría así:</h1>
           <div className=" w-[80%] border border-gray-900 my-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
@@ -583,29 +656,33 @@ const AppointmentMaker = () => {
               </p>
             ))}
           </div>
+          <button
+            type="submit"
+            className="px-3 py-2 font-black rounded-md my-5 bg-blue text-white w-[150px]"
+            //Deberia aqui en vez de pasar selected date/time,
+            // combinarlos en un date object y pasar eso
+            //ademas me falta agregar cosas del anticipo, como true o cuanto es
+            onClick={() => {
+              if (
+                addAppointment(
+                  servicesCart,
+                  extraServicesCart,
+                  totalCost,
+                  selectedDate,
+                  selectedTime,
+                  username,
+                  userFullName,
+                  totalDurationOfAppointment
+                )
+              ) {
+                navigate("/downpayment");
+              }
+            }}
+          >
+            Confirmar Cita
+          </button>
         </>
       ) : null}
-
-      <button
-        type="submit"
-        className="px-3 py-2 font-black rounded-md my-5 bg-blue text-white w-[150px]"
-        //Deberia aqui en vez de pasar selected date/time,
-        // combinarlos en un date object y pasar eso
-        //ademas me falta agregar cosas del anticipo, como true o cuanto es
-        onClick={() => {
-          addAppointment(
-            servicesCart,
-            extraServicesCart,
-            totalCost,
-            selectedDate,
-            selectedTime,
-            username,
-            userFullName
-          );
-        }}
-      >
-        Confirmar Cita
-      </button>
     </div>
   );
 };

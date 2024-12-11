@@ -3,6 +3,51 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
+export const addAppointment = async (
+  servicesCart,
+  extraServicesCart,
+  totalCost,
+  selectedDate,
+  selectedTime,
+  username,
+  userFullName,
+  totalDurationOfAppointment
+) => {
+  try {
+    const dateString = selectedDate.toISOString().split("T")[0];
+    const appointmentObject = {
+      servicesCart,
+      extraServicesCart,
+      totalCost,
+      selectedDate: dateString,
+      selectedTime,
+      username,
+      userFullName,
+      totalDurationOfAppointment,
+    };
+
+    console.log(
+      "appointmentObj antes de agregarlo a Firebase: ",
+      appointmentObject
+    );
+
+    const appointmentsRef = ref(database, "activeAppointments");
+
+    const newAppointmentsRef = push(appointmentsRef);
+
+    await set(newAppointmentsRef, appointmentObject);
+
+    alert(
+      "Cita agendada con éxito, usted recibirá un recordatorio previo a su cita en su whatsapp 😊. También puede consultar " +
+        "sus citas activas en el menú principal"
+    );
+    return true;
+  } catch (error) {
+    console.error("Error: ", error);
+    return false;
+  }
+};
+
 export const registerClient = async (
   fullName,
   cellphone,
@@ -58,16 +103,21 @@ export const validateClient = async (username, password) => {
     //obtenemos los datos de la coleccion clients
     const snapshot = await get(clientsRef);
 
+    let clientData = {};
+
     // Comprobamos si el username y password coinciden con alguno de los clientes
-    const clientFound = Object.values(snapshot.val()).some(
-      (childData) =>
-        childData.username === username && childData.password === password
-    );
+    const clientFound = Object.values(snapshot.val()).some((childData) => {
+      if (childData.username === username && childData.password === password) {
+        clientData = childData;
+        return true;
+      }
+      return false;
+    });
 
     if (clientFound) {
       localStorage.setItem("clientAuthenticated", "true");
-      localStorage.setItem("username", clientFound.username);
-      localStorage.setItem("userFullName", clientFound.fullName);
+      localStorage.setItem("username", clientData.username);
+      localStorage.setItem("userFullName", clientData.fullName);
       return true; // Usuario encontrado, devolver true
     }
 
