@@ -48,6 +48,11 @@ const AppointmentMaker = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const [username, setUsername] = useState(localStorage.getItem("username"));
+  const [userFullName, setUserFullName] = useState(
+    localStorage.getItem("userFullName")
+  );
+
   //useEffect
 
   useEffect(() => {
@@ -545,38 +550,59 @@ const AppointmentMaker = () => {
             })}
         </select>
       </div>
-      <h1 className="text-xl mt-10 mb-2">Su cita quedaría así:</h1>
 
-      <div className=" w-[80%] border border-gray-900 my-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
-        <div className="flex flex-row mb-2">
-          <p>
-            {dateDisplayText} <br /> a las{" "}
-            <span className="font-black">{selectedTime}</span> horas
-          </p>
-          {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
-                Transfer
-              </span> */}
-          <p className="ml-auto">
-            <span className="text-green font-black">${totalCost}</span>
-          </p>
-        </div>
-        {/* <p>1 x Corte de cabello - ($50) = $50</p>
-        <p>1 x Tinte de cabello - ($60) = $60</p>
-        <p>1 x Peinado - ($40) = $40</p> */}
-        {servicesCart.map((service, serviceIndex) => (
-          <p key={serviceIndex}>
-            • {service.name} (${service.price})
-          </p>
-        ))}
-        {extraServicesCart.map((extraService, extraServiceIndex) => (
-          <p key={extraServiceIndex}>
-            • {extraService.name} (${extraService.price})
-          </p>
-        ))}
-      </div>
+      {(servicesCart.length > 0 || extraServicesCart.length > 0) &&
+      selectedDate &&
+      selectedTime ? (
+        <>
+          <h1 className="text-xl mt-10 mb-2">Su cita quedaría así:</h1>
+          <div className=" w-[80%] border border-gray-900 my-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+            <div className="flex flex-row mb-2">
+              <p>
+                {dateDisplayText} <br /> a las{" "}
+                <span className="font-black">{selectedTime}</span> horas
+              </p>
+              {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
+                  Transfer
+                </span> */}
+              <p className="ml-auto">
+                <span className="text-green font-black">${totalCost}</span>
+              </p>
+            </div>
+            {/* <p>1 x Corte de cabello - ($50) = $50</p>
+          <p>1 x Tinte de cabello - ($60) = $60</p>
+          <p>1 x Peinado - ($40) = $40</p> */}
+            {servicesCart.map((service, serviceIndex) => (
+              <p key={serviceIndex}>
+                • {service.name} (${service.price})
+              </p>
+            ))}
+            {extraServicesCart.map((extraService, extraServiceIndex) => (
+              <p key={extraServiceIndex}>
+                • {extraService.name} (${extraService.price})
+              </p>
+            ))}
+          </div>
+        </>
+      ) : null}
+
       <button
         type="submit"
         className="px-3 py-2 font-black rounded-md my-5 bg-blue text-white w-[150px]"
+        //Deberia aqui en vez de pasar selected date/time,
+        // combinarlos en un date object y pasar eso
+        //ademas me falta agregar cosas del anticipo, como true o cuanto es
+        onClick={() => {
+          addAppointment(
+            servicesCart,
+            extraServicesCart,
+            totalCost,
+            selectedDate,
+            selectedTime,
+            username,
+            userFullName
+          );
+        }}
       >
         Confirmar Cita
       </button>
