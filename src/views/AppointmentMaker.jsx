@@ -352,7 +352,9 @@ const AppointmentMaker = () => {
               >
                 <option value="">Seleccione una opción</option>
                 <option value="short">Corto</option>
-                <option value="medium">Mediano</option>
+                <option value="medium" disabled="true">
+                  Mediano
+                </option>
                 <option value="long">Largo</option>
               </select>
             </>
