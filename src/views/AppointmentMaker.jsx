@@ -51,9 +51,14 @@ const AppointmentMaker = () => {
   //useEffect
 
   useEffect(() => {
-    console.log("frees: ", frees);
-    console.log("busies: ", busies);
-  }, [busies, frees]);
+    console.log("map ", appointmentsMap);
+  }),
+    [appointmentsMap];
+
+  // useEffect(() => {
+  //   console.log("frees: ", frees);
+  //   console.log("busies: ", busies);
+  // }, [busies, frees]);
 
   useEffect(() => {
     const generateTimesArray = () => {
@@ -215,6 +220,15 @@ const AppointmentMaker = () => {
 
   //funciones
 
+  const calculateBusyTimeOfDay = (arrayOfAppointmentsOfDay) => {
+    let result = 0;
+    for (let index = 0; index < arrayOfAppointmentsOfDay.length; index++) {
+      result += arrayOfAppointmentsOfDay[index].totalDurationOfAppointment;
+    }
+
+    return result;
+  };
+
   const validateTime = (clickedTime) => {
     let indexOfClickedTime = 0;
     timesCombobox.some((timeblock, index) => {
@@ -289,11 +303,14 @@ const AppointmentMaker = () => {
 
   const getTileClassName = ({ date, view }) => {
     if (
+      //inhabilitamos si es domingo o si ya transcurrio ese dia
       date.getDay() === 0 ||
       date < new Date(new Date().setDate(new Date().getDate() - 1))
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
+
+    //si es el dia que seleccionamos lo pintamos de azul
     if (
       selectedDate &&
       selectedDate.toISOString().split("T")[0] ===
@@ -305,19 +322,25 @@ const AppointmentMaker = () => {
     //nomas sirvio para pasarlo como clave al mapa de citas
     const formattedDate = date.toISOString().split("T")[0];
 
-    // if (
-    //   !appointmentsMap[formattedDate] ||
-    //   appointmentsMap[formattedDate].length < 1
-    // ) {
-    //   //si no hay citas ese dia o hay menos de 3 entonces es dia disponible
-    //   return "!bg-green !text-white ";
-    // } else if (appointmentsMap[formattedDate].length >= 1) {
-    //   //si hay 3 o mas citas es dia ocupado
-    //   return "!bg-yellow !text-white";
-    // } else if (dayOfWeek === 0) {
-    //   //si es domingo no se puede agendar o si es dia festivo, etc
-    //   return "!bg-red !text-white";
-    // }
+    if (appointmentsMap[formattedDate]) {
+      const freeMinutes = calculateBusyTimeOfDay(
+        appointmentsMap[formattedDate]
+      );
+
+      if (freeMinutes <= 160) {
+        //lowkey free
+        return "!bg-lime-400		 !text-black border border-gray-500";
+      } else if (freeMinutes > 160 && freeMinutes <= 320) {
+        //available
+        return "!bg-amber-300	 !text-black border border-gray-500";
+      } else if (freeMinutes > 320) {
+        //busy
+        return "!bg-rose-400 !text-black border border-gray-500";
+      }
+    } else {
+      //theres absolute 0 appointments
+      return "!text-black border border-gray-500";
+    }
   };
 
   const handleDateClick = (newDateObject) => {
@@ -630,7 +653,10 @@ const AppointmentMaker = () => {
                 prev2Label={null} // Elimina el botón para moverse entre años
                 navigationLabel={({ date }) => {
                   return (
-                    <p className="text-center text-lg font-bold uppercase">
+                    <p
+                      onClick={(e) => e.stopPropagation()} // Detiene cualquier interacción
+                      className="text-center text-lg font-bold uppercase cursor-default "
+                    >
                       {date.toLocaleDateString("es-MX", {
                         month: "long",
                         year: "numeric",
