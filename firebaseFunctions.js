@@ -79,8 +79,8 @@ export const registerClient = async (
   try {
     const clientObject = {
       fullName,
-      username,
-      password,
+      username: username.toLowerCase(),
+      password: password.toLowerCase(),
       cellphone,
       activeAppointments: [], // inicialmente no se refleja en FB pero esta presente
     };
@@ -129,7 +129,10 @@ export const validateClient = async (username, password) => {
 
     // Comprobamos si el username y password coinciden con alguno de los clientes
     const clientFound = Object.values(snapshot.val()).some((childData) => {
-      if (childData.username === username && childData.password === password) {
+      if (
+        childData.username === username.toLowerCase() &&
+        childData.password === password.toLowerCase()
+      ) {
         clientData = childData;
         return true;
       }
