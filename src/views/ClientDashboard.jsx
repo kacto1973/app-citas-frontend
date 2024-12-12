@@ -43,6 +43,24 @@ const ClientDashboard = () => {
 
   //functions
 
+  function formatDuration(durationInMinutes) {
+    const hours = Math.floor(durationInMinutes / 60);
+    const minutes = durationInMinutes % 60;
+
+    return `${hours} hr ${minutes ? `${minutes}m` : ""}`;
+  }
+
+  function formatDate(date) {
+    //si recibimos 2024-12-31
+    const [year, month, dateNum] = date.split("-");
+    /*Obtendriamos
+    year = 2024
+    month = 12
+    dateNum = 31
+    */
+    return `${dateNum}/${month}/${year}`;
+  }
+
   const getAppointmentsForClient = (allAppointmentsArray) => {
     console.log("getting em...");
     const username = localStorage.getItem("username");
@@ -63,7 +81,13 @@ const ClientDashboard = () => {
     <div className="w-full h-screen">
       <div className="flex flex-col justify-center items-center w-full">
         <h1 className="text-2xl font-black mt-10 mb-5">PANEL DE CITAS</h1>
-        <p className="mb-4">Sus próximas citas:</p>
+        {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
+          <p className="mb-4 text-center">Sus próximas citas:</p>
+        ) : (
+          <p className="mb-4 text-center">
+            Por ahora no tiene citas agendadas...
+          </p>
+        )}
         <div className="flex flex-col justify-center items-center w-full">
           {appointmentsOfClientLoaded &&
             appointmentsOfClient.map((appointment, index) => (
@@ -71,19 +95,33 @@ const ClientDashboard = () => {
                 <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
                   <div className="flex flex-row mb-2">
                     <p>
-                      Cita #{index + 1} - {appointment.selectedDate} <br /> a
-                      las {appointment.selectedTime}
+                      Cita #{index + 1} - {formatDate(appointment.selectedDate)}{" "}
+                      a las {appointment.selectedTime} <br /> (duración de{" "}
+                      {formatDuration(appointment.totalDurationOfAppointment)})
                     </p>
                     {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                 Transfer
               </span> */}
                     <p className="ml-auto">
-                      <span className="text-green font-black">$150</span>
+                      <span className="text-green font-black">
+                        ${appointment.totalCost}
+                      </span>
                     </p>
                   </div>
-                  <p>1 x Corte de cabello - ($50) = $50</p>
-                  <p>1 x Tinte de cabello - ($60) = $60</p>
-                  <p>1 x Peinado - ($40) = $40</p>
+                  {appointment.servicesCart &&
+                    appointment.servicesCart.map((service, serviceIndex) => (
+                      <p key={serviceIndex}>
+                        • {service.name} (${service.price})
+                      </p>
+                    ))}
+                  {appointment.extraServicesCart &&
+                    appointment.extraServicesCart.map(
+                      (extraService, extraServiceIndex) => (
+                        <p key={extraServiceIndex}>
+                          • {extraService.name} (${extraService.price})
+                        </p>
+                      )
+                    )}
                   <button
                     className="px-1 py-1 rounded-md my-5 bg-red text-white w-[30px] absolute top-[55%] left-[89%]"
                     onClick={() => {
