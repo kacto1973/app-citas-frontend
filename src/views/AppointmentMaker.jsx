@@ -347,7 +347,7 @@ const AppointmentMaker = () => {
     setSelectedDate(newDateObject);
     const formattedDate = new Intl.DateTimeFormat("es-MX", {
       weekday: "long", // Día de la semana (lunes, martes, etc.)
-      year: "numeric", // Año (2024)
+      // year: "numeric", // Año (2024)
       month: "long", // Mes (diciembre)
       day: "numeric", // Día del mes (10)
     }).format(newDateObject);
@@ -638,7 +638,7 @@ const AppointmentMaker = () => {
           <>
             <h1 className="text-xl my-10">Fecha de su Cita</h1>
 
-            <div className="border-2 border-gray-400  rounded-md shadow-xl">
+            <div className="border-2 border-gray-400  rounded-md shadow-xl mb-10">
               <Calendar
                 view="month"
                 value={selectedDate}
@@ -667,13 +667,12 @@ const AppointmentMaker = () => {
               />
             </div>
 
-            <p className="mt-3 text-center">
-              Día Seleccionado: <br />
-              {dateDisplayText}
-            </p>
-
             {selectedDate && selectedDate !== null && selectedDate !== "" ? (
               <>
+                <p className="mt-3 text-center">
+                  Día Seleccionado: <br />
+                  {dateDisplayText}
+                </p>
                 <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 
                 <select
@@ -710,10 +709,11 @@ const AppointmentMaker = () => {
           <div className=" w-[80%] border border-gray-900 my-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
             <div className="flex flex-row mb-2">
               <p>
-                {dateDisplayText} <br /> a las{" "}
-                <span className="font-black">{selectedTime}</span> hora(s)
-                (duración aproximada de {durationInHours ? durationInHours : 0}{" "}
-                hora(s) con {durationInMinutes ? durationInMinutes : 0} minutos)
+                {dateDisplayText} a las
+                <br />
+                <span className="font-black">{selectedTime}</span> (duración de{" "}
+                {durationInHours ? durationInHours : 0} hr
+                {durationInMinutes ? ` ${durationInMinutes}m` : null})
               </p>
               {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                   Transfer
