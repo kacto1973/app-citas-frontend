@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getAppointments } from "../../firebaseFunctions";
+import { getAppointments, cancelAppointment } from "../../firebaseFunctions";
 import { useEffect, useState } from "react";
 
 const ClientDashboard = () => {
@@ -12,8 +12,31 @@ const ClientDashboard = () => {
   const [allAppointmentsArray, setAllAppointmentsArray] = useState([]);
   const [allAppointmentsArrayLoaded, setAllAppointmentsArrayLoaded] =
     useState(false);
+  // const [reload, setReload] = useState(false);
 
   //use effects
+
+  // useEffect(() => {
+  //   const syncFunc = async () => {
+  //     const allAppointments = await getAppointments();
+
+  //     if (allAppointments) {
+  //       setAllAppointmentsArray(allAppointments);
+  //       //setAllAppointmentsArrayLoaded(true);
+  //     } else {
+  //       console.log("de TODOS los appointments, no hubo nada que fetchear");
+  //     }
+
+  //     const clientAppointments = getAppointmentsForClient(allAppointments);
+  //     if (clientAppointments) {
+  //       setAppointmentsOfClient(clientAppointments);
+  //       //setAppointmentsOfClientLoaded(true);
+  //     } else {
+  //       console.log("No hubo appointments que jalar para ese usuario");
+  //     }
+  //   };
+  //   syncFunc();
+  // }, [reload]);
 
   useEffect(() => {
     //cargamos todos los appointments
@@ -125,7 +148,7 @@ const ClientDashboard = () => {
                   <button
                     className="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
                     onClick={() => {
-                      downPayment(appointment, index);
+                      downPayment(appointment.id);
                     }}
                   >
                     Dejar Anticipo
@@ -133,7 +156,13 @@ const ClientDashboard = () => {
                   <button
                     className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute bottom-0 right-[3%]"
                     onClick={() => {
-                      cancelAppointment(appointment, index);
+                      const userConfirm = confirm(
+                        //aqui depende de si tiene anticipo o no pues mandar distintos alerts
+                        "¿Seguro que desea eliminar esta cita? Una vez dejado el anticipo, no se puede recuperar"
+                      );
+                      if (userConfirm) {
+                        cancelAppointment(appointment.id);
+                      }
                     }}
                   >
                     X

@@ -3,6 +3,27 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
+export const cancelAppointment = async (appointmentId) => {
+  try {
+    const appointmentsRef = ref(
+      database,
+      `activeAppointments/${appointmentId}`
+    );
+
+    await remove(appointmentsRef);
+
+    alert("La cita fue eliminada con éxito");
+    window.location.reload();
+    return true;
+  } catch (error) {
+    console.error(
+      `Error al remover la cita con ID ${appointmentId}: ${error.message}`
+    );
+
+    return false;
+  }
+};
+
 export const addAppointment = async (
   servicesCart,
   extraServicesCart,
