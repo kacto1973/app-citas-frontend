@@ -58,6 +58,7 @@ export const addAppointment = async (
       userFullName,
       totalDurationOfAppointment,
       id: newAppointmentsRef.key,
+      cellphone: localStorage.getItem("cellphone"),
     };
 
     await set(newAppointmentsRef, appointmentObject);
@@ -139,6 +140,7 @@ export const validateClient = async (username, password) => {
       localStorage.setItem("clientAuthenticated", "true");
       localStorage.setItem("username", clientData.username);
       localStorage.setItem("userFullName", clientData.fullName);
+      localStorage.setItem("cellphone", clientData.cellphone);
       return true; // Usuario encontrado, devolver true
     }
 

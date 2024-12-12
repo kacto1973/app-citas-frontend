@@ -13,7 +13,11 @@ const Appointments = () => {
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
     []
   );
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+
+  useEffect(() => {
+    console.log("appmnts of the day ", appointmentsOnSelectedDate);
+  }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -42,6 +46,24 @@ const Appointments = () => {
     );
     setAppointmentsMap(appointmentsPerDayObject);
   }, [appointmentsLoaded]);
+
+  function formatDuration(durationInMinutes) {
+    const hours = Math.floor(durationInMinutes / 60);
+    const minutes = durationInMinutes % 60;
+
+    return `${hours} hr ${minutes ? `${minutes}m` : ""}`;
+  }
+
+  function formatDate(date) {
+    //si recibimos 2024-12-31
+    const [year, month, dateNum] = date.split("-");
+    /*Obtendriamos
+    year = 2024
+    month = 12
+    dateNum = 31
+    */
+    return `${dateNum}/${month}/${year}`;
+  }
 
   const calculateBusyTimeOfDay = (arrayOfAppointmentsOfDay) => {
     let result = 0;
@@ -142,24 +164,71 @@ const Appointments = () => {
         />
       </div>
       <div className="flex flex-col w-full items-center mb-20">
-        <p className="w-full text-center">
-          Citas para el día seleccionado: <br />
-          <span className="text-xl font-black">{dateDisplayText}</span>
-        </p>
-        <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
-          <div className="flex flex-row mb-2">
-            <p>
-              Cita #1 - 12/12/2024 a las 10:00 AM <br />
-              (duración de 1 hr 30m)
-            </p>
-            <p className="ml-auto">
-              <span className="text-green font-black">$500</span>
-            </p>
-          </div>
-          <p>• Corte de cabello ($200)</p>
-          <p>• Peinado ($150)</p>
-          <p>• Tratamiento capilar ($150)</p>
-        </div>
+        {selectedDate && selectedDate !== "" ? (
+          <p className="w-full text-center">
+            Citas para el día seleccionado: <br />
+            <span className="text-xl font-black">{dateDisplayText}</span>
+          </p>
+        ) : null}
+        {appointmentsOnSelectedDate && appointmentsOnSelectedDate.length > 0
+          ? [...appointmentsOnSelectedDate]
+              .sort((a, b) => {
+                const dateA = new Date(`${a.selectedDate}T${a.selectedTime}`);
+                const dateB = new Date(`${b.selectedDate}T${b.selectedTime}`);
+                return dateA.getTime() - dateB.getTime();
+              })
+              .map((appointment) => (
+                <>
+                  <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+                    <div className="flex flex-row mb-2">
+                      <p>
+                        Cliente:{" "}
+                        <span className="font-black">
+                          {appointment.userFullName}
+                        </span>{" "}
+                        <br />
+                        Tel:{" "}
+                        <span className="font-black">
+                          {appointment.cellphone}
+                        </span>{" "}
+                        <br />
+                        Fecha:{" "}
+                        <span className="font-black">
+                          {formatDate(appointment.selectedDate)} a las{" "}
+                          {appointment.selectedTime}
+                        </span>{" "}
+                        <br />
+                        Duración:{" "}
+                        <span className="font-black">
+                          {formatDuration(
+                            appointment.totalDurationOfAppointment
+                          )}
+                        </span>
+                      </p>
+                      <p className="ml-auto">
+                        <span className="text-green font-black">
+                          ${appointment.totalCost}
+                        </span>
+                      </p>
+                    </div>
+                    {appointment.servicesCart &&
+                      appointment.servicesCart.map((service, serviceIndex) => (
+                        <p key={serviceIndex} className="w-[62%]">
+                          • {service.name} (${service.price})
+                        </p>
+                      ))}
+                    {appointment.extraServicesCart &&
+                      appointment.extraServicesCart.map(
+                        (extraService, extraServiceIndex) => (
+                          <p key={extraServiceIndex} className="w-[62%]">
+                            • {extraService.name} (${extraService.price})
+                          </p>
+                        )
+                      )}
+                  </div>
+                </>
+              ))
+          : null}
       </div>
     </div>
   );
