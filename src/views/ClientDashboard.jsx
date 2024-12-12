@@ -110,22 +110,30 @@ const ClientDashboard = () => {
                   </div>
                   {appointment.servicesCart &&
                     appointment.servicesCart.map((service, serviceIndex) => (
-                      <p key={serviceIndex}>
+                      <p key={serviceIndex} className="w-[62%]">
                         • {service.name} (${service.price})
                       </p>
                     ))}
                   {appointment.extraServicesCart &&
                     appointment.extraServicesCart.map(
                       (extraService, extraServiceIndex) => (
-                        <p key={extraServiceIndex}>
+                        <p key={extraServiceIndex} className="w-[62%]">
                           • {extraService.name} (${extraService.price})
                         </p>
                       )
                     )}
                   <button
-                    className="px-1 py-1 rounded-md my-5 bg-red text-white w-[30px] absolute top-[55%] left-[89%]"
+                    className="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
                     onClick={() => {
-                      cancelAppointment();
+                      downPayment(appointment, index);
+                    }}
+                  >
+                    Dejar Anticipo
+                  </button>
+                  <button
+                    className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute bottom-0 right-[3%]"
+                    onClick={() => {
+                      cancelAppointment(appointment, index);
                     }}
                   >
                     X

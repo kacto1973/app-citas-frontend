@@ -16,7 +16,17 @@ export const addAppointment = async (
   //antes de todo, checar si si caben esos servicios en el horario seleccionado
 
   try {
+    // console.log(
+    //   "appointmentObj antes de agregarlo a Firebase: ",
+    //   appointmentObject
+    // );
+
+    const appointmentsRef = ref(database, "activeAppointments");
+
+    const newAppointmentsRef = push(appointmentsRef);
+
     const dateString = selectedDate.toISOString().split("T")[0];
+
     const appointmentObject = {
       servicesCart,
       extraServicesCart,
@@ -26,16 +36,8 @@ export const addAppointment = async (
       username,
       userFullName,
       totalDurationOfAppointment,
+      id: newAppointmentsRef.key,
     };
-
-    // console.log(
-    //   "appointmentObj antes de agregarlo a Firebase: ",
-    //   appointmentObject
-    // );
-
-    const appointmentsRef = ref(database, "activeAppointments");
-
-    const newAppointmentsRef = push(appointmentsRef);
 
     await set(newAppointmentsRef, appointmentObject);
 

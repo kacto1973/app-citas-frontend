@@ -765,7 +765,7 @@ const AppointmentMaker = () => {
                   "Cita agendada con éxito, usted recibirá un recordatorio previo a su cita en su whatsapp 😊. También puede consultar " +
                     "sus citas activas en el menú principal"
                 );
-                navigate("/downpayment");
+                navigate("/clientdashboard");
               } else {
                 console.error("Hubo un error al agregar la cita");
               }
