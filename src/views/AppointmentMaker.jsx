@@ -42,11 +42,71 @@ const AppointmentMaker = () => {
     localStorage.getItem("userFullName")
   );
 
-  //useEffect
+  //times to display con opciones apartadas deshabilitadas y las disponibles
+  const [timesCombobox, setTimesCombobox] = useState([]);
 
+  //useEffect
   useEffect(() => {
-    console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
-  }, [appointmentsOnSelectedDate]);
+    const generateTimesArray = () => {
+      const timesArray = [];
+      const start = 9;
+      const end = 17;
+
+      for (let i = start; i < end; i++) {
+        for (let j = 0; j < 60; j += 15) {
+          const formattedHour = `${i < 10 ? `0${i}` : i}`;
+          const formattedMinutes = `${j < 10 ? `0${j}` : j}`;
+          timesArray.push(`${formattedHour}:${formattedMinutes}`);
+        }
+      }
+      return timesArray;
+    };
+
+    const isTimeOccupied = (time) => {
+      for (const appointment of appointmentsOnSelectedDate) {
+        const appointmentStart = appointment.selectedTime; // Hora inicial
+        const appointmentEnd = addMinutesToTime(
+          appointmentStart,
+          appointment.totalDurationOfAppointment
+        );
+
+        if (time >= appointmentStart && time < appointmentEnd) {
+          return true; // Hora está ocupada
+        }
+      }
+      return false;
+    };
+
+    const isTimeInThePast = (time) => {
+      if (isToday(selectedDate)) {
+        const [hr, min] = time.split(":").map(Number);
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinutes = now.getMinutes();
+        if (hr < currentHour || (hr === currentHour && min <= currentMinutes)) {
+          return true; // Hora ya ha pasado hoy
+        }
+      }
+      return false;
+    };
+
+    const timesArray = generateTimesArray();
+    const availableTimesArray = timesArray
+      .filter((time) => !isTimeInThePast(time)) // Filtra las horas transcurridas
+      .map((time) => {
+        if (isTimeOccupied(time)) {
+          return "Ocupado";
+        }
+        return time;
+      });
+
+    console.log(availableTimesArray); // Aquí verás los resultados
+    setTimesCombobox(availableTimesArray);
+  }, [appointmentsOnSelectedDate, selectedDate]);
+
+  // useEffect(() => {
+  //   console.log("appointments of selected date: ", appointmentsOnSelectedDate);
+  // }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -134,11 +194,58 @@ const AppointmentMaker = () => {
     calculateTotalDurationOfAppointment();
   }, [servicesCart, extraServicesCart]);
 
-  useEffect(() => {
-    console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
-  }, [totalDurationOfAppointment]);
+  // useEffect(() => {
+  //   console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
+  // }, [totalDurationOfAppointment]);
 
   //funciones
+
+  const validateTime = (clickedTime) => {
+    let indexOfClickedTime = 0;
+    timesCombobox.some((timeblock, index) => {
+      if (timeblock === clickedTime) {
+        indexOfClickedTime = index;
+        return true;
+      }
+      return false;
+    });
+
+    for (let i = 0; i <= totalDurationOfAppointment; i += 15) {
+      if (indexOfClickedTime >= timesCombobox.length) {
+        if (totalDurationOfAppointment <= 60) {
+          return true;
+        }
+      }
+      if (timesCombobox[indexOfClickedTime] === "Ocupado") {
+        return false;
+      }
+      indexOfClickedTime += 1;
+    }
+
+    return true;
+  };
+
+  const isDisabled = (value) => {
+    if (value === "Ocupado") {
+      return true;
+    }
+    return false;
+  };
+
+  const addMinutesToTime = (time, minutes) => {
+    const [hr, mins] = time.split(":").map(Number);
+
+    const date = new Date(1970, 0, 1, hr, mins, 0, 0);
+    date.setMinutes(date.getMinutes() + minutes);
+
+    const hrResult = date.getHours();
+    const minsResult = date.getMinutes();
+    const formattedResult = `${
+      hrResult < 10 ? `0${hrResult}` : `${hrResult}`
+    }:${minsResult < 10 ? `0${minsResult}` : `${minsResult}`}`;
+
+    return formattedResult;
+  };
 
   const isToday = (dateValue) => {
     const today = new Date();
@@ -352,9 +459,7 @@ const AppointmentMaker = () => {
               >
                 <option value="">Seleccione una opción</option>
                 <option value="short">Corto</option>
-                <option value="medium" disabled="true">
-                  Mediano
-                </option>
+                <option value="medium">Mediano</option>
                 <option value="long">Largo</option>
               </select>
             </>
@@ -526,28 +631,30 @@ const AppointmentMaker = () => {
               {dateDisplayText}
             </p>
 
-            <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
+            {selectedDate && selectedDate !== null && selectedDate !== "" ? (
+              <>
+                <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 
-            {/* <select
-              value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
-              name="selectedTime"
-              id=""
-              className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
-            >
-              <option value="">Seleccione una opción</option>
-              { XXX&&
-                XXX.map((time, timeIndex) => {
-                  return (
-                    <option
-                      id={timeIndex}
-                      value={time}
-                    >
-                      {time}
-                    </option>
-                  );
-                })}
-            </select> */}
+                <select
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  name="selectedTime"
+                  id=""
+                  className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
+                >
+                  <option value="">Seleccione una opción</option>
+                  {timesCombobox &&
+                    timesCombobox.map((time, timeIndex) => {
+                      const disabled = isDisabled(time);
+                      return (
+                        <option id={timeIndex} value={time} disabled={disabled}>
+                          {time}
+                        </option>
+                      );
+                    })}
+                </select>
+              </>
+            ) : null}
           </>
         ) : null}
       </div>
@@ -595,6 +702,13 @@ const AppointmentMaker = () => {
             // combinarlos en un date object y pasar eso
             //ademas me falta agregar cosas del anticipo, como true o cuanto es
             onClick={async () => {
+              if (!validateTime(selectedTime)) {
+                alert(
+                  "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
+                );
+                return;
+              }
+
               const success = await addAppointment(
                 servicesCart,
                 extraServicesCart,
@@ -603,8 +717,7 @@ const AppointmentMaker = () => {
                 selectedTime,
                 username,
                 userFullName,
-                totalDurationOfAppointment,
-                availableTimes
+                totalDurationOfAppointment
               );
               if (success) {
                 alert(
@@ -613,9 +726,7 @@ const AppointmentMaker = () => {
                 );
                 navigate("/downpayment");
               } else {
-                alert(
-                  "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
-                );
+                console.error("Hubo un error al agregar la cita");
               }
             }}
           >
