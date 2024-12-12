@@ -41,11 +41,20 @@ const AppointmentMaker = () => {
   const [userFullName, setUserFullName] = useState(
     localStorage.getItem("userFullName")
   );
-
   //times to display con opciones apartadas deshabilitadas y las disponibles
   const [timesCombobox, setTimesCombobox] = useState([]);
+  //free time in minutes
+  const [frees, setFrees] = useState(0);
+  //busy time in minutes
+  const [busies, setBusies] = useState(0);
 
   //useEffect
+
+  useEffect(() => {
+    console.log("frees: ", frees);
+    console.log("busies: ", busies);
+  }, [busies, frees]);
+
   useEffect(() => {
     const generateTimesArray = () => {
       const timesArray = [];
@@ -90,18 +99,24 @@ const AppointmentMaker = () => {
       return false;
     };
 
+    let busies = 0;
+    let frees = 0;
     const timesArray = generateTimesArray();
     const availableTimesArray = timesArray
       .filter((time) => !isTimeInThePast(time)) // Filtra las horas transcurridas
       .map((time) => {
         if (isTimeOccupied(time)) {
+          busies++;
           return "Ocupado";
         }
+        frees++;
         return time;
       });
 
     console.log(availableTimesArray); // Aquí verás los resultados
     setTimesCombobox(availableTimesArray);
+    setBusies(busies);
+    setFrees(frees);
   }, [appointmentsOnSelectedDate, selectedDate]);
 
   // useEffect(() => {
