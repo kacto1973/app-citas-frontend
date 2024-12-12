@@ -14,33 +14,16 @@ const AppointmentMaker = () => {
   //use states
   const navigate = useNavigate();
   const [dateDisplayText, setDateDisplayText] = useState("");
-
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
-  const [holidaysLoaded, setHolidaysLoaded] = useState(false);
-
-  const [servicesLoaded, setServicesLoaded] = useState(false);
-  const [extraServicesLoaded, setExtraServicesLoaded] = useState(false);
-
-  //estos son los arrays que contienen Todos los servicios en general
   const [servicesArray, setServicesArray] = useState([]);
   const [extraServicesArray, setExtraServicesArray] = useState([]);
-
-  //estos son los arrays que contienen los servicios que el USUARIO quiere
-  //los vamos a displayear en la carta de hasta abajo
-  const [wantedServices, setWantedServices] = useState([]);
-  const [wantedExtraServices, setWantedExtraServices] = useState([]);
-
   const [selectedService, setSelectedService] = useState(null);
   const [selectedExtraService, setSelectedExtraService] = useState(null);
-
   const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
     useState(0);
-
   const [durationInHours, setDurationInHours] = useState(0);
   const [durationInMinutes, setDurationInMinutes] = useState(0);
-
-  //Estas variables conformarán un objeto appointment, para darme una idea aqui estan
   const [servicesCart, setServicesCart] = useState([]);
   const [extraServicesCart, setExtraServicesCart] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
@@ -52,14 +35,8 @@ const AppointmentMaker = () => {
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
     []
   );
-  const [availableTimes, setAvailableTimes] = useState([]);
-
-  //ya aqui luego lo veo con mi ma y cargar los dias festivos que ella elija
-  const [holidays, setHolidays] = useState([]);
-
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [userFullName, setUserFullName] = useState(
     localStorage.getItem("userFullName")
@@ -67,100 +44,11 @@ const AppointmentMaker = () => {
 
   //useEffect
 
-  // useEffect(() => {
-  //   //cargamos dinamicamente los bloques de tiempo disponibles
-  //   //segun las citas que haya en ese dia y sus time y duraciones totales
-
-  //   //console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
-
-  //   const interval = 15;
-  //   const startHour = 9;
-  //   const endHour = 17;
-  //   const timeBlocksArray = [];
-
-  //   if (appointmentsOnSelectedDate.length === 0) {
-  //     for (let hour = startHour; hour < endHour; hour++) {
-  //       for (let minute = 0; minute < 60; minute += interval) {
-  //         const formattedHour = hour < 10 ? `0${hour}` : hour;
-  //         const formattedMinute = minute < 10 ? `0${minute}` : minute;
-
-  //         const time = `${formattedHour}:${formattedMinute}`;
-  //         timeBlocksArray.push(time);
-  //       }
-  //     }
-  //     setAvailableTimes(timeBlocksArray);
-  //   }else{//en el caso que tenga mas de 0 citas
-  //     //aqui tengo que hacer un algoritmo para que me quite los bloques de tiempo
-  //     //que ya estan ocupados por las citas
-  //     //y que me deje solo los que estan disponibles
-
-  //   }
-  // }, [appointmentsOnSelectedDate]);
-
   useEffect(() => {
     console.log("appointmentsOnSelectedDate: ", appointmentsOnSelectedDate);
-
-    // Declaramos variables
-    const interval = 15;
-    const startHour = 9;
-    const endHour = 17;
-
-    // Obtenemos un objeto del momento actual
-    const currentDate = new Date();
-
-    // Obtenemos la hora actual en formato HH:MM en modo 24 horas
-    const currentTime = `${
-      currentDate.getHours() < 10
-        ? `0${currentDate.getHours()}`
-        : `${currentDate.getHours()}`
-    }:${
-      currentDate.getMinutes() < 10
-        ? `0${currentDate.getMinutes()}`
-        : currentDate.getMinutes()
-    }`;
-    console.log("currentTime: ", currentTime);
-
-    // Array de horas disponibles
-    const timeBlocksArray = [];
-
-    // Cargar los horarios de 09:00 a 17:00 en intervalos de 15 minutos
-    for (let hour = startHour; hour < endHour; hour++) {
-      for (let minute = 0; minute < 60; minute += interval) {
-        //le damos formato a las horas que vamos a subir en HH:MM
-        const formattedHour = hour < 10 ? `0${hour}` : hour;
-        const formattedMinute = minute < 10 ? `0${minute}` : minute;
-        const time = `${formattedHour}:${formattedMinute}`;
-
-        // Verificar si la hora ya pasó
-        if (isToday(selectedDate)) {
-          if (time < currentTime) {
-            continue;
-          }
-        }
-
-        // Inhabilitar las horas que ya están ocupadas por citas
-        const isTimeBlocked = appointmentsOnSelectedDate.some((appointment) => {
-          // Compara si el timeBlock se solapa con alguna cita
-          const appointmentStart = appointment.selectedTime;
-          const appointmentEnd = addMinutesToTime(
-            appointmentStart,
-            appointment.totalDurationOfAppointment
-          );
-
-          return time >= appointmentStart && time < appointmentEnd;
-        });
-
-        if (!isTimeBlocked) {
-          timeBlocksArray.push(time);
-        }
-      }
-    }
-
-    setAvailableTimes(timeBlocksArray);
   }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
-    //cargar citas, dias festivos
     const fetchAppointments = async () => {
       const appointments = await getAppointments();
       if (appointments) {
@@ -173,8 +61,6 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
-    //una vez cargados, estan listos para transformarse en un objeto
-    //que contendra claves (fechas) y valores (arreglos de citas)
     const appointmentsPerDayObject = appointmentsArray.reduce(
       (finalObject, appointment) => {
         const formattedDate = new Date(appointment.selectedDate)
@@ -190,17 +76,8 @@ const AppointmentMaker = () => {
       },
       {}
     );
-    //console.log("appointmentsMap object: ", appointmentsPerDayObject);
     setAppointmentsMap(appointmentsPerDayObject);
   }, [appointmentsLoaded]);
-
-  useEffect(() => {
-    console.log("selectedDate: ", selectedDate);
-  }, [selectedDate]);
-
-  useEffect(() => {
-    console.log("selectedTime: ", selectedTime);
-  }, [selectedTime]);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -214,7 +91,6 @@ const AppointmentMaker = () => {
         );
 
         setServicesArray(arrayOfServices);
-        setServicesLoaded(true);
       }
     };
     fetchServices();
@@ -232,39 +108,10 @@ const AppointmentMaker = () => {
         );
 
         setExtraServicesArray(arrayOfExtraServices);
-        setExtraServicesLoaded(true);
       }
     };
     fetchExtraServices();
   }, []);
-
-  // useEffect(() => {
-  //   if (servicesLoaded) {
-  //     console.log(servicesArray);
-  //   }
-  // }, [servicesLoaded]);
-
-  // useEffect(() => {
-  //   if (extraServicesLoaded) {
-  //     console.log(extraServicesArray);
-  //   }
-  // }, [extraServicesLoaded]);
-
-  // useEffect(() => {
-  //   console.log("servicesCart: ", servicesCart);
-  // }, [servicesCart]);
-
-  // useEffect(() => {
-  //   console.log("extraServicesCart: ", extraServicesCart);
-  // }, [extraServicesCart]);
-
-  // useEffect(() => {
-  //   console.log("selectedService: ", selectedService);
-  // }, [selectedService]);
-
-  // useEffect(() => {
-  //   console.log("selectedExtraService: ", selectedExtraService);
-  // }, [selectedExtraService]);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -288,33 +135,10 @@ const AppointmentMaker = () => {
   }, [servicesCart, extraServicesCart]);
 
   useEffect(() => {
-    console.log("availableTimes: ", availableTimes);
-  }, [availableTimes]);
-
-  useEffect(() => {
     console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
   }, [totalDurationOfAppointment]);
 
   //funciones
-
-  const addMinutesToTime = (time, minutes) => {
-    const [hoursNum, minutesNum] = time.split(":").map(Number);
-
-    const date = new Date(
-      new Date(1970, 0, 1, 0, 0, 0, 0).setHours(hoursNum, minutesNum)
-    );
-
-    date.setTime(date.getTime() + minutes * 60 * 1000);
-
-    const hourFormatted = `${
-      date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
-    }:${
-      date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
-    }`;
-
-    //return hour formatted as a string and with the minutes added
-    return hourFormatted;
-  };
 
   const isToday = (dateValue) => {
     const today = new Date();
@@ -330,18 +154,6 @@ const AppointmentMaker = () => {
       return false;
     }
   };
-
-  // const validateConfirmAppointment = () => {
-  //   if (
-  //     (servicesCart.length > 0 || extraServicesCart.length > 0) &&
-  //     selectedDate &&
-  //     selectedTime
-  //   ) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
 
   const handleTileDisabled = ({ date, view }) => {
     if (
@@ -714,7 +526,7 @@ const AppointmentMaker = () => {
 
             <h1 className="text-xl mt-10 mb-2">Hora de su Cita</h1>
 
-            <select
+            {/* <select
               value={selectedTime}
               onChange={(e) => setSelectedTime(e.target.value)}
               name="selectedTime"
@@ -722,15 +534,18 @@ const AppointmentMaker = () => {
               className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
             >
               <option value="">Seleccione una opción</option>
-              {availableTimes &&
-                availableTimes.map((time, timeIndex) => {
+              { XXX&&
+                XXX.map((time, timeIndex) => {
                   return (
-                    <option id={timeIndex} value={time}>
+                    <option
+                      id={timeIndex}
+                      value={time}
+                    >
                       {time}
                     </option>
                   );
                 })}
-            </select>
+            </select> */}
           </>
         ) : null}
       </div>

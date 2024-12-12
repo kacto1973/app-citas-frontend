@@ -20,6 +20,56 @@ const addMinutesToTime = (time, minutes) => {
   return hourFormatted;
 };
 
+const itFits = (
+  availableTimesArray,
+  selectedTime,
+  totalDurationOfAppointment
+) => {
+  //variables necesarias
+  let fivePm = "17:00";
+  let timeLeft = 0;
+  let selectedTimeIndex = 0;
+
+  let allTimesArray = [];
+  for (let x = 9; x < 17; x++) {
+    for (let y = 0; y < 60; y += 15) {
+      let hour = x < 10 ? `0${x}` : `${x}`;
+      let minute = y < 10 ? `0${y}` : `${y}`;
+      allTimesArray.push(`${hour}:${minute}`);
+    }
+  }
+
+  let mixedArray = [];
+  for (let x = 0; x < allTimesArray.length; x++) {
+    let valueToSearch = allTimesArray[x];
+    if (availableTimesArray.includes(valueToSearch)) {
+      mixedArray.push(valueToSearch);
+    } else {
+      mixedArray.push("0");
+    }
+  }
+
+  mixedArray.some((time, index) => {
+    if (time === selectedTime) {
+      selectedTimeIndex = index;
+      return true;
+    }
+    return false;
+  });
+
+  for (let x = 0; x <= totalDurationOfAppointment; x += 15) {
+    if (!mixedArray[selectedTimeIndex] && totalDurationOfAppointment <= 60) {
+      return true;
+    }
+    if (mixedArray[selectedTimeIndex] === "0") {
+      return false;
+    }
+    selectedTimeIndex++;
+  }
+
+  return true;
+};
+
 //Functions that interact with firebase
 
 export const addAppointment = async (
@@ -35,32 +85,7 @@ export const addAppointment = async (
 ) => {
   //antes de todo, checar si si caben esos servicios en el horario seleccionado
 
-  let selectedTimeIndex = 0;
-  let fits = true;
-  availableTimesArray.some((time, index) => {
-    if (time === selectedTime) {
-      selectedTimeIndex = index;
-      return true;
-    }
-    return false;
-  });
-
-  let j = selectedTimeIndex + 1;
-  let initialTime = availableTimesArray[selectedTimeIndex];
-  for (let i = 15; i <= totalDurationOfAppointment; i += 15) {
-    initialTime = addMinutesToTime(initialTime, 15);
-    if (availableTimesArray[j] && availableTimesArray[j] !== initialTime) {
-      fits = false;
-      break;
-    }
-    if (!availableTimesArray[j]) {
-      fits = false;
-      break;
-    }
-    j += 1;
-  }
-
-  if (fits) {
+  if (itFits(availableTimesArray, selectedTime, totalDurationOfAppointment)) {
     try {
       const dateString = selectedDate.toISOString().split("T")[0];
       const appointmentObject = {
