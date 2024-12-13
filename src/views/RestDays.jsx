@@ -1,13 +1,31 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
-import { getAppointments } from "../../firebaseFunctions";
+import {
+  getAppointments,
+  addRestDays,
+  getAllRestDays,
+} from "../../firebaseFunctions";
 
 const RestDays = () => {
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
   const [appointmentsMap, setAppointmentsMap] = useState({});
+  const [range, setRange] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const [allRestDays, setAllRestDays] = useState([]);
+  const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchRestDays = async () => {
+      const restDays = await getAllRestDays();
+      if (restDays) {
+        setAllRestDays(restDays);
+        setAllRestDaysLoaded(true);
+      }
+    };
+    fetchRestDays();
+  }, []);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -53,6 +71,34 @@ const RestDays = () => {
   };
 
   const getTileClassName = ({ date }) => {
+    // Validar si la fecha está dentro del rango de dias de descanso
+
+    if (selectedDate && selectedDate !== "") {
+      if (date.getTime() === selectedDate.getTime()) {
+        return "!bg-blue	 !text-white border border-gray-500";
+      }
+    }
+
+    if (allRestDaysLoaded && range && range.length === 2) {
+      formattedCurrentDate = formatDate(date);
+      const isRestDay = allRestDays.some((restday) => {
+        if (restday === formattedCurrentDate) {
+          return true;
+        }
+        return false;
+      });
+      if (isRestDay) {
+        return "!bg-fuchsia-600 !text-black border border-gray-500";
+      }
+    }
+
+    if (range && Array.isArray(range) && range.length > 0) {
+      if (date >= range[0] && date <= range[1]) {
+        return "!bg-cyan-400	 !text-black border border-gray-500";
+      }
+    }
+
+    //si no checamos si es domingo o un dia pasado para mostrarlo inhabilitado
     if (
       date.getDay() === 0 ||
       date < new Date(new Date().setDate(new Date().getDate() - 1))
@@ -60,6 +106,8 @@ const RestDays = () => {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
 
+    //si no es de descanso ni esta inhabilitado entonces ya checamos si esta
+    //en el appmnts map y lo coloreamos conforme a lo ocupado que este
     const formattedDate = date.toISOString().split("T")[0];
     if (appointmentsMap[formattedDate]) {
       const freeMinutes = calculateBusyTimeOfDay(
@@ -77,6 +125,57 @@ const RestDays = () => {
     }
   };
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Agregar ceros al mes si es necesario
+    const day = date.getDate().toString().padStart(2, "0"); // Agregar ceros al día si es necesario
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const setRestDays = () => {
+    if (!range || range.length === 0 || range.length === 1) {
+      alert("Seleccione primero un rango de días de descanso");
+    }
+
+    //let restDaysArray = [];
+    let startDate = range[0];
+    let endDate = range[1];
+    let startCopy = new Date(range[0]);
+    let endCopy = new Date(range[1]);
+
+    console.log("pre for values of not copies");
+    console.log("start ", startDate);
+    console.log("end ", endDate);
+    while (startDate <= endDate) {
+      const formattedDate = formatDate(startDate);
+
+      console.log("formattedDates ", formattedDate);
+      if (formattedDate in appointmentsMap) {
+        alert(
+          "Hay una cita de por medio en el rango seleccionado, inténtelo de nuevo"
+        );
+        return;
+      }
+      startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+    }
+
+    console.log("post for values: ");
+    console.log("start C ", startCopy);
+    console.log("end C", endCopy);
+    let newDays = [];
+    while (startCopy <= endCopy) {
+      const formattedDate = formatDate(startCopy);
+      console.log("formatted dates ", formattedDate);
+      newDays.push(formattedDate);
+      startCopy.setDate(startCopy.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+    }
+
+    console.log("bloqueando el rango de dias seleccionado... ", newDays);
+    addRestDays(newDays);
+    setRange([]);
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
       <h1 className="text-2xl font-black mt-10 mb-2 text-center">
@@ -86,9 +185,13 @@ const RestDays = () => {
       <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
         <Calendar
           view="month"
-          value={selectedDate}
+          selectRange
+          value={range}
           tileDisabled={handleTileDisabled}
-          onClickDay={(value) => setSelectedDate(value)}
+          onChange={(value) => {
+            setRange(value);
+          }}
+          onClickDay={setSelectedDate}
           tileClassName={getTileClassName}
           nextLabel=">"
           prevLabel="<"
@@ -109,7 +212,16 @@ const RestDays = () => {
           }}
         />
       </div>
-      <button className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[120px]">
+      <p className="text-center">
+        Rango seleccionado: <br />{" "}
+        <span className="font-black text-xl">
+          {range[0]?.toLocaleDateString()} - {range[1]?.toLocaleDateString()}
+        </span>
+      </p>
+      <button
+        onClick={setRestDays}
+        className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
+      >
         Inhabilitar Días
       </button>
     </div>

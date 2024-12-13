@@ -3,6 +3,52 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
+export const getAllRestDays = async () => {
+  try {
+    const restDaysRef = ref(database, "restdays");
+
+    const restDaysArraySnap = await get(restDaysRef);
+
+    if (restDaysArraySnap.exists()) {
+      const array = Object.values(restDaysArraySnap.val());
+
+      return array;
+    } else {
+      console.log("No hay dias de descanso");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error ocurrido al fetchear los restdays: " + error.message);
+    return false;
+  }
+};
+
+export const addRestDays = async (newDays) => {
+  try {
+    const restDaysRef = ref(database, "restdays");
+
+    const restDaysSnap = await get(restDaysRef);
+
+    if (restDaysSnap.exists()) {
+      let restDaysInFirebase = restDaysSnap.val();
+
+      restDaysInFirebase = [...restDaysInFirebase, ...newDays];
+
+      await set(restDaysRef, restDaysInFirebase);
+    } else {
+      await set(restDaysRef, newDays);
+    }
+
+    alert("Dias no laborales agregados con éxito");
+    return true;
+  } catch (error) {
+    console.error(
+      "Hubo un error al agregar los dias de descanso " + error.message
+    );
+    return false;
+  }
+};
+
 export const cancelAppointment = async (appointmentId) => {
   try {
     const appointmentsRef = ref(
