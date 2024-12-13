@@ -236,3 +236,22 @@ export const getServices = async () => {
     return false;
   }
 };
+
+export const getAllClients = async () => {
+  try {
+    const clientsRef = ref(database, "clients");
+
+    const clientsSnap = await get(clientsRef);
+
+    if (clientsSnap.exists()) {
+      let result = Object.values(clientsSnap.val());
+      return result;
+    } else {
+      console.log("no hay clientes que fetchear");
+      return false;
+    }
+  } catch (error) {
+    console.error("error al fetchear todos los clientes " + error.message);
+    return false;
+  }
+};
