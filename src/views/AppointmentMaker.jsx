@@ -6,6 +6,7 @@ import {
   getExtraServices,
   getAppointments,
   addAppointment,
+  getAllRestDays,
 } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 import { useNavigate } from "react-router-dom";
@@ -43,11 +44,8 @@ const AppointmentMaker = () => {
   );
   //times to display con opciones apartadas deshabilitadas y las disponibles
   const [timesCombobox, setTimesCombobox] = useState([]);
-  //free time in minutes
-  const [frees, setFrees] = useState(0);
-  //busy time in minutes
-  const [busies, setBusies] = useState(0);
-
+  const [disabledDays, setDisabledDays] = useState([]);
+  const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
   //useEffect
 
   useEffect(() => {
@@ -55,10 +53,16 @@ const AppointmentMaker = () => {
   }),
     [appointmentsMap];
 
-  // useEffect(() => {
-  //   console.log("frees: ", frees);
-  //   console.log("busies: ", busies);
-  // }, [busies, frees]);
+  useEffect(() => {
+    const asyncFunc = async () => {
+      let disabledDaysList = await getAllRestDays();
+      if (disabledDaysList) {
+        setDisabledDays(disabledDaysList);
+        setDisabledDaysLoaded(true);
+      }
+    };
+    asyncFunc();
+  }, []);
 
   useEffect(() => {
     const generateTimesArray = () => {
@@ -104,24 +108,18 @@ const AppointmentMaker = () => {
       return false;
     };
 
-    let busies = 0;
-    let frees = 0;
     const timesArray = generateTimesArray();
     const availableTimesArray = timesArray
       .filter((time) => !isTimeInThePast(time)) // Filtra las horas transcurridas
       .map((time) => {
         if (isTimeOccupied(time)) {
-          busies++;
           return "Ocupado";
         }
-        frees++;
         return time;
       });
 
     console.log(availableTimesArray); // Aquí verás los resultados
     setTimesCombobox(availableTimesArray);
-    setBusies(busies);
-    setFrees(frees);
   }, [appointmentsOnSelectedDate, selectedDate]);
 
   // useEffect(() => {
@@ -220,6 +218,31 @@ const AppointmentMaker = () => {
 
   //funciones
 
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Agregar ceros al mes si es necesario
+    const day = date.getDate().toString().padStart(2, "0"); // Agregar ceros al día si es necesario
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const isRestDay = (date) => {
+    if (disabledDaysLoaded && disabledDays && disabledDays.length > 0) {
+      const formattedCurrentDate = formatDate(date);
+      const isRestDay = disabledDays.some((restday) => {
+        if (restday === formattedCurrentDate) {
+          return true;
+        }
+        return false;
+      });
+      if (isRestDay) {
+        //return "!bg-fuchsia-600 !text-black border border-gray-500";
+        return true;
+      }
+      return false;
+    }
+  };
+
   const calculateBusyTimeOfDay = (arrayOfAppointmentsOfDay) => {
     let result = 0;
     for (let index = 0; index < arrayOfAppointmentsOfDay.length; index++) {
@@ -294,7 +317,8 @@ const AppointmentMaker = () => {
   const handleTileDisabled = ({ date, view }) => {
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1))
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      isRestDay(date)
     ) {
       return true;
     }
@@ -305,7 +329,8 @@ const AppointmentMaker = () => {
     if (
       //inhabilitamos si es domingo o si ya transcurrio ese dia
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1))
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      isRestDay(date)
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
