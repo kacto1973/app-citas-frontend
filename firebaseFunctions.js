@@ -23,20 +23,49 @@ export const getAllRestDays = async () => {
   }
 };
 
+export const removeRestDays = async (daysToRemove) => {
+  try {
+    const restDaysRef = ref(database, "restdays");
+
+    // Obtener los días de descanso actuales
+    const snapshot = await get(restDaysRef);
+    if (snapshot.exists()) {
+      const restDays = snapshot.val();
+
+      // Buscar los nodos que coinciden con las fechas de daysToRemove
+      for (const key in restDays) {
+        if (restDays.hasOwnProperty(key)) {
+          const day = restDays[key];
+
+          // Si la fecha coincide con algún día a eliminar
+          if (daysToRemove.includes(day)) {
+            const dayRef = ref(database, `restdays/${key}`);
+            await remove(dayRef);
+          }
+        }
+      }
+
+      alert("Días no laborales eliminados con éxito");
+      return true;
+    } else {
+      console.log("No se encontraron días de descanso en la base de datos.");
+      return false;
+    }
+  } catch (error) {
+    console.error(
+      "Hubo un error al eliminar los días de descanso: ",
+      error.message
+    );
+    return false;
+  }
+};
+
 export const addRestDays = async (newDays) => {
   try {
     const restDaysRef = ref(database, "restdays");
 
-    const restDaysSnap = await get(restDaysRef);
-
-    if (restDaysSnap.exists()) {
-      let restDaysInFirebase = restDaysSnap.val();
-
-      restDaysInFirebase = [...restDaysInFirebase, ...newDays];
-
-      await set(restDaysRef, restDaysInFirebase);
-    } else {
-      await set(restDaysRef, newDays);
+    for (const day of newDays) {
+      await push(restDaysRef, day);
     }
 
     alert("Dias no laborales agregados con éxito");

@@ -5,6 +5,7 @@ import {
   getAppointments,
   addRestDays,
   getAllRestDays,
+  removeRestDays,
 } from "../../firebaseFunctions";
 
 const RestDays = () => {
@@ -63,6 +64,23 @@ const RestDays = () => {
     return result;
   };
 
+  const isRestDay = (date) => {
+    if (allRestDaysLoaded && allRestDays && allRestDays.length > 0) {
+      const formattedCurrentDate = formatDate(date);
+      const isRestDay = allRestDays.some((restday) => {
+        if (restday === formattedCurrentDate) {
+          return true;
+        }
+        return false;
+      });
+      if (isRestDay) {
+        //return "!bg-fuchsia-600 !text-black border border-gray-500";
+        return true;
+      }
+      return false;
+    }
+  };
+
   const handleTileDisabled = ({ date }) => {
     return (
       date.getDay() === 0 ||
@@ -79,23 +97,27 @@ const RestDays = () => {
       }
     }
 
-    if (allRestDaysLoaded && range && range.length === 2) {
-      formattedCurrentDate = formatDate(date);
-      const isRestDay = allRestDays.some((restday) => {
-        if (restday === formattedCurrentDate) {
-          return true;
-        }
-        return false;
-      });
-      if (isRestDay) {
-        return "!bg-fuchsia-600 !text-black border border-gray-500";
-      }
-    }
+    // if (allRestDaysLoaded && allRestDays && allRestDays.length > 0) {
+    //   const formattedCurrentDate = formatDate(date);
+    //   const isRestDay = allRestDays.some((restday) => {
+    //     if (restday === formattedCurrentDate) {
+    //       return true;
+    //     }
+    //     return false;
+    //   });
+    //   if (isRestDay) {
+    //     return "!bg-fuchsia-600 !text-black border border-gray-500";
+    //   }
+    // }
 
     if (range && Array.isArray(range) && range.length > 0) {
       if (date >= range[0] && date <= range[1]) {
         return "!bg-cyan-400	 !text-black border border-gray-500";
       }
+    }
+
+    if (isRestDay(date)) {
+      return "bg-gray-400 text-gray-500 border border-gray-500";
     }
 
     //si no checamos si es domingo o un dia pasado para mostrarlo inhabilitado
@@ -133,9 +155,50 @@ const RestDays = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const setRestDays = () => {
+  const enableDays = () => {
     if (!range || range.length === 0 || range.length === 1) {
-      alert("Seleccione primero un rango de días de descanso");
+      alert(
+        "Seleccione primero un rango de días de descanso para activar (solo grises oscuro)"
+      );
+      return;
+    }
+
+    let startDate = range[0];
+    let endDate = range[1];
+    let startCopy = new Date(range[0]);
+    let endCopy = new Date(range[1]);
+
+    while (startDate <= endDate) {
+      if (!isRestDay(startDate)) {
+        alert("No puedes activar días que ya están habilitados");
+        setRange([]);
+        setSelectedDate("");
+        return;
+      }
+
+      startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+    }
+
+    let daysToRemove = [];
+    while (startCopy <= endCopy) {
+      const formattedDate = formatDate(startCopy);
+      daysToRemove.push(formattedDate);
+      startCopy.setDate(startCopy.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+    }
+    console.log("removiendo dias ", daysToRemove);
+    const asyncFunc = async () => {
+      await removeRestDays(daysToRemove);
+      window.location.reload();
+    };
+    asyncFunc();
+  };
+
+  const disableDays = () => {
+    if (!range || range.length === 0 || range.length === 1) {
+      alert(
+        "Seleccione primero un rango de días para establecerlos como descanso"
+      );
+      return;
     }
 
     //let restDaysArray = [];
@@ -155,6 +218,8 @@ const RestDays = () => {
         alert(
           "Hay una cita de por medio en el rango seleccionado, inténtelo de nuevo"
         );
+        setRange([]);
+        setSelectedDate("");
         return;
       }
       startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
@@ -171,15 +236,17 @@ const RestDays = () => {
       startCopy.setDate(startCopy.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
     }
 
-    console.log("bloqueando el rango de dias seleccionado... ", newDays);
-    addRestDays(newDays);
-    setRange([]);
+    const asyncFunc = async () => {
+      await addRestDays(newDays);
+      window.location.reload();
+    };
+    asyncFunc();
   };
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center">
       <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        ESTABLECER DÍAS DE DESCANSO
+        MANEJO DE DÍAS LABORALES
       </h1>
 
       <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
@@ -218,12 +285,20 @@ const RestDays = () => {
           {range[0]?.toLocaleDateString()} - {range[1]?.toLocaleDateString()}
         </span>
       </p>
-      <button
-        onClick={setRestDays}
-        className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
-      >
-        Inhabilitar Días
-      </button>
+      <div className="flex w-full justify-around">
+        <button
+          onClick={disableDays}
+          className="px-2 py-1 rounded-md my-5 bg-green text-white w-[130px]"
+        >
+          Desactivar Días
+        </button>
+        <button
+          onClick={enableDays}
+          className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
+        >
+          Activar Días
+        </button>
+      </div>
     </div>
   );
 };
