@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getAppointments, cancelAppointment } from "../../firebaseFunctions";
 import { useEffect, useState } from "react";
+import PaymentComponent from "../components/PaymentComponent";
 
 const ClientDashboard = () => {
   //use states
@@ -65,6 +66,10 @@ const ClientDashboard = () => {
   }, [allAppointmentsArrayLoaded]);
 
   //functions
+
+  const downPayment = () => {
+    //logica de pago
+  };
 
   function formatDuration(durationInMinutes) {
     const hours = Math.floor(durationInMinutes / 60);
@@ -153,14 +158,20 @@ const ClientDashboard = () => {
                           </p>
                         )
                       )}
-                    <button
+                    {/* <button
                       className="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
                       onClick={() => {
-                        downPayment(appointment.id);
+                        //downPayment(appointment.id);
+                        window.open("https://mpago.la/1qdjQMh");
                       }}
                     >
                       Dejar Anticipo
-                    </button>
+                    </button> */}
+                    <PaymentComponent
+                      appointmentId={appointment.id}
+                      classNames="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
+                    />
+
                     <button
                       className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute bottom-0 right-[3%]"
                       onClick={() => {
