@@ -1,43 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const PaymentComponent = ({ appointmentId, classNames }) => {
-  const [preferenceId, setPreferenceId] = useState(null);
-
-  useEffect(() => {
-    // Verifica si Mercado Pago está disponible
-    if (window.MercadoPago) {
-      // Inicializa Mercado Pago con tu clave pública
-      const mp = new window.MercadoPago(
-        "APP_USR-bd2f9995-457d-4d48-8151-bfc2f32bd65b"
-      );
-
-      console.log("Mercado Pago inicializado");
-    } else {
-      console.error("Mercado Pago no está cargado correctamente.");
-    }
-  }, []);
+const PaymentComponent = ({ classNames }) => {
+  const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
+    setLoading(true); // Muestra que se está procesando la solicitud
+
     try {
+      // Datos del producto o servicio que se enviarán al backend
+      const preferenceData = {
+        items: [
+          {
+            title: "Anticipo de cita pref", // Título del producto/servicio
+            unit_price: 100, // Precio del producto/servicio
+            quantity: 1, // Cantidad
+          },
+        ],
+        back_urls: {
+          success: "https://mb-salon-citas.netlify.app/downpayment",
+          failure: "https://mb-salon-citas.netlify.app/downpayment",
+          pending: "https://mb-salon-citas.netlify.app/downpayment",
+        },
+        auto_return: "approved",
+      };
+
       // Realiza la solicitud al backend para crear la preferencia
-      const response = await fetch(
-        "https://mi-backend.vercel.app/api/createpreference",
-        {
-          method: "POST",
-        }
-      );
+      const response = await fetch("https://app-citas-backend.vercel.app/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(preferenceData),
+      });
 
       if (response.ok) {
         const data = await response.json();
-        setPreferenceId(data.preferenceId);
+        const preferenceId = data.preferenceId;
 
-        // Abre el checkout de Mercado Pago con el preferenceId
+        // Redirige al usuario a Mercado Pago con el preferenceId
         const mp = new window.MercadoPago(
           "APP_USR-bd2f9995-457d-4d48-8151-bfc2f32bd65b"
-        ); // Tu public key
+        );
         mp.checkout({
           preference: {
-            id: data.preferenceId,
+            id: preferenceId,
           },
         }).open();
       } else {
@@ -45,13 +51,19 @@ const PaymentComponent = ({ appointmentId, classNames }) => {
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
+    } finally {
+      setLoading(false); // Desactiva el estado de carga
     }
   };
 
   return (
     <div>
-      <button className={classNames} onClick={handlePayment}>
-        Dejar Anticipo
+      <button
+        className={classNames}
+        onClick={handlePayment}
+        disabled={loading} // Desactiva el botón mientras se está procesando
+      >
+        {loading ? "Procesando..." : "Dejar Anticipo"}
       </button>
     </div>
   );
