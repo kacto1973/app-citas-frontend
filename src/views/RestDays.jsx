@@ -221,6 +221,11 @@ const RestDays = () => {
         setRange([]);
         setSelectedDate("");
         return;
+      } else if (isRestDay(startDate)) {
+        alert("No puedes desactivar días que ya estaban desactivados");
+        setRange([]);
+        setSelectedDate("");
+        return;
       }
       startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
     }

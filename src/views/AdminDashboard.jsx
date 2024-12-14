@@ -1,8 +1,25 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { cleanseRestDays, getAllRestDays } from "../../firebaseFunctions";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const asyncFunct = async () => {
+      const restDays = await getAllRestDays();
+      if (restDays) {
+        const done = await cleanseRestDays(restDays);
+        if (done) {
+          console.log("restdays limpiados!");
+        }
+      }
+    };
+
+    asyncFunct();
+  }, []);
+
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center">
       <h1 className="text-2xl font-black mt-10 mb-5">PANEL DE CONTROL</h1>

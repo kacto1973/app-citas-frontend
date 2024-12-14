@@ -3,6 +3,29 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
+export const cleanseRestDays = async (fetchedRestDaysArray) => {
+  try {
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let restDaysUpdated = fetchedRestDaysArray.filter(
+      (restday) => currentDate < restday
+    );
+    console.log("restdays updated ", restDaysUpdated);
+    const restdaysRef = ref(database, "restdays");
+
+    await remove(restdaysRef);
+
+    for (const day of restDaysUpdated) {
+      await push(restdaysRef, day);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("error al limpiar restdays " + error.message);
+    return false;
+  }
+};
+
 export const getAllRestDays = async () => {
   try {
     const restDaysRef = ref(database, "restdays");
