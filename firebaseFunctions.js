@@ -5,7 +5,9 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 export const cleanseRestDays = async (fetchedRestDaysArray) => {
   try {
-    const currentDate = new Date().toISOString().split("T")[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1); // Restar un día
+    const currentDate = yesterday.toISOString().split("T")[0]; // Convertir a ISO y obtener solo la fecha
 
     let restDaysUpdated = fetchedRestDaysArray.filter(
       (restday) => currentDate < restday
