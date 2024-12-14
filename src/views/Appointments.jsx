@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
-import { getAppointments } from "../../firebaseFunctions";
+import { getAppointments, getAllRestDays } from "../../firebaseFunctions";
 
 const Appointments = () => {
   const navigate = useNavigate();
@@ -14,10 +14,23 @@ const Appointments = () => {
     []
   );
   const [selectedDate, setSelectedDate] = useState("");
+  const [allRestDays, setAllRestDays] = useState([]);
+  const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
 
   useEffect(() => {
     console.log("appmnts of the day ", appointmentsOnSelectedDate);
   }, [appointmentsOnSelectedDate]);
+
+  useEffect(() => {
+    const fetchRestDays = async () => {
+      const restDays = await getAllRestDays();
+      if (restDays) {
+        setAllRestDays(restDays);
+        setAllRestDaysLoaded(true);
+      }
+    };
+    fetchRestDays();
+  }, []);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -47,6 +60,31 @@ const Appointments = () => {
     setAppointmentsMap(appointmentsPerDayObject);
   }, [appointmentsLoaded]);
 
+  const isRestDay = (date) => {
+    if (allRestDaysLoaded && allRestDays && allRestDays.length > 0) {
+      const formattedCurrentDate = formatDate(date);
+      const isRestDay = allRestDays.some((restday) => {
+        if (restday === formattedCurrentDate) {
+          return true;
+        }
+        return false;
+      });
+      if (isRestDay) {
+        //return "!bg-fuchsia-600 !text-black border border-gray-500";
+        return true;
+      }
+      return false;
+    }
+  };
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Agregar ceros al mes si es necesario
+    const day = date.getDate().toString().padStart(2, "0"); // Agregar ceros al día si es necesario
+
+    return `${year}-${month}-${day}`;
+  };
+
   function formatDuration(durationInMinutes) {
     const hours = Math.floor(durationInMinutes / 60);
     const minutes = durationInMinutes % 60;
@@ -54,7 +92,7 @@ const Appointments = () => {
     return `${hours} hr ${minutes ? `${minutes}m` : ""}`;
   }
 
-  function formatDate(date) {
+  function formatDateForDisplay(date) {
     //si recibimos 2024-12-31
     const [year, month, dateNum] = date.split("-");
     /*Obtendriamos
@@ -77,7 +115,8 @@ const Appointments = () => {
   const handleTileDisabled = ({ date }) => {
     return (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1))
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      isRestDay(date)
     );
   };
 
@@ -88,6 +127,11 @@ const Appointments = () => {
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
+
+    if (isRestDay(date)) {
+      return "bg-gray-400 text-gray-500 border border-gray-500";
+    }
+
     if (
       selectedDate &&
       selectedDate.toISOString().split("T")[0] ===
@@ -194,7 +238,7 @@ const Appointments = () => {
                         <br />
                         Fecha:{" "}
                         <span className="font-black">
-                          {formatDate(appointment.selectedDate)} a las{" "}
+                          {formatDateForDisplay(appointment.selectedDate)} a las{" "}
                           {appointment.selectedTime}
                         </span>{" "}
                         <br />
