@@ -18,9 +18,9 @@ module.exports = async (req, res) => {
           },
         ],
         back_urls: {
-          success: "https://mb-salon-citas.netlify.app/",
-          failure: "https://mb-salon-citas.netlify.app/",
-          pending: "https://mb-salon-citas.netlify.app/",
+          success: "https://mb-salon-citas.netlify.app/downpayment",
+          failure: "https://mb-salon-citas.netlify.app/downpayment",
+          pending: "https://mb-salon-citas.netlify.app/downpayment",
         },
         auto_return: "approved",
       };
@@ -39,7 +39,13 @@ module.exports = async (req, res) => {
         .status(500)
         .json({ error: "Hubo un problema al crear la preferencia" });
     }
+  } else if (req.method === "GET") {
+    // Respuesta para solicitudes GET
+    res
+      .status(200)
+      .send("Este es un backend para procesar pagos con Mercado Pago.");
   } else {
-    res.status(405).json({ error: "Método no permitido" });
+    res.setHeader("Allow", ["POST", "GET"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 };
