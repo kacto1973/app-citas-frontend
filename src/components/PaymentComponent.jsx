@@ -20,9 +20,12 @@ const PaymentComponent = ({ appointmentId, classNames }) => {
   const handlePayment = async () => {
     try {
       // Realiza la solicitud al backend para crear la preferencia
-      const response = await fetch("/api/createPreference", {
-        method: "POST",
-      });
+      const response = await fetch(
+        "https://mi-backend.vercel.app/api/createpreference",
+        {
+          method: "POST",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();

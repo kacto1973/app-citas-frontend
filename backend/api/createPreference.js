@@ -9,6 +9,10 @@ mercadopago.configurations.setAccessToken(
 module.exports = async (req, res) => {
   if (req.method === "POST") {
     try {
+      // Configura los encabezados CORS
+      res.setHeader("Access-Control-Allow-Origin", "*"); // Permite todas las solicitudes
+      res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
       const preference = {
         items: [
           {
