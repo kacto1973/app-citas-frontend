@@ -3,6 +3,31 @@ import { ref, push, set, get, remove } from "firebase/database";
 
 //Functions that interact with firebase
 
+export const findAppointmentById = async (appointmentId) => {
+  try {
+    const appointmentsRef = ref(database, "activeAppointments");
+
+    const appointmentsSnap = await get(appointmentsRef);
+
+    if (appointmentsSnap.exists()) {
+      const appointmentsArray = Object.values(appointmentsSnap.val());
+      const foundAppointment = appointmentsArray.find(
+        (appointment) => appointment.id === appointmentId
+      );
+
+      if (foundAppointment) {
+        return foundAppointment; // Retorna el objeto completo.
+      }
+    }
+
+    console.log("No se encontró una cita con ese ID: " + appointmentId);
+    return false;
+  } catch (error) {
+    console.error("Error al fetchear appointment por ID: " + error.message);
+    return false;
+  }
+};
+
 export const cleanseRestDays = async (fetchedRestDaysArray) => {
   try {
     const yesterday = new Date();
