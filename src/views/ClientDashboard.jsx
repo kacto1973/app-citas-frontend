@@ -14,6 +14,7 @@ const ClientDashboard = () => {
   const [allAppointmentsArrayLoaded, setAllAppointmentsArrayLoaded] =
     useState(false);
   // const [reload, setReload] = useState(false);
+  const [bannerShown, setBannerShown] = useState(false);
 
   //use effects
 
@@ -38,6 +39,10 @@ const ClientDashboard = () => {
   //   };
   //   syncFunc();
   // }, [reload]);
+
+  // useEffect(() => {
+
+  // },[])
 
   useEffect(() => {
     //cargamos todos los appointments
@@ -106,7 +111,7 @@ const ClientDashboard = () => {
   };
 
   return (
-    <div className="w-full h-screen">
+    <div className="relative w-full h-screen">
       <div className="flex flex-col justify-center items-center w-full">
         <h1 className="text-2xl font-black mt-10 mb-5">PANEL DE CITAS</h1>
         {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
@@ -128,8 +133,7 @@ const ClientDashboard = () => {
                 <>
                   <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
                     <div className="flex flex-row mb-2">
-                      <p>
-                        Cita #{index + 1} -{" "}
+                      <p className="mb-5">
                         {formatDate(appointment.selectedDate)} a las{" "}
                         {appointment.selectedTime} <br /> (duración de{" "}
                         {formatDuration(appointment.totalDurationOfAppointment)}
@@ -167,17 +171,23 @@ const ClientDashboard = () => {
                     >
                       Dejar Anticipo
                     </button> */}
-                    <PaymentComponent
-                      appointmentId={appointment.id}
-                      classNames="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
-                    />
+                    {appointment.state === "pagado" ? (
+                      <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
+                        Cita Confirmada
+                      </p>
+                    ) : (
+                      <PaymentComponent
+                        appointmentId={appointment.id}
+                        classNames="py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5"
+                      />
+                    )}
 
                     <button
-                      className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute bottom-0 right-[3%]"
+                      className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute -top-7  -left-4"
                       onClick={() => {
                         const userConfirm = confirm(
                           //aqui depende de si tiene anticipo o no pues mandar distintos alerts
-                          "¿Seguro que desea eliminar esta cita? Una vez dejado el anticipo, no se puede recuperar"
+                          "¿Está usted segura que desea eliminar esta cita? Una vez dejado el anticipo, no se puede recuperar"
                         );
                         if (userConfirm) {
                           cancelAppointment(appointment.id);
@@ -200,6 +210,29 @@ const ClientDashboard = () => {
           </button>
         </div>
       </div>
+      {!bannerShown && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
+            <p className="mb-5">
+              Estimada clienta, te recordamos que el tiempo máximo para realizar
+              el anticipo de tu cita es de 12 horas a partir de su creación. En
+              caso de no hacerlo, la cita se anulará en el sistema
+              automáticamente. <br />
+              <br />
+              Esto con el fin de respetar el tiempo y espacio de todos. <br />
+              Agradecemos mucho tu comprensión y preferencia.
+            </p>
+            <button
+              className="bg-white text-blue px-2 py-1 rounded-md ml-2"
+              onClick={() => {
+                setBannerShown(true);
+              }}
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

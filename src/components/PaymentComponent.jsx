@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { findAppointmentById } from "../../firebaseFunctions";
+import { set } from "firebase/database";
 
 const PaymentComponent = ({ classNames, appointmentId }) => {
+  const [loading, setLoading] = useState(false);
+
   const handlePayment = async () => {
+    setLoading(true);
     const appointment = await findAppointmentById(appointmentId);
     let amount = 10; // sample value
     let description = "Anticipo de cita. "; // sample value
@@ -50,12 +54,13 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
     if (data.init_point) {
       window.open(data.init_point, "_blank");
     }
+    setLoading(false);
   };
 
   return (
     <div>
       <button className={classNames} onClick={handlePayment}>
-        Dejar Anticipo
+        {loading ? "Cargando..." : "Dar Anticipo"}
       </button>
     </div>
   );
