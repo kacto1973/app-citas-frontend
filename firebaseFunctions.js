@@ -184,6 +184,7 @@ export const addAppointment = async (
       totalDurationOfAppointment,
       id: newAppointmentsRef.key,
       cellphone: localStorage.getItem("cellphone"),
+      state: "no pagado",
     };
 
     await set(newAppointmentsRef, appointmentObject);

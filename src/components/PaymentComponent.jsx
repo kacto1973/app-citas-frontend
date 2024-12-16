@@ -3,18 +3,33 @@ import { findAppointmentById } from "../../firebaseFunctions";
 
 const PaymentComponent = ({ classNames, appointmentId }) => {
   const handlePayment = async () => {
-    const appointment = await findAppointmentById();
+    const appointment = await findAppointmentById(appointmentId);
     let amount = 10; // sample value
-    let description = "items list"; // sample value
+    let description = "Anticipo de cita. "; // sample value
+    let containsPackage = false;
     if (appointment) {
-      amount = Math.ceil(appointment.totalCost / 4);
-
       //generamos una descripcion
       if (appointment.servicesCart) {
         const services = appointment.servicesCart;
+        for (const service of services) {
+          description += `${service.name}. `;
+          if (service.name.toLowerCase().includes("paquete")) {
+            containsPackage = true;
+          }
+        }
       }
       if (appointment.extraServicesCart) {
         const extraServices = appointment.extraServicesCart;
+        for (const extraService of extraServices) {
+          description += `${extraService.name}. `;
+        }
+      }
+      if (containsPackage) {
+        amount = Math.ceil(appointment.totalCost / 2);
+      } else if (appointment.totalCost >= 1000) {
+        amount = 500;
+      } else {
+        amount = Math.ceil(appointment.totalCost / 2);
       }
     }
 
@@ -26,6 +41,7 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
       body: JSON.stringify({
         amount: amount,
         description: description,
+        external_reference: appointmentId,
       }),
     });
 
