@@ -40,9 +40,12 @@ const ClientDashboard = () => {
   //   syncFunc();
   // }, [reload]);
 
-  // useEffect(() => {
-
-  // },[])
+  useEffect(() => {
+    const bannerShown = localStorage.getItem("bannerShown");
+    if (bannerShown) {
+      setBannerShown(true);
+    }
+  }, []);
 
   useEffect(() => {
     //cargamos todos los appointments
@@ -226,6 +229,7 @@ const ClientDashboard = () => {
               className="bg-white text-blue px-2 py-1 rounded-md ml-2"
               onClick={() => {
                 setBannerShown(true);
+                localStorage.setItem("bannerShown", true);
               }}
             >
               Entendido

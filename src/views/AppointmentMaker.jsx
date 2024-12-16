@@ -787,8 +787,7 @@ const AppointmentMaker = () => {
               );
               if (success) {
                 alert(
-                  "Cita agendada con éxito, usted recibirá un recordatorio previo a su cita en su whatsapp 😊. También puede consultar " +
-                    "sus citas activas en el menú principal"
+                  "Cita creada con éxito, para confirmarla es importante que realice su depósito antes de las XX:XX horas de mañana. Puede hacer esto en el menú principal, gracias 😊."
                 );
                 navigate("/clientdashboard");
               } else {
