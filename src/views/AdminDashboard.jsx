@@ -2,36 +2,36 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import {
-  cleanseRestDays,
+  //cleanseRestDays,
   getAllRestDays,
-  cleanseAppointments,
+  //cleanseAppointments,
   getAppointments,
 } from "../../firebaseFunctions";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const asyncFunct = async () => {
-      //limpiar restdays que ya pasaron
-      const restDays = await getAllRestDays();
-      if (restDays) {
-        const done = await cleanseRestDays(restDays);
-        if (done) {
-          console.log("restdays limpiados!");
-        }
-      }
+  // useEffect(() => {
+  //   const asyncFunct = async () => {
+  //     //limpiar restdays que ya pasaron
+  //     const restDays = await getAllRestDays();
+  //     if (restDays) {
+  //       const done = await cleanseRestDays(restDays);
+  //       if (done) {
+  //         console.log("restdays limpiados!");
+  //       }
+  //     }
 
-      //limpiar appointments que ya pasaron
+  //     //limpiar appointments que ya pasaron
 
-      const done = await cleanseAppointments();
-      if (done) {
-        console.log("appointments limpiados!");
-      }
-    };
+  //     const done = await cleanseAppointments();
+  //     if (done) {
+  //       console.log("appointments limpiados!");
+  //     }
+  //   };
 
-    asyncFunct();
-  }, []);
+  //   asyncFunct();
+  // }, []);
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-center items-center">

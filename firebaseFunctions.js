@@ -28,30 +28,30 @@ export const findAppointmentById = async (appointmentId) => {
   }
 };
 
-export const cleanseRestDays = async (fetchedRestDaysArray) => {
-  try {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1); // Restar un día
-    const currentDate = yesterday.toISOString().split("T")[0]; // Convertir a ISO y obtener solo la fecha
+// export const cleanseRestDays = async (fetchedRestDaysArray) => {
+//   try {
+//     const yesterday = new Date();
+//     yesterday.setDate(yesterday.getDate() - 1); // Restar un día
+//     const currentDate = yesterday.toISOString().split("T")[0]; // Convertir a ISO y obtener solo la fecha
 
-    let restDaysUpdated = fetchedRestDaysArray.filter(
-      (restday) => currentDate < restday
-    );
-    console.log("restdays updated ", restDaysUpdated);
-    const restdaysRef = ref(database, "restdays");
+//     let restDaysUpdated = fetchedRestDaysArray.filter(
+//       (restday) => currentDate < restday
+//     );
+//     console.log("restdays updated ", restDaysUpdated);
+//     const restdaysRef = ref(database, "restdays");
 
-    await remove(restdaysRef);
+//     await remove(restdaysRef);
 
-    for (const day of restDaysUpdated) {
-      await push(restdaysRef, day);
-    }
+//     for (const day of restDaysUpdated) {
+//       await push(restdaysRef, day);
+//     }
 
-    return true;
-  } catch (error) {
-    console.error("error al limpiar restdays " + error.message);
-    return false;
-  }
-};
+//     return true;
+//   } catch (error) {
+//     console.error("error al limpiar restdays " + error.message);
+//     return false;
+//   }
+// };
 
 export const getAllRestDays = async () => {
   try {
@@ -185,6 +185,10 @@ export const addAppointment = async (
       id: newAppointmentsRef.key,
       cellphone: localStorage.getItem("cellphone"),
       state: "no pagado",
+      createdAt: new Date().toISOString(), // Fecha y hora actual
+      expiresAt: new Date(
+        new Date().setHours(new Date().getHours() + 12)
+      ).toISOString(),
     };
 
     await set(newAppointmentsRef, appointmentObject);
@@ -407,32 +411,32 @@ export const getAllClients = async () => {
   }
 };
 
-export const cleanseAppointments = async () => {
-  try {
-    const appointmentsArray = await getAppointments();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const sevenDaysAgoFormatted = sevenDaysAgo.toISOString().split("T")[0];
+// export const cleanseAppointments = async () => {
+//   try {
+//     const appointmentsArray = await getAppointments();
+//     const sevenDaysAgo = new Date();
+//     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+//     const sevenDaysAgoFormatted = sevenDaysAgo.toISOString().split("T")[0];
 
-    const filteredAppointments = appointmentsArray.filter(
-      (appointment) => appointment.selectedDate > sevenDaysAgoFormatted
-    );
+//     const filteredAppointments = appointmentsArray.filter(
+//       (appointment) => appointment.selectedDate > sevenDaysAgoFormatted
+//     );
 
-    //eliminar el nodo entero para nomas agregar las filtradas posteriormente
-    await remove(ref(database, "activeAppointments"));
+//     //eliminar el nodo entero para nomas agregar las filtradas posteriormente
+//     await remove(ref(database, "activeAppointments"));
 
-    // Actualizar citas activas
-    for (const appointment of filteredAppointments) {
-      await set(
-        ref(database, `activeAppointments/${appointment.id}`),
-        appointment
-      );
-    }
+//     // Actualizar citas activas
+//     for (const appointment of filteredAppointments) {
+//       await set(
+//         ref(database, `activeAppointments/${appointment.id}`),
+//         appointment
+//       );
+//     }
 
-    console.log("Citas limpiadas correctamente.");
-    return true;
-  } catch (error) {
-    console.error("No se pudieron limpiar las citas: " + error.message);
-    return false;
-  }
-};
+//     console.log("Citas limpiadas correctamente.");
+//     return true;
+//   } catch (error) {
+//     console.error("No se pudieron limpiar las citas: " + error.message);
+//     return false;
+//   }
+// };

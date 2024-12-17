@@ -221,6 +221,15 @@ const AppointmentMaker = () => {
 
   //funciones
 
+  const formatTime = (timeInISOString) => {
+    const dateObj = new Date(timeInISOString);
+    const time = dateObj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return time;
+  };
+
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Agregar ceros al mes si es necesario
@@ -789,8 +798,14 @@ const AppointmentMaker = () => {
                 totalDurationOfAppointment
               );
               if (success) {
+                const expiresAt = new Date(
+                  new Date().setHours(new Date().getHours() + 12)
+                ).toISOString();
+
+                const formattedExpiration = formatTime(expiresAt);
+
                 alert(
-                  "Cita creada con éxito, para confirmarla es importante que realice su depósito antes de las XX:XX horas de mañana. Puede hacer esto en el menú principal, gracias 😊."
+                  `Cita creada con éxito, para confirmarla es importante que realice su depósito dentro de las próximas 12 horas (antes de las ${formattedExpiration} horas), de lo contrario esta se cancelará. Puede hacer esto en el menú principal, gracias 😊.`
                 );
                 navigate("/clientdashboard");
               } else {

@@ -75,8 +75,13 @@ const ClientDashboard = () => {
 
   //functions
 
-  const downPayment = () => {
-    //logica de pago
+  const formatTime = (timeInISOString) => {
+    const dateObj = new Date(timeInISOString);
+    const time = dateObj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return time;
   };
 
   function formatDuration(durationInMinutes) {
@@ -135,10 +140,16 @@ const ClientDashboard = () => {
               .map((appointment, index) => (
                 <>
                   <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+                    <p className="mb-4 text-white bg-blue rounded-md p-3">
+                      Le recordamos hacer su anticipo antes que den las{" "}
+                      {formatTime(appointment.expiresAt)} para confirmar su
+                      cita, de lo contrario no podremos atenderle
+                    </p>
                     <div className="flex flex-row mb-2">
                       <p className="mb-5">
-                        {formatDate(appointment.selectedDate)} a las{" "}
-                        {appointment.selectedTime} <br /> (duración de{" "}
+                        Su cita será el día:{" "}
+                        {formatDate(appointment.selectedDate)}
+                        <br /> a las {appointment.selectedTime} (duración de{" "}
                         {formatDuration(appointment.totalDurationOfAppointment)}
                         )
                       </p>
