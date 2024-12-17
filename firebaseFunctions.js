@@ -410,12 +410,12 @@ export const getAllClients = async () => {
 export const cleanseAppointments = async () => {
   try {
     const appointmentsArray = await getAppointments();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayFormatted = yesterday.toISOString().split("T")[0];
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoFormatted = sevenDaysAgo.toISOString().split("T")[0];
 
     const filteredAppointments = appointmentsArray.filter(
-      (appointment) => appointment.selectedDate > yesterdayFormatted
+      (appointment) => appointment.selectedDate > sevenDaysAgoFormatted
     );
 
     //eliminar el nodo entero para nomas agregar las filtradas posteriormente
