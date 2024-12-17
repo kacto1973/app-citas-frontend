@@ -414,13 +414,9 @@ export const cleanseAppointments = async () => {
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayFormatted = yesterday.toISOString().split("T")[0];
 
-    const filteredAppointments = appointmentsArray.filter((appointment) => {
-      if (appointment.selectedDate <= yesterdayFormatted) {
-        return false;
-      } else {
-        return true;
-      }
-    });
+    const filteredAppointments = appointmentsArray.filter(
+      (appointment) => appointment.selectedDate > yesterdayFormatted
+    );
 
     //eliminar el nodo entero para nomas agregar las filtradas posteriormente
     await remove(ref(database, "activeAppointments"));

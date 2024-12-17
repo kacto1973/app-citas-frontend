@@ -131,6 +131,7 @@ const AppointmentMaker = () => {
     const fetchAppointments = async () => {
       //const appointments = await getAppointments();
       const appointments = await getPaidAppointments();
+      console.log("appointments cargadosssm  ", appointments);
       if (appointments) {
         //console.log(appointments);
         setAppointmentsArray(appointments);
