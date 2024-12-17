@@ -5,6 +5,7 @@ import {
   getServices,
   getExtraServices,
   getAppointments,
+  getPaidAppointments,
   addAppointment,
   getAllRestDays,
 } from "../../firebaseFunctions";
@@ -128,7 +129,8 @@ const AppointmentMaker = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const appointments = await getAppointments();
+      //const appointments = await getAppointments();
+      const appointments = await getPaidAppointments();
       if (appointments) {
         //console.log(appointments);
         setAppointmentsArray(appointments);
@@ -317,7 +319,7 @@ const AppointmentMaker = () => {
   const handleTileDisabled = ({ date, view }) => {
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
       isRestDay(date)
     ) {
       return true;
@@ -329,7 +331,7 @@ const AppointmentMaker = () => {
     if (
       //inhabilitamos si es domingo o si ya transcurrio ese dia
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
       isRestDay(date)
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";

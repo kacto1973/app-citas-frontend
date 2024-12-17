@@ -2,7 +2,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
-import { getAppointments, getAllRestDays } from "../../firebaseFunctions";
+import {
+  getAppointments,
+  getAllRestDays,
+  getPaidAppointments,
+} from "../../firebaseFunctions";
 
 const Appointments = () => {
   const navigate = useNavigate();
@@ -34,7 +38,9 @@ const Appointments = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const appointments = await getAppointments();
+      //const appointments = await getAppointments();
+      const appointments = await getPaidAppointments();
+
       if (appointments) {
         setAppointmentsArray(appointments);
         setAppointmentsLoaded(true);

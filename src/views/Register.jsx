@@ -101,6 +101,18 @@ const Register = () => {
               required
               className="w-[220px] border border-black rounded-md mt-6  mb-2 py-1.5 text-center"
             />
+            <div className="w-[250px] text-xs my-3">
+              <label>
+                <input
+                  className=" border border-black rounded-md mt-6  mb-2 py-1.5 text-center"
+                  type="checkbox"
+                  required
+                />
+                Acepto recibir recordatorios de mis citas y confirmaciones de
+                pago por WhatsApp
+              </label>
+            </div>
+
             <div className="flex w-full justify-evenly">
               <button
                 onClick={() => {

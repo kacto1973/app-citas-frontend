@@ -208,7 +208,8 @@ export const registerClient = async (
       username: username.toLowerCase(),
       password: password.toLowerCase(),
       cellphone,
-      activeAppointments: [], // inicialmente no se refleja en FB pero esta presente
+      activeAppointments: [], // inicialmente no se refleja en FB pero esta presente,
+      consent: true,
     };
 
     //creamos referencia a la coleccion clients en la database
@@ -301,6 +302,30 @@ export const getAppointments = async () => {
   }
 };
 
+export const getPaidAppointments = async () => {
+  try {
+    const appointmentsRef = ref(database, "activeAppointments");
+
+    const appointmentsArraySnap = await get(appointmentsRef);
+
+    if (appointmentsArraySnap.exists()) {
+      const array = Object.values(appointmentsArraySnap.val());
+
+      const paidAppointments = array.filter(
+        (appointment) => appointment.state === "pagado"
+      );
+
+      return paidAppointments;
+    } else {
+      console.log("No hay citas activas");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error ocurrido al fetchear appointments: " + error.message);
+    return false;
+  }
+};
+
 export const moveData = async () => {
   try {
     const oldRef = ref(database, "menu/activeAppointments"); // Ruta original
@@ -378,6 +403,40 @@ export const getAllClients = async () => {
     }
   } catch (error) {
     console.error("error al fetchear todos los clientes " + error.message);
+    return false;
+  }
+};
+
+export const cleanseAppointments = async () => {
+  try {
+    const appointmentsArray = await getAppointments();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayFormatted = yesterday.toISOString().split("T")[0];
+
+    const filteredAppointments = appointmentsArray.filter((appointment) => {
+      if (appointment.selectedDate <= yesterdayFormatted) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    //eliminar el nodo entero para nomas agregar las filtradas posteriormente
+    await remove(ref(database, "activeAppointments"));
+
+    // Actualizar citas activas
+    for (const appointment of filteredAppointments) {
+      await set(
+        ref(database, `activeAppointments/${appointment.id}`),
+        appointment
+      );
+    }
+
+    console.log("Citas limpiadas correctamente.");
+    return true;
+  } catch (error) {
+    console.error("No se pudieron limpiar las citas: " + error.message);
     return false;
   }
 };

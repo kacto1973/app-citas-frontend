@@ -5,6 +5,7 @@ import {
   getAppointments,
   addRestDays,
   getAllRestDays,
+  getPaidAppointments,
   removeRestDays,
 } from "../../firebaseFunctions";
 
@@ -30,7 +31,8 @@ const RestDays = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      const appointments = await getAppointments();
+      //const appointments = await getAppointments();
+      const appointments = await getPaidAppointments();
       if (appointments) {
         setAppointmentsArray(appointments);
         setAppointmentsLoaded(true);
