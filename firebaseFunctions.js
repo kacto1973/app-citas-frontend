@@ -213,7 +213,7 @@ export const registerClient = async (
       password: password.toLowerCase(),
       cellphone,
       activeAppointments: [], // inicialmente no se refleja en FB pero esta presente,
-      consent: true,
+      //consent: true,
     };
 
     //creamos referencia a la coleccion clients en la database

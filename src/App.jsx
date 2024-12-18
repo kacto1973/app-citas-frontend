@@ -17,6 +17,8 @@ import Failure from "./views/Failure";
 import Pending from "./views/Pending";
 import Success from "./views/Success";
 //import Menu from "./views/Menu";
+import RecentPayments from "./views/RecentPayments";
+import Services from "./views/Services";
 
 const App = () => {
   const clientAuthenticated = localStorage.getItem("clientAuthenticated");
@@ -108,6 +110,22 @@ const App = () => {
           }
         />
         //
+        <Route
+          path="/recentpayments"
+          element={
+            adminAuthenticated ? (
+              <RecentPayments />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/services"
+          element={
+            adminAuthenticated ? <Services /> : <Navigate to="/" replace />
+          }
+        />
       </Routes>
     </Router>
   );
