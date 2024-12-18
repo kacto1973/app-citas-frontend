@@ -389,7 +389,8 @@ export const deleteService = async (service) => {
 export const addService = async (service, serviceOldName) => {
   try {
     if (serviceOldName) {
-      await set(ref(database, `menu/services/${serviceOldName}`), service);
+      await remove(ref(database, `menu/services/${serviceOldName}`));
+      await set(ref(database, `menu/services/${service.name}`), service);
     } else {
       await set(ref(database, `menu/services/${service.name}`), service);
     }

@@ -166,6 +166,7 @@ const Services = () => {
     setEditing(true);
     setServiceOldName(service.name);
     if (service.hairLength) {
+      setHairLengthNeeded(true);
       setShortDuration(service.durationShort);
       setMediumDuration(service.durationMedium);
       setLongDuration(service.durationLong);
@@ -173,6 +174,7 @@ const Services = () => {
       setMediumPrice(service.priceMedium);
       setLongPrice(service.priceLong);
     } else {
+      setHairLengthNeeded(false);
       setDuration(service.duration);
       setPrice(service.price);
     }
@@ -181,6 +183,74 @@ const Services = () => {
   };
 
   const saveEdit = () => {
+    if (!name || !restTime) {
+      alert("Por favor llena todos los campos");
+      return;
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        !shortDuration ||
+        !mediumDuration ||
+        !longDuration ||
+        !shortPrice ||
+        !mediumPrice ||
+        !longPrice
+      ) {
+        alert("Por favor llena todos los campos");
+        return;
+      }
+    } else {
+      if (!duration || !price) {
+        alert("Por favor llena todos los campos");
+        return;
+      }
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        shortDuration <= 0 ||
+        mediumDuration <= 0 ||
+        longDuration <= 0 ||
+        shortPrice <= 0 ||
+        mediumPrice <= 0 ||
+        longPrice <= 0
+      ) {
+        alert(
+          "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+        );
+        return;
+      }
+    } else {
+      if (duration <= 0 || price <= 0) {
+        alert(
+          "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+        );
+        return;
+      }
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        restTime % 15 !== 0 ||
+        shortDuration % 15 !== 0 ||
+        mediumDuration % 15 !== 0 ||
+        longDuration % 15 !== 0
+      ) {
+        alert(
+          "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+        );
+        return;
+      }
+    } else {
+      if (restTime % 15 !== 0 || duration % 15 !== 0) {
+        alert(
+          "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+        );
+        return;
+      }
+    }
+
     //vamos a guardar los cambios realizados en los inputs y a escribirlos en firebase
     const asyncFunct = async () => {
       console.log("guardando datos editados del servicio");
@@ -237,7 +307,7 @@ const Services = () => {
             required
           />
           <input
-            type="text"
+            type="number"
             className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
             placeholder="Tiempo Descanso"
             value={restTime}
@@ -289,7 +359,7 @@ const Services = () => {
               <div className="flex flex-col items-center justify-center mb-3 mx-3">
                 <h1 className="mb-3">Duraciones</h1>
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Corto"
                   value={shortDuration}
@@ -297,14 +367,14 @@ const Services = () => {
                   required
                 />
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Mediano"
                   value={mediumDuration}
                   onChange={(e) => setMediumDuration(e.target.value)}
                 />
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Largo"
                   value={longDuration}
@@ -314,21 +384,21 @@ const Services = () => {
               <div className="flex flex-col items-center justify-center mb-3 mx-3">
                 <h1 className="mb-3">Precios</h1>
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Corto"
                   value={shortPrice}
                   onChange={(e) => setShortPrice(e.target.value)}
                 />
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Mediano"
                   value={mediumPrice}
                   onChange={(e) => setMediumPrice(e.target.value)}
                 />
                 <input
-                  type="text"
+                  type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                   placeholder="Largo"
                   value={longPrice}
@@ -341,14 +411,14 @@ const Services = () => {
           <>
             <div className="flex w-full items-center justify-center mb-3">
               <input
-                type="text"
+                type="number"
                 className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                 placeholder="Duración"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
               />
               <input
-                type="text"
+                type="number"
                 className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
                 placeholder="Precio"
                 value={price}
@@ -451,7 +521,12 @@ const Services = () => {
                         </button>
                         <button
                           onClick={() => {
-                            handleDelete(service);
+                            const userConfirm = confirm(
+                              `¿Estás seguro de querer borrar: ${service.name}?`
+                            );
+                            if (userConfirm) {
+                              handleDelete(service);
+                            }
                           }}
                           className="px-2 py-1 rounded-md bg-red text-white m-3"
                         >
