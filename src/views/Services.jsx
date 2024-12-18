@@ -1,7 +1,12 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getServices, getExtraServices } from "../../firebaseFunctions";
+import {
+  getServices,
+  getExtraServices,
+  addService,
+  deleteService,
+} from "../../firebaseFunctions";
 
 const Services = () => {
   const [editing, setEditing] = useState(false);
@@ -23,6 +28,8 @@ const Services = () => {
 
   const [services, setServices] = useState([]);
   const [extraServices, setExtraServices] = useState([]);
+
+  const [serviceOldName, setServiceOldName] = useState("");
 
   // Función para manejar el cambio en los radio buttons
   const handleChange = (event) => {
@@ -55,11 +62,165 @@ const Services = () => {
   }, [services]);
 
   const handleAdd = () => {
-    console.log("Agregando servicio");
+    if (!name || !restTime) {
+      alert("Por favor llena todos los campos");
+      return;
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        !shortDuration ||
+        !mediumDuration ||
+        !longDuration ||
+        !shortPrice ||
+        !mediumPrice ||
+        !longPrice
+      ) {
+        alert("Por favor llena todos los campos");
+        return;
+      }
+    } else {
+      if (!duration || !price) {
+        alert("Por favor llena todos los campos");
+        return;
+      }
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        shortDuration <= 0 ||
+        mediumDuration <= 0 ||
+        longDuration <= 0 ||
+        shortPrice <= 0 ||
+        mediumPrice <= 0 ||
+        longPrice <= 0
+      ) {
+        alert(
+          "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+        );
+        return;
+      }
+    } else {
+      if (duration <= 0 || price <= 0) {
+        alert(
+          "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+        );
+        return;
+      }
+    }
+
+    if (hairLengthNeeded) {
+      if (
+        restTime % 15 !== 0 ||
+        shortDuration % 15 !== 0 ||
+        mediumDuration % 15 !== 0 ||
+        longDuration % 15 !== 0
+      ) {
+        alert(
+          "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+        );
+        return;
+      }
+    } else {
+      if (restTime % 15 !== 0 || duration % 15 !== 0) {
+        alert(
+          "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+        );
+        return;
+      }
+    }
+
+    const asyncFunct = async () => {
+      console.log("Agregando servicio");
+      if (hairLengthNeeded) {
+        const newService = {
+          name: name,
+          hairLength: hairLengthNeeded,
+          restTime: restTime,
+          durationShort: shortDuration,
+          durationMedium: mediumDuration,
+          durationLong: longDuration,
+          priceShort: shortPrice,
+          priceMedium: mediumPrice,
+          priceLong: longPrice,
+        };
+
+        await addService(newService);
+      } else {
+        const newService = {
+          name: name,
+          hairLength: hairLengthNeeded,
+          restTime: restTime,
+          duration: duration,
+          price: price,
+        };
+
+        await addService(newService);
+      }
+    };
+    asyncFunct();
   };
 
-  const handleEdit = () => {
-    console.log("Editando servicio");
+  const handleEdit = (service) => {
+    //vamos a cargar las variables en sus inputs para ahi si guardar lo que se requiera
+    setEditing(true);
+    setServiceOldName(service.name);
+    if (service.hairLength) {
+      setShortDuration(service.durationShort);
+      setMediumDuration(service.durationMedium);
+      setLongDuration(service.durationLong);
+      setShortPrice(service.priceShort);
+      setMediumPrice(service.priceMedium);
+      setLongPrice(service.priceLong);
+    } else {
+      setDuration(service.duration);
+      setPrice(service.price);
+    }
+    setName(service.name);
+    setRestTime(service.restTime);
+  };
+
+  const saveEdit = () => {
+    //vamos a guardar los cambios realizados en los inputs y a escribirlos en firebase
+    const asyncFunct = async () => {
+      console.log("guardando datos editados del servicio");
+      if (hairLengthNeeded) {
+        const newService = {
+          name: name,
+          hairLength: hairLengthNeeded,
+          restTime: restTime,
+          durationShort: shortDuration,
+          durationMedium: mediumDuration,
+          durationLong: longDuration,
+          priceShort: shortPrice,
+          priceMedium: mediumPrice,
+          priceLong: longPrice,
+        };
+
+        await addService(newService, serviceOldName);
+      } else {
+        const newService = {
+          name: name,
+          hairLength: hairLengthNeeded,
+          restTime: restTime,
+          duration: duration,
+          price: price,
+        };
+
+        await addService(newService, serviceOldName);
+      }
+    };
+    asyncFunct();
+  };
+
+  const handleDelete = (service) => {
+    console.log("Borrando servicio");
+
+    const asyncFunct = async () => {
+      await deleteService(service);
+    };
+
+    asyncFunct();
   };
 
   return (
@@ -200,7 +361,7 @@ const Services = () => {
       {editing ? (
         <button
           className="px-2 py-1 rounded-md my-5 bg-green text-white"
-          onClick={handleEdit}
+          onClick={saveEdit}
         >
           Guardar Editado
         </button>
@@ -280,10 +441,20 @@ const Services = () => {
                     )}
                     <td className="border">
                       <div className="flex justify-evenly">
-                        <button className="px-2 py-1 rounded-md bg-yellow text-white m-3">
+                        <button
+                          onClick={() => {
+                            handleEdit(service);
+                          }}
+                          className="px-2 py-1 rounded-md bg-yellow text-white m-3"
+                        >
                           Editar
                         </button>
-                        <button className="px-2 py-1 rounded-md bg-red text-white m-3">
+                        <button
+                          onClick={() => {
+                            handleDelete(service);
+                          }}
+                          className="px-2 py-1 rounded-md bg-red text-white m-3"
+                        >
                           Borrar
                         </button>
                       </div>

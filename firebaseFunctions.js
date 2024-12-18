@@ -373,6 +373,37 @@ export const getExtraServices = async () => {
   }
 };
 
+export const deleteService = async (service) => {
+  try {
+    await remove(ref(database, `menu/services/${service.name}`));
+
+    alert("Servicio eliminado con éxito");
+    window.location.reload();
+    return true;
+  } catch (error) {
+    console.error("Error al eliminar servicio: " + error.message);
+    return false;
+  }
+};
+
+export const addService = async (service, serviceOldName) => {
+  try {
+    if (serviceOldName) {
+      await set(ref(database, `menu/services/${serviceOldName}`), service);
+    } else {
+      await set(ref(database, `menu/services/${service.name}`), service);
+    }
+
+    alert("Servicio agregado o editado con éxito");
+    window.location.reload();
+
+    return true;
+  } catch (error) {
+    console.error("Error al agregar servicio: " + error.message);
+    return false;
+  }
+};
+
 export const getServices = async () => {
   try {
     //get Database reference
