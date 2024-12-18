@@ -17,6 +17,7 @@ import ForgotPassword from "./views/ForgotPassword";
 //import Menu from "./views/Menu";
 //import RecentPayments from "./views/RecentPayments";
 import Services from "./views/Services";
+import AppointmentsHistory from "./views/AppointmentsHistory";
 
 const App = () => {
   const clientAuthenticated = localStorage.getItem("clientAuthenticated");
@@ -92,6 +93,16 @@ const App = () => {
           path="/services"
           element={
             adminAuthenticated ? <Services /> : <Navigate to="/" replace />
+          }
+        />
+        <Route
+          path="/appointmentshistory"
+          element={
+            adminAuthenticated ? (
+              <AppointmentsHistory />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
       </Routes>

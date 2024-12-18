@@ -69,14 +69,14 @@ const AdminDashboard = () => {
         >
           Menú de Servicios
         </button>
-        {/* <button
+        <button
           className="px-2 py-1 rounded-md  mb-6  bg-blue text-white w-full"
           onClick={() => {
-            navigate("/recentpayments");
+            navigate("/appointmentshistory");
           }}
         >
-          Abonos Recientes
-        </button> */}
+          Historial de Citas
+        </button>
       </div>
     </div>
   );
