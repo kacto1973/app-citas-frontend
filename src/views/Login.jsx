@@ -81,16 +81,23 @@ const Login = () => {
             />
             <button
               type="submit"
-              className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[120px]"
+              className="px-2 py-1 rounded-md mt-4 mb-5 bg-blue text-white w-[120px]"
             >
               Iniciar Sesión
             </button>
+            <button
+              className="w-[120px] px-2 py-1 text-white bg-green rounded-md text-center  cursor-pointer"
+              onClick={handleRegister}
+            >
+              Regístrate
+            </button>
           </div>
+
           <p
-            className="text-blue w-full text-center my-5 underline cursor-pointer"
-            onClick={handleRegister}
+            className="text-blue w-full text-center my-6 underline cursor-pointer"
+            onClick={() => navigate("/forgotpassword")}
           >
-            ¿No tienes cuenta? Regístrate aquí
+            Olvidé mi contraseña
           </p>
         </form>
       </div>

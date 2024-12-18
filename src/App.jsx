@@ -13,11 +13,9 @@ import RestDays from "./views/RestDays";
 import Register from "./views/Register";
 import ClientDashboard from "./views/ClientDashboard";
 import AppointmentMaker from "./views/AppointmentMaker";
-import Failure from "./views/Failure";
-import Pending from "./views/Pending";
-import Success from "./views/Success";
+import ForgotPassword from "./views/ForgotPassword";
 //import Menu from "./views/Menu";
-import RecentPayments from "./views/RecentPayments";
+//import RecentPayments from "./views/RecentPayments";
 import Services from "./views/Services";
 
 const App = () => {
@@ -88,38 +86,8 @@ const App = () => {
             )
           }
         />
-        {/* <Route path="/menu" element={<Menu />} /> */}
-        <Route
-          path="/failure"
-          element={
-            clientAuthenticated ? <Failure /> : <Navigate to="/" replace />
-          }
-        />
-        //
-        <Route
-          path="/pending"
-          element={
-            clientAuthenticated ? <Pending /> : <Navigate to="/" replace />
-          }
-        />
-        //
-        <Route
-          path="/success"
-          element={
-            clientAuthenticated ? <Success /> : <Navigate to="/" replace />
-          }
-        />
-        //
-        <Route
-          path="/recentpayments"
-          element={
-            adminAuthenticated ? (
-              <RecentPayments />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+
         <Route
           path="/services"
           element={

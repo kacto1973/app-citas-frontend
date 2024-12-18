@@ -31,8 +31,8 @@ const RestDays = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      //const appointments = await getAppointments();
-      const appointments = await getPaidAppointments();
+      const appointments = await getAppointments();
+      //const appointments = await getPaidAppointments();
       if (appointments) {
         setAppointmentsArray(appointments);
         setAppointmentsLoaded(true);
@@ -84,9 +84,14 @@ const RestDays = () => {
   };
 
   const handleTileDisabled = ({ date }) => {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
     return (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1))
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
+      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
     );
   };
 
@@ -123,9 +128,14 @@ const RestDays = () => {
     }
 
     //si no checamos si es domingo o un dia pasado para mostrarlo inhabilitado
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1))
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
+      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
+      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }

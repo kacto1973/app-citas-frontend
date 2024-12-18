@@ -19,8 +19,8 @@ const Services = () => {
   const [name, setName] = useState("");
   const [extraName, setExtraName] = useState("");
 
-  const [restTime, setRestTime] = useState("");
-  const [extraRestTime, setExtraRestTime] = useState("");
+  const [restTime, setRestTime] = useState(0);
+  const [extraRestTime, setExtraRestTime] = useState(0);
 
   const [duration, setDuration] = useState("");
   const [extraDuration, setExtraDuration] = useState("");
@@ -74,7 +74,7 @@ const Services = () => {
   }, [services, extraServices]);
 
   const handleAdd = () => {
-    if (!name || !restTime) {
+    if (!name || restTime < 0 || restTime === "") {
       alert("Por favor llena todos los campos");
       return;
     }
@@ -148,13 +148,13 @@ const Services = () => {
         const newService = {
           name: name,
           hairLength: hairLengthNeeded,
-          restTime: restTime,
-          durationShort: shortDuration,
-          durationMedium: mediumDuration,
-          durationLong: longDuration,
-          priceShort: shortPrice,
-          priceMedium: mediumPrice,
-          priceLong: longPrice,
+          restTime: Number(restTime),
+          durationShort: Number(shortDuration),
+          durationMedium: Number(mediumDuration),
+          durationLong: Number(longDuration),
+          priceShort: Number(shortPrice),
+          priceMedium: Number(mediumPrice),
+          priceLong: Number(longPrice),
         };
 
         await addService(newService);
@@ -162,9 +162,9 @@ const Services = () => {
         const newService = {
           name: name,
           hairLength: hairLengthNeeded,
-          restTime: restTime,
-          duration: duration,
-          price: price,
+          restTime: Number(restTime),
+          duration: Number(duration),
+          price: Number(price),
         };
 
         await addService(newService);
@@ -195,7 +195,7 @@ const Services = () => {
   };
 
   const saveEdit = () => {
-    if (!name || !restTime) {
+    if (!name || restTime < 0 || restTime === "") {
       alert("Por favor llena todos los campos");
       return;
     }
@@ -270,13 +270,13 @@ const Services = () => {
         const newService = {
           name: name,
           hairLength: hairLengthNeeded,
-          restTime: restTime,
-          durationShort: shortDuration,
-          durationMedium: mediumDuration,
-          durationLong: longDuration,
-          priceShort: shortPrice,
-          priceMedium: mediumPrice,
-          priceLong: longPrice,
+          restTime: Number(restTime),
+          durationShort: Number(shortDuration),
+          durationMedium: Number(mediumDuration),
+          durationLong: Number(longDuration),
+          priceShort: Number(shortPrice),
+          priceMedium: Number(mediumPrice),
+          priceLong: Number(longPrice),
         };
 
         await addService(newService, serviceOldName);
@@ -284,9 +284,9 @@ const Services = () => {
         const newService = {
           name: name,
           hairLength: hairLengthNeeded,
-          restTime: restTime,
-          duration: duration,
-          price: price,
+          restTime: Number(restTime),
+          duration: Number(duration),
+          price: Number(price),
         };
 
         await addService(newService, serviceOldName);
@@ -308,7 +308,13 @@ const Services = () => {
   //////////////////////////////////////// Servicios Extra ////////////////////////////////////////
 
   const handleExtraAdd = () => {
-    if (!extraName || !extraRestTime || !extraDuration || !extraPrice) {
+    if (
+      !extraName ||
+      extraRestTime < 0 ||
+      extraRestTime === "" ||
+      !extraDuration ||
+      !extraPrice
+    ) {
       alert("Por favor llena todos los campos");
       return;
     }
@@ -331,9 +337,9 @@ const Services = () => {
       console.log("Agregando servicio extra");
       const newExtraService = {
         name: extraName,
-        restTime: extraRestTime,
-        duration: extraDuration,
-        price: extraPrice,
+        restTime: Number(extraRestTime),
+        duration: Number(extraDuration),
+        price: Number(extraPrice),
       };
 
       await addExtraService(newExtraService);
@@ -351,7 +357,13 @@ const Services = () => {
   };
 
   const saveExtraEdit = () => {
-    if (!extraName || !extraRestTime || !extraDuration || !extraPrice) {
+    if (
+      !extraName ||
+      extraRestTime < 0 ||
+      extraRestTime === "" ||
+      !extraDuration ||
+      !extraPrice
+    ) {
       alert("Por favor llena todos los campos");
       return;
     }
@@ -374,9 +386,9 @@ const Services = () => {
       console.log("guardando datos editados del servicio extra");
       const newExtraService = {
         name: extraName,
-        restTime: extraRestTime,
-        duration: extraDuration,
-        price: extraPrice,
+        restTime: Number(extraRestTime),
+        duration: Number(extraDuration),
+        price: Number(extraPrice),
       };
 
       await addExtraService(newExtraService, extraServiceOldName);

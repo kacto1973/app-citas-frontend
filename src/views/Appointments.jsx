@@ -38,8 +38,8 @@ const Appointments = () => {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      //const appointments = await getAppointments();
-      const appointments = await getPaidAppointments();
+      const appointments = await getAppointments();
+      //const appointments = await getPaidAppointments();
 
       if (appointments) {
         setAppointmentsArray(appointments);
@@ -275,6 +275,15 @@ const Appointments = () => {
                           </p>
                         )
                       )}
+                    {appointment.state === "pagado" ? (
+                      <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
+                        Cita Confirmada
+                      </p>
+                    ) : (
+                      <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
+                        Sin Anticipo
+                      </button>
+                    )}
                   </div>
                 </>
               ))

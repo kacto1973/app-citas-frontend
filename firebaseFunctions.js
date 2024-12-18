@@ -200,6 +200,36 @@ export const addAppointment = async (
   }
 };
 
+export const findClientByPhoneNumber = async (phoneNumber) => {
+  try {
+    const clientsRef = ref(database, "clients");
+
+    const clientsSnap = await get(clientsRef);
+
+    if (clientsSnap.exists()) {
+      const clientsArray = Object.values(clientsSnap.val());
+      const foundClient = clientsArray.find(
+        (client) => client.cellphone === phoneNumber
+      );
+
+      if (foundClient) {
+        console.log("Cliente encontrado: ", foundClient);
+        return foundClient; // Retorna el objeto completo.
+      }
+    }
+
+    console.log(
+      "No se encontró un cliente con ese número de teléfono: " + phoneNumber
+    );
+    return false;
+  } catch (error) {
+    console.error(
+      "Error al fetchear cliente por número de teléfono: " + error.message
+    );
+    return false;
+  }
+};
+
 export const registerClient = async (
   fullName,
   cellphone,
