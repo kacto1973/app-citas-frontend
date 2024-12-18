@@ -140,11 +140,13 @@ const ClientDashboard = () => {
               .map((appointment, index) => (
                 <>
                   <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
-                    <p className="mb-4 text-white bg-blue rounded-md p-3">
-                      Le recordamos hacer su anticipo antes que den las{" "}
-                      {formatTime(appointment.expiresAt)} para confirmar su
-                      cita, de lo contrario no podremos atenderle
-                    </p>
+                    {appointment.state !== "pagado" && (
+                      <p className="mb-4 text-white bg-blue rounded-md p-3">
+                        Le recordamos hacer su anticipo antes que den las{" "}
+                        {formatTime(appointment.expiresAt)} para confirmar su
+                        cita, de lo contrario no podremos atenderle
+                      </p>
+                    )}
                     <div className="flex flex-row mb-2">
                       <p className="mb-5">
                         Su cita será el día:{" "}
