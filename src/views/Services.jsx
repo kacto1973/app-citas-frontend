@@ -6,17 +6,27 @@ import {
   getExtraServices,
   addService,
   deleteService,
+  addExtraService,
+  deleteExtraService,
 } from "../../firebaseFunctions";
 
 const Services = () => {
   const [editing, setEditing] = useState(false);
+  const [extraEditing, setExtraEditing] = useState(false);
 
   const [hairLengthNeeded, setHairLengthNeeded] = useState(false);
+
   const [name, setName] = useState("");
+  const [extraName, setExtraName] = useState("");
+
   const [restTime, setRestTime] = useState("");
+  const [extraRestTime, setExtraRestTime] = useState("");
 
   const [duration, setDuration] = useState("");
+  const [extraDuration, setExtraDuration] = useState("");
+
   const [price, setPrice] = useState("");
+  const [extraPrice, setExtraPrice] = useState("");
 
   const [shortDuration, setShortDuration] = useState(""); // Duración corta
   const [mediumDuration, setMediumDuration] = useState(""); // Duración media
@@ -30,6 +40,7 @@ const Services = () => {
   const [extraServices, setExtraServices] = useState([]);
 
   const [serviceOldName, setServiceOldName] = useState("");
+  const [extraServiceOldName, setExtraServiceOldName] = useState("");
 
   // Función para manejar el cambio en los radio buttons
   const handleChange = (event) => {
@@ -59,7 +70,8 @@ const Services = () => {
 
   useEffect(() => {
     console.log(services);
-  }, [services]);
+    console.log(extraServices);
+  }, [services, extraServices]);
 
   const handleAdd = () => {
     if (!name || !restTime) {
@@ -288,6 +300,95 @@ const Services = () => {
 
     const asyncFunct = async () => {
       await deleteService(service);
+    };
+
+    asyncFunct();
+  };
+
+  //////////////////////////////////////// Servicios Extra ////////////////////////////////////////
+
+  const handleExtraAdd = () => {
+    if (!extraName || !extraRestTime || !extraDuration || !extraPrice) {
+      alert("Por favor llena todos los campos");
+      return;
+    }
+
+    if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
+      alert(
+        "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+      );
+      return;
+    }
+
+    if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
+      alert(
+        "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+      );
+      return;
+    }
+
+    const asyncFunct = async () => {
+      console.log("Agregando servicio extra");
+      const newExtraService = {
+        name: extraName,
+        restTime: extraRestTime,
+        duration: extraDuration,
+        price: extraPrice,
+      };
+
+      await addExtraService(newExtraService);
+    };
+    asyncFunct();
+  };
+
+  const handleExtraEdit = (extraService) => {
+    setExtraEditing(true);
+    setExtraServiceOldName(extraService.name);
+    setExtraName(extraService.name);
+    setExtraRestTime(extraService.restTime);
+    setExtraDuration(extraService.duration);
+    setExtraPrice(extraService.price);
+  };
+
+  const saveExtraEdit = () => {
+    if (!extraName || !extraRestTime || !extraDuration || !extraPrice) {
+      alert("Por favor llena todos los campos");
+      return;
+    }
+
+    if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
+      alert(
+        "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+      );
+      return;
+    }
+
+    if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
+      alert(
+        "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+      );
+      return;
+    }
+
+    const asyncFunct = async () => {
+      console.log("guardando datos editados del servicio extra");
+      const newExtraService = {
+        name: extraName,
+        restTime: extraRestTime,
+        duration: extraDuration,
+        price: extraPrice,
+      };
+
+      await addExtraService(newExtraService, extraServiceOldName);
+    };
+    asyncFunct();
+  };
+
+  const handleExtraDelete = (extraService) => {
+    console.log("Borrando servicio extra");
+
+    const asyncFunct = async () => {
+      await deleteExtraService(extraService);
     };
 
     asyncFunct();
@@ -543,55 +644,161 @@ const Services = () => {
       <h1 className="text-2xl font-black mt-10 mb-5">
         Menú de Servicios Extras
       </h1>
+      {/*<div className="w-full flex flex-col items-center justify-center">
+        <div className="flex w-full items-center justify-center">
+          <input
+            type="text"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Tiempo Descanso"
+            value={restTime}
+            onChange={(e) => setRestTime(e.target.value)}
+            required
+          />
+        </div>
+
+        <form>
+          <div className="my-4 flex flex-col items-center justify-center">
+            <label className="block text-sm font-medium text-gray-700">
+              ¿Requiere saber longitud de cabello?
+            </label>
+            <div className="flex items-center space-x-6">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  id="si"
+                  name="respuesta"
+                  value="si"
+                  checked={hairLengthNeeded === true}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Sí
+              </label>
+
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  id="no"
+                  name="respuesta"
+                  value="no"
+                  checked={hairLengthNeeded === false} // Si el estado es false, se selecciona "No"
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                No
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>{" "} */}
+      <div className="w-full flex flex-col items-center justify-center">
+        <div className="flex w-full items-center justify-center mb-3">
+          <input
+            type="text"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Nombre"
+            value={extraName}
+            onChange={(e) => setExtraName(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Tiempo Descanso"
+            value={extraRestTime}
+            onChange={(e) => setExtraRestTime(e.target.value)}
+            required
+          />
+        </div>
+        <div className="flex w-full items-center justify-center mb-3">
+          <input
+            type="number"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Duración"
+            value={extraDuration}
+            onChange={(e) => setExtraDuration(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            className="mx-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
+            placeholder="Precio"
+            value={extraPrice}
+            onChange={(e) => setExtraPrice(e.target.value)}
+            required
+          />
+        </div>
+      </div>
+      {extraEditing ? (
+        <button
+          className="px-2 py-1 rounded-md my-5 bg-green text-white"
+          onClick={saveExtraEdit}
+        >
+          Guardar Editado Extra
+        </button>
+      ) : (
+        <button
+          className="px-2 py-1 rounded-md my-5 bg-blue text-white"
+          onClick={handleExtraAdd}
+        >
+          Agregar Servicio Extra
+        </button>
+      )}
       <div className="overflow-x-auto w-[90%] rounded-md mb-10">
         <table className="min-w-full table-auto border-collapse">
           <thead className="bg-gray-200">
             <tr>
-              <th className="px-4 py-2 border text-left">Color</th>
-              <th className="px-4 py-2 border text-left">Duration Long</th>
-              <th className="px-4 py-2 border text-left">Duration Medium</th>
-              <th className="px-4 py-2 border text-left">Duration Short</th>
-              <th className="px-4 py-2 border text-left">Hair Length</th>
-              <th className="px-4 py-2 border text-left">Price Long</th>
-              <th className="px-4 py-2 border text-left">Price Medium</th>
-              <th className="px-4 py-2 border text-left">Price Short</th>
-              <th className="px-4 py-2 border text-left">Rest Time</th>
+              <th className="px-4 py-2 border text-left">Nombre</th>
+              <th className="px-4 py-2 border text-left">Tiempo Descanso</th>
+              <th className="px-4 py-2 border text-left">Duración</th>
+              <th className="px-4 py-2 border text-left">Precio</th>
+              <th className="px-4 py-2 border text-left">Acción</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white">
-              <td className="px-4 py-2 border">Rojo</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">True</td>
-              <td className="px-4 py-2 border">2500</td>
-              <td className="px-4 py-2 border">2000</td>
-              <td className="px-4 py-2 border">1500</td>
-              <td className="px-4 py-2 border">30</td>
-            </tr>
-            <tr className="bg-white">
-              <td className="px-4 py-2 border">Azul</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">True</td>
-              <td className="px-4 py-2 border">2500</td>
-              <td className="px-4 py-2 border">2000</td>
-              <td className="px-4 py-2 border">1500</td>
-              <td className="px-4 py-2 border">30</td>
-            </tr>
-            <tr className="bg-white">
-              <td className="px-4 py-2 border">Verde</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">180</td>
-              <td className="px-4 py-2 border">True</td>
-              <td className="px-4 py-2 border">2500</td>
-              <td className="px-4 py-2 border">2000</td>
-              <td className="px-4 py-2 border">1500</td>
-              <td className="px-4 py-2 border">30</td>
-            </tr>
+            {extraServices &&
+              extraServices.length > 0 &&
+              extraServices.map((extraService) => (
+                <tr className="bg-white">
+                  <td className="px-4 py-2 border">{extraService.name}</td>
+                  <td className="px-4 py-2 border">{extraService.restTime}</td>
+                  <td className="px-4 py-2 border">{extraService.duration}</td>
+                  <td className="px-4 py-2 border">{extraService.price}</td>
+                  <td className="border">
+                    <div className="flex justify-evenly">
+                      <button
+                        onClick={() => {
+                          handleExtraEdit(extraService);
+                        }}
+                        className="px-2 py-1 rounded-md bg-yellow text-white m-3"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => {
+                          const userConfirm = confirm(
+                            `¿Estás seguro de querer borrar: ${extraService.name}?`
+                          );
+                          if (userConfirm) {
+                            handleExtraDelete(extraService);
+                          }
+                        }}
+                        className="px-2 py-1 rounded-md bg-red text-white m-3"
+                      >
+                        Borrar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
