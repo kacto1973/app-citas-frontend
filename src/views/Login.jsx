@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { validateClient, validateAdmin } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 
+/*esto esta nomas en la rama main */
+
 const Login = () => {
   //useStates
   const navigate = useNavigate();
