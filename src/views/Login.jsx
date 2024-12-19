@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { validateClient } from "../../firebaseFunctions";
+import { validateClient, validateAdmin } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 
 const Login = () => {
@@ -8,15 +8,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  //useEffects
-  useEffect(() => {
-    if (username === "monica" && password === "baza") {
-      localStorage.setItem("adminAuthenticated", "true");
-      window.location.reload();
-      navigate("/admindashboard");
-    }
-  }, [username, password]);
 
   //functions
   const handleLogin = (e) => {
@@ -26,11 +17,16 @@ const Login = () => {
     // Validar el usuario
     const asyncFunc = async () => {
       const result = await validateClient(username, password);
+      const result2 = await validateAdmin(username, password);
 
       if (result) {
         window.location.reload();
         navigate("/clientdashboard");
+      } else if (result2) {
+        window.location.reload();
+        navigate("/admindashboard");
       } else {
+        alert("Usuario o contraseña incorrectos");
         setUsername("");
         setPassword("");
       }

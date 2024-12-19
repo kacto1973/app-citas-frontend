@@ -303,6 +303,32 @@ export const registerClient = async (
   }
 };
 
+export const validateAdmin = async (username, password) => {
+  try {
+    const adminsRef = ref(database, `${path}/admins`);
+
+    const adminsSnap = await get(adminsRef);
+
+    if (adminsSnap.exists()) {
+      const adminsArray = Object.values(adminsSnap.val());
+      const foundAdmin = adminsArray.some(
+        (admin) =>
+          admin.username === username.toLowerCase() &&
+          admin.password === password.toLowerCase()
+      );
+
+      if (foundAdmin) {
+        localStorage.setItem("8w9j2fjsd", "true");
+      }
+
+      return foundAdmin;
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    return false;
+  }
+};
+
 export const validateClient = async (username, password) => {
   try {
     //creamos referencia a la coleccion clients en la database
@@ -326,14 +352,13 @@ export const validateClient = async (username, password) => {
     });
 
     if (clientFound) {
-      localStorage.setItem("clientAuthenticated", "true");
+      localStorage.setItem("p9d4l8rwe", "true");
       localStorage.setItem("username", clientData.username);
       localStorage.setItem("userFullName", clientData.fullName);
       localStorage.setItem("cellphone", clientData.cellphone);
       return true; // Usuario encontrado, devolver true
     }
 
-    alert("Usuario o contraseña incorrectos, intente nuevamente");
     return false;
   } catch (error) {
     console.error("Error: ", error);
