@@ -193,6 +193,7 @@ const ClientDashboard = () => {
                       </p>
                     ) : (
                       <PaymentComponent
+                        business_id={localStorage.getItem("businessID")}
                         appointmentId={appointment.id}
                         classNames="py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5"
                       />

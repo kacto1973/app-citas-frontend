@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { findAppointmentById } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 
-const PaymentComponent = ({ classNames, appointmentId }) => {
+const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
@@ -45,9 +45,14 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
       body: JSON.stringify({
         amount: amount,
         description: description,
-        external_reference: appointmentId,
+        external_reference: {
+          appointmentId: appointmentId,
+          business_id: business_id,
+        },
+        //business_id: business_id,
       }),
     });
+    console.log("el business id que se va a enviar como cuerpo ", business_id);
 
     const data = await response.json();
 
