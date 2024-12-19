@@ -13,35 +13,38 @@ import RestDays from "./views/RestDays";
 import Register from "./views/Register";
 import ClientDashboard from "./views/ClientDashboard";
 import AppointmentMaker from "./views/AppointmentMaker";
-import ForgotPassword from "./views/ForgotPassword";
-//import Menu from "./views/Menu";
-//import RecentPayments from "./views/RecentPayments";
+import BusinessID from "./views/BusinessID";
 import Services from "./views/Services";
 import AppointmentsHistory from "./views/AppointmentsHistory";
+import ForgotPassword from "./views/ForgotPassword";
 
 const App = () => {
   const clientAuthenticated = localStorage.getItem("clientAuthenticated");
   const adminAuthenticated = localStorage.getItem("adminAuthenticated");
+  const businessID = localStorage.getItem("businessID");
 
   return (
     <Router>
       <Routes>
         <Route
-          path="/"
+          path="/" // esta barrita ba a representar el core de todo, el business ID
           element={
-            clientAuthenticated ? (
+            !businessID ? (
+              <BusinessID />
+            ) : !clientAuthenticated && !adminAuthenticated ? (
+              <Login />
+            ) : clientAuthenticated ? (
               <ClientDashboard />
             ) : adminAuthenticated ? (
               <AdminDashboard />
-            ) : (
-              <Login />
-            )
+            ) : null
           }
         />
+        //////////////
         <Route
           path="/admindashboard"
           element={
-            adminAuthenticated ? (
+            adminAuthenticated && businessID ? (
               <AdminDashboard />
             ) : (
               <Navigate to="/" replace />
@@ -51,26 +54,41 @@ const App = () => {
         <Route
           path="/appointments"
           element={
-            adminAuthenticated ? <Appointments /> : <Navigate to="/" replace />
+            adminAuthenticated && businessID ? (
+              <Appointments />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
         <Route
           path="/clients"
           element={
-            adminAuthenticated ? <Clients /> : <Navigate to="/" replace />
+            adminAuthenticated && businessID ? (
+              <Clients />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
         <Route
           path="/restdays"
           element={
-            adminAuthenticated ? <RestDays /> : <Navigate to="/" replace />
+            adminAuthenticated && businessID ? (
+              <RestDays />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/register"
+          element={businessID ? <Register /> : <Navigate to="/" replace />}
+        />
         <Route
           path="/clientdashboard"
           element={
-            clientAuthenticated ? (
+            clientAuthenticated && businessID ? (
               <ClientDashboard />
             ) : (
               <Navigate to="/" replace />
@@ -80,25 +98,33 @@ const App = () => {
         <Route
           path="/appointmentmaker"
           element={
-            clientAuthenticated ? (
+            clientAuthenticated && businessID ? (
               <AppointmentMaker />
             ) : (
               <Navigate to="/" replace />
             )
           }
         />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-
+        <Route
+          path="/forgotpassword"
+          element={
+            businessID ? <ForgotPassword /> : <Navigate to="/" replace />
+          }
+        />
         <Route
           path="/services"
           element={
-            adminAuthenticated ? <Services /> : <Navigate to="/" replace />
+            adminAuthenticated && businessID ? (
+              <Services />
+            ) : (
+              <Navigate to="/" replace />
+            )
           }
         />
         <Route
           path="/appointmentshistory"
           element={
-            adminAuthenticated ? (
+            adminAuthenticated && businessID ? (
               <AppointmentsHistory />
             ) : (
               <Navigate to="/" replace />

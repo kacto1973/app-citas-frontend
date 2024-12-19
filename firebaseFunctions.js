@@ -1,11 +1,36 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
+const businessID = localStorage.getItem("businessID");
+
+const path = `businesses/${businessID}`;
+
 //Functions that interact with firebase
+
+export const validateBusinessID = async (businessIDTyped) => {
+  try {
+    const businessesRef = ref(database, "businesses");
+    const businessesSnap = await get(businessesRef);
+
+    if (businessesSnap.exists()) {
+      const businessesArray = Object.keys(businessesSnap.val());
+      const foundBusiness = businessesArray.some(
+        (business) => business === businessIDTyped
+      );
+
+      return foundBusiness;
+    }
+    console.log("No se encontró el businessID: " + businessIDTyped);
+    return false;
+  } catch (error) {
+    console.error("Error al obtener el businessID: " + error.message);
+    return false;
+  }
+};
 
 export const findAppointmentById = async (appointmentId) => {
   try {
-    const appointmentsRef = ref(database, "activeAppointments");
+    const appointmentsRef = ref(database, `${path}/activeAppointments`);
 
     const appointmentsSnap = await get(appointmentsRef);
 
@@ -55,7 +80,7 @@ export const findAppointmentById = async (appointmentId) => {
 
 export const getAllRestDays = async () => {
   try {
-    const restDaysRef = ref(database, "restdays");
+    const restDaysRef = ref(database, `${path}/restdays`);
 
     const restDaysArraySnap = await get(restDaysRef);
 
@@ -75,7 +100,7 @@ export const getAllRestDays = async () => {
 
 export const removeRestDays = async (daysToRemove) => {
   try {
-    const restDaysRef = ref(database, "restdays");
+    const restDaysRef = ref(database, `${path}/restdays`);
 
     // Obtener los días de descanso actuales
     const snapshot = await get(restDaysRef);
@@ -89,7 +114,7 @@ export const removeRestDays = async (daysToRemove) => {
 
           // Si la fecha coincide con algún día a eliminar
           if (daysToRemove.includes(day)) {
-            const dayRef = ref(database, `restdays/${key}`);
+            const dayRef = ref(database, `${path}/restdays/${key}`);
             await remove(dayRef);
           }
         }
@@ -112,7 +137,7 @@ export const removeRestDays = async (daysToRemove) => {
 
 export const addRestDays = async (newDays) => {
   try {
-    const restDaysRef = ref(database, "restdays");
+    const restDaysRef = ref(database, `${path}/restdays`);
 
     for (const day of newDays) {
       await push(restDaysRef, day);
@@ -132,7 +157,7 @@ export const cancelAppointment = async (appointmentId) => {
   try {
     const appointmentsRef = ref(
       database,
-      `activeAppointments/${appointmentId}`
+      `${path}/activeAppointments/${appointmentId}`
     );
 
     await remove(appointmentsRef);
@@ -167,7 +192,7 @@ export const addAppointment = async (
     //   appointmentObject
     // );
 
-    const appointmentsRef = ref(database, "activeAppointments");
+    const appointmentsRef = ref(database, `${path}/activeAppointments`);
 
     const newAppointmentsRef = push(appointmentsRef);
 
@@ -202,7 +227,7 @@ export const addAppointment = async (
 
 export const findClientByPhoneNumber = async (phoneNumber) => {
   try {
-    const clientsRef = ref(database, "clients");
+    const clientsRef = ref(database, `${path}/clients`);
 
     const clientsSnap = await get(clientsRef);
 
@@ -247,7 +272,7 @@ export const registerClient = async (
     };
 
     //creamos referencia a la coleccion clients en la database
-    const clientsRef = ref(database, "clients");
+    const clientsRef = ref(database, `${path}/clients`);
 
     //obtenemos los datos de la coleccion clients
     const snapshot = await get(clientsRef);
@@ -281,7 +306,7 @@ export const registerClient = async (
 export const validateClient = async (username, password) => {
   try {
     //creamos referencia a la coleccion clients en la database
-    const clientsRef = ref(database, "clients");
+    const clientsRef = ref(database, `${path}/clients`);
 
     //obtenemos los datos de la coleccion clients
     const snapshot = await get(clientsRef);
@@ -318,7 +343,7 @@ export const validateClient = async (username, password) => {
 
 export const getAppointments = async () => {
   try {
-    const appointmentsRef = ref(database, "activeAppointments");
+    const appointmentsRef = ref(database, `${path}/activeAppointments`);
 
     const appointmentsArraySnap = await get(appointmentsRef);
 
@@ -338,7 +363,7 @@ export const getAppointments = async () => {
 
 export const getPaidAppointments = async () => {
   try {
-    const appointmentsRef = ref(database, "activeAppointments");
+    const appointmentsRef = ref(database, `${path}/activeAppointments`);
 
     const appointmentsArraySnap = await get(appointmentsRef);
 
@@ -360,34 +385,10 @@ export const getPaidAppointments = async () => {
   }
 };
 
-export const moveData = async () => {
-  try {
-    const oldRef = ref(database, "menu/activeAppointments"); // Ruta original
-    const newRef = ref(database, "activeAppointments"); // Nueva ruta
-
-    // 1. Obtener los datos desde la ubicación original
-    const snapshot = await get(oldRef);
-
-    if (snapshot.exists()) {
-      // 2. Escribir los datos en la nueva ubicación
-      await set(newRef, snapshot.val());
-
-      // 3. Eliminar los datos originales
-      await remove(oldRef);
-
-      console.log("Datos movidos con éxito.");
-    } else {
-      console.log("No hay datos para mover.");
-    }
-  } catch (error) {
-    console.error("Error al mover datos: ", error.message);
-  }
-};
-
 export const getExtraServices = async () => {
   try {
     //get Database reference
-    const extraServicesRef = ref(database, "menu/extraServices");
+    const extraServicesRef = ref(database, `${path}/menu/extraServices`);
 
     //get data from the reference
     const extraServicesSnapshot = await get(extraServicesRef);
@@ -405,7 +406,7 @@ export const getExtraServices = async () => {
 
 export const deleteService = async (service) => {
   try {
-    await remove(ref(database, `menu/services/${service.name}`));
+    await remove(ref(database, `${path}/menu/services/${service.name}`));
 
     alert("Servicio eliminado con éxito");
     window.location.reload();
@@ -419,10 +420,16 @@ export const deleteService = async (service) => {
 export const addService = async (service, serviceOldName) => {
   try {
     if (serviceOldName) {
-      await remove(ref(database, `menu/services/${serviceOldName}`));
-      await set(ref(database, `menu/services/${service.name}`), service);
+      await remove(ref(database, `${path}/menu/services/${serviceOldName}`));
+      await set(
+        ref(database, `${path}/menu/services/${service.name}`),
+        service
+      );
     } else {
-      await set(ref(database, `menu/services/${service.name}`), service);
+      await set(
+        ref(database, `${path}/menu/services/${service.name}`),
+        service
+      );
     }
 
     alert("Servicio agregado o editado con éxito");
@@ -438,10 +445,18 @@ export const addService = async (service, serviceOldName) => {
 export const addExtraService = async (service, serviceOldName) => {
   try {
     if (serviceOldName) {
-      await remove(ref(database, `menu/extraServices/${serviceOldName}`));
-      await set(ref(database, `menu/extraServices/${service.name}`), service);
+      await remove(
+        ref(database, `${path}/menu/extraServices/${serviceOldName}`)
+      );
+      await set(
+        ref(database, `${path}/menu/extraServices/${service.name}`),
+        service
+      );
     } else {
-      await set(ref(database, `menu/extraServices/${service.name}`), service);
+      await set(
+        ref(database, `${path}/menu/extraServices/${service.name}`),
+        service
+      );
     }
 
     alert("Servicio extra agregado o editado con éxito");
@@ -456,7 +471,7 @@ export const addExtraService = async (service, serviceOldName) => {
 
 export const deleteExtraService = async (service) => {
   try {
-    await remove(ref(database, `menu/extraServices/${service.name}`));
+    await remove(ref(database, `${path}/menu/extraServices/${service.name}`));
 
     alert("Servicio extra eliminado con éxito");
     window.location.reload();
@@ -470,7 +485,7 @@ export const deleteExtraService = async (service) => {
 export const getServices = async () => {
   try {
     //get Database reference
-    const servicesRef = ref(database, "menu/services");
+    const servicesRef = ref(database, `${path}/menu/services`);
 
     //get data from the reference
     const servicesSnapshot = await get(servicesRef);
@@ -488,7 +503,7 @@ export const getServices = async () => {
 
 export const getAllClients = async () => {
   try {
-    const clientsRef = ref(database, "clients");
+    const clientsRef = ref(database, `${path}/clients`);
 
     const clientsSnap = await get(clientsRef);
 
