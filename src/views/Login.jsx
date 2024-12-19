@@ -53,7 +53,7 @@ const Login = () => {
         width={100}
         className="mx-auto my-10"
       />
-      <div className="flex flex-col m-auto w-[80%]  rounded-md  border border-gray-900 shadow-xl">
+      <div className="flex flex-col m-auto w-[80%]  rounded-md0 shadow-xl">
         <h2 className="mx-auto mt-5">Inicio de Sesión</h2>
         <form onSubmit={handleLogin}>
           <div className="flex flex-col justify-center items-center">
