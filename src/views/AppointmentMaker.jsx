@@ -488,14 +488,14 @@ const AppointmentMaker = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-gray-100">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        AGENDADOR DE CITAS
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-[url('/src/assets/blob-scene.svg')] bg-cover bg-center">
+      <h1 className="mx-auto mt-10 text-white text-2xl font-black">
+        Agendador de Citas
       </h1>
 
       <div className="flex flex-col justify-center items-center w-[80%] ">
-        <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-white rounded-md shadow-md">
-          <p className="text-center">
+        <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-softblue rounded-md ">
+          <p className="text-center text-white font-black">
             Seleccione el servicio que desee (
             <span className="text-red">*</span>)
           </p>
@@ -507,7 +507,7 @@ const AppointmentMaker = () => {
               )
             }
             name="serviceName"
-            className="w-full border-2 border-black rounded-md text-center my-2 mb-6"
+            className="w-full  text-white bg-softgreen rounded-md h-[30px]  text-center my-2 mb-6"
           >
             <option value="">Seleccione una opción</option>
             {servicesArray.map((service, serviceIndex) => {
@@ -522,7 +522,7 @@ const AppointmentMaker = () => {
           </select>
           {selectedService && selectedService.hairLength === true ? (
             <>
-              <p className="text-center">
+              <p className=" text-center text-white font-black">
                 Seleccione la longitud de su cabello (
                 <span className="text-red">*</span>)
               </p>
@@ -530,7 +530,7 @@ const AppointmentMaker = () => {
                 value={selectedHairLength || ""}
                 name="serviceName"
                 onChange={(e) => setSelectedHairLength(e.target.value)}
-                className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
+                className="w-full  text-white bg-softgreen rounded-md h-[30px] text-center my-2 mb-6"
               >
                 <option value="">Seleccione una opción</option>
                 <option value="short">Corto</option>
@@ -539,7 +539,9 @@ const AppointmentMaker = () => {
               </select>
             </>
           ) : null}
-          <p className="text-center">¿Algún servicio extra?</p>
+          <p className="text-center text-white font-black">
+            ¿Algún servicio extra?
+          </p>
           <select
             value={(selectedExtraService && selectedExtraService.name) || ""}
             onChange={(e) =>
@@ -550,7 +552,7 @@ const AppointmentMaker = () => {
               )
             }
             name="serviceName"
-            className="w-full  border-2 border-black rounded-md text-center my-2 mb-6"
+            className="w-full text-white bg-softgreen rounded-md h-[30px] text-center my-2 mb-6"
           >
             <option value="">Seleccione una opción</option>
             {extraServicesArray.map((extraService, extraServiceIndex) => {
@@ -612,7 +614,7 @@ const AppointmentMaker = () => {
                 ))}
               </tbody>
             </table> */}
-            <h1 className="text-lg mt-10 mb-2 font-bold text-center">
+            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
               Servicios Seleccionados
             </h1>
             <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
@@ -706,7 +708,7 @@ const AppointmentMaker = () => {
                 ))}
               </tbody>
             </table> */}
-            <h1 className="text-lg mt-10 mb-2 font-bold text-center">
+            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
               Servicios Extra Seleccionados
             </h1>
             <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
@@ -755,7 +757,7 @@ const AppointmentMaker = () => {
           </>
         ) : null}
 
-        <h1 className="text-xl mt-3 mb-10">
+        <h1 className="text-2xl mt-3 mb-10 text-white font-black">
           Costo Total:{" "}
           <span className="text-green font-black">${totalCost}</span>
         </h1>
@@ -763,12 +765,13 @@ const AppointmentMaker = () => {
         {(servicesCart && servicesCart.length > 0) ||
         (extraServicesCart && extraServicesCart.length > 0) ? (
           <>
-            <h1 className="text-lg mt-10 mb-2 font-bold text-center">
+            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
               Fecha de su Cita
             </h1>
 
-            <div className="border-2 border-gray-700  rounded-md shadow-md mb-10">
+            <div className=" rounded-md bg-softgreen p-2  mb-10">
               <Calendar
+                className="bg-white rounded-md"
                 view="month"
                 value={selectedDate}
                 tileDisabled={handleTileDisabled}
@@ -798,11 +801,11 @@ const AppointmentMaker = () => {
 
             {selectedDate && selectedDate !== null && selectedDate !== "" ? (
               <>
-                <p className="text-lg  mb-2 font-bold text-center">
+                <p className="text-lg  mb-2 font-black text-white text-center">
                   Día Seleccionado: <br />
                   <span className="text-sm font-normal">{dateDisplayText}</span>
                 </p>
-                <h1 className="text-lg  mb-2 font-bold text-center mt-10">
+                <h1 className="text-lg  mb-2 font-black text-white text-center mt-10">
                   Hora de su Cita
                 </h1>
 
@@ -811,7 +814,7 @@ const AppointmentMaker = () => {
                   onChange={(e) => setSelectedTime(e.target.value)}
                   name="selectedTime"
                   id=""
-                  className="w-full  border-2 border-black rounded-md text-center my-2 mb-10"
+                  className="w-full   text-white bg-softgreen rounded-md h-[30px]  text-center my-2 mb-10"
                 >
                   <option value="">Seleccione una opción</option>
                   {timesCombobox &&
@@ -836,12 +839,12 @@ const AppointmentMaker = () => {
       selectedTime !== null &&
       selectedTime !== "" ? (
         <>
-          <h1 className="text-lg  mb-2 font-bold text-center mt-10">
+          <h1 className="text-lg  mb-2 font-black text-white text-center mt-10">
             Su cita quedaría así:
           </h1>
-          <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md shadow-md bg-white">
+          <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-softblue">
             <div className="flex flex-row mb-2">
-              <p>
+              <p className="font-black text-white">
                 {dateDisplayText} a las
                 <br />
                 {selectedTime} (duración de{" "}
@@ -859,19 +862,25 @@ const AppointmentMaker = () => {
           <p>1 x Tinte de cabello - ($60) = $60</p>
           <p>1 x Peinado - ($40) = $40</p> */}
             {servicesCart.map((service, serviceIndex) => (
-              <p key={serviceIndex}>
-                • {service.name} (${service.price})
+              <p key={serviceIndex} className="text-white font-bold">
+                • {service.name.toUpperCase()}{" "}
+                <span className="font-black text-green">
+                  (${service.price})
+                </span>
               </p>
             ))}
             {extraServicesCart.map((extraService, extraServiceIndex) => (
-              <p key={extraServiceIndex}>
-                • {extraService.name} (${extraService.price})
+              <p key={extraServiceIndex} className="text-white font-bold">
+                • {extraService.name.toUpperCase()}{" "}
+                <span className="font-black text-green">
+                  (${extraService.price})
+                </span>
               </p>
             ))}
           </div>
           <button
             type="submit"
-            className="px-3 py-2 font-black rounded-md my-5 bg-blue text-white w-[150px]"
+            className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
             //Deberia aqui en vez de pasar selected date/time,
             // combinarlos en un date object y pasar eso
             //ademas me falta agregar cosas del anticipo, como true o cuanto es
@@ -913,10 +922,6 @@ const AppointmentMaker = () => {
           </button>
         </>
       ) : null}
-      <div className="absolute top-0 left-0 -translate-x-1/2 w-[90px] h-[90px] rounded-full bg-yellow" />
-      <div className="absolute top-[330px] right-0 translate-x-1/2 w-[120px] h-[120px] rounded-full bg-blue" />
-      <div className="absolute top-[600px] left-0 -translate-x-1/2 w-[60px] h-[60px] rounded-full bg-green" />
-      <div className="absolute top-[820px] right-0 translate-x-1/2 w-[100px] h-[100px] rounded-full bg-red" />
     </div>
   );
 };
