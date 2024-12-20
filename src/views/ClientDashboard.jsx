@@ -120,7 +120,7 @@ const ClientDashboard = () => {
 
   return (
     <div
-      className="relative w-full min-h-screen bg-[url('/src/assets/blob-scatter.svg')]  bg-center  "
+      className="relative w-full min-h-screen bg-softblue  "
       //style={{ backgroundImage: `url(${waves})` }}
     >
       <div className="flex flex-col justify-center items-center w-full">

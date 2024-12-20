@@ -34,49 +34,55 @@ const AdminDashboard = () => {
   // }, []);
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-black mt-10 mb-5">PANEL DE CONTROL</h1>
-      <div className="w-[40%] flex flex-col">
-        <button
-          className="px-2 py-1 rounded-md mt-5 mb-6  bg-blue text-white w-full"
-          onClick={() => {
-            navigate("/appointments");
-          }}
-        >
-          Ver Citas
-        </button>
-        <button
-          className="px-2 py-1 rounded-md  mb-6   bg-blue text-white w-full"
-          onClick={() => {
-            navigate("/restdays");
-          }}
-        >
-          Días de Descanso
-        </button>
-        <button
-          className="px-2 py-1 rounded-md  mb-6   bg-blue text-white w-full"
-          onClick={() => {
-            navigate("/clients");
-          }}
-        >
-          Mis Clientes
-        </button>
-        <button
-          className="px-2 py-1 rounded-md  mb-6  bg-blue text-white w-full"
-          onClick={() => {
-            navigate("/services");
-          }}
-        >
-          Menú de Servicios
-        </button>
-        <button
-          className="px-2 py-1 rounded-md  mb-6  bg-blue text-white w-full"
-          onClick={() => {
-            navigate("/appointmentshistory");
-          }}
-        >
-          Historial de Citas
-        </button>
+    <div className="relative min-h-screen bg-[url(src/assets/blob-scene.svg)] w-full flex flex-col justify-center items-center">
+      <h1 className="text-2xl text-white font-black absolute top-[12%]  mb-5">
+        Panel de Administración
+      </h1>
+      <div className="w-[100%] flex flex-col">
+        <div className="flex w-full mb-4 space-x-4 justify-center">
+          <button
+            className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+            onClick={() => {
+              navigate("/appointments");
+            }}
+          >
+            Ver Citas
+          </button>
+          <button
+            className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+            onClick={() => {
+              navigate("/restdays");
+            }}
+          >
+            Días de Descanso
+          </button>
+          <button
+            className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+            onClick={() => {
+              navigate("/clients");
+            }}
+          >
+            Mis Clientes
+          </button>
+        </div>
+        <div className="flex w-full justify-center space-x-4">
+          <button
+            className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+            onClick={() => {
+              navigate("/services");
+            }}
+          >
+            Menú de Servicios
+          </button>
+          <button
+            className="px-2 py-1 rounded-md  bg-blue text-white w-[100px] h-[100px]"
+            onClick={() => {
+              navigate("/appointmentshistory");
+            }}
+          >
+            Historial de Citas
+          </button>
+        </div>
       </div>
     </div>
   );

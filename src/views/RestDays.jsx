@@ -261,13 +261,14 @@ const RestDays = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        MANEJO DE DÍAS LABORALES
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/src/assets/layered-waves.svg')] bg-cover bg-center">
+      <h1 className="text-2xl text-white font-black mt-10 mb-2 text-center">
+        Manejo de Días de Descanso
       </h1>
 
-      <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
+      <div className="w-[85%] rounded-md bg-softgreen p-2 my-10">
         <Calendar
+          className="bg-white rounded-md"
           view="month"
           selectRange
           value={range}
@@ -296,16 +297,16 @@ const RestDays = () => {
           }}
         />
       </div>
-      <p className="text-center">
+      <p className="text-center font-black text-white">
         Rango seleccionado: <br />{" "}
         <span className="font-black text-xl">
           {range[0]?.toLocaleDateString()} - {range[1]?.toLocaleDateString()}
         </span>
       </p>
-      <div className="flex w-full justify-around">
+      <div className="flex w-full justify-around mt-10">
         <button
           onClick={disableDays}
-          className="px-2 py-1 rounded-md my-5 bg-green text-white w-[130px]"
+          className="px-2 py-1 rounded-md my-5 bg-softgreen text-white w-[130px]"
         >
           Desactivar Días
         </button>

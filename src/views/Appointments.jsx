@@ -181,12 +181,13 @@ const Appointments = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        VISTA DE CITAS
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('src/assets/stacked-waves.svg')] bg-cover  bg-center">
+      <h1 className="text-2xl font-black text-white mt-10 mb-2 text-center">
+        Calendario de Citas
       </h1>
-      <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
+      <div className="w-[85%] rounded-md bg-softgreen p-2 my-10">
         <Calendar
+          className="bg-white rounded-md"
           view="month"
           value={selectedDate}
           tileDisabled={handleTileDisabled}
@@ -215,7 +216,7 @@ const Appointments = () => {
       </div>
       <div className="flex flex-col w-full items-center mb-20">
         {selectedDate && selectedDate !== "" ? (
-          <p className="w-full text-center">
+          <p className="w-full text-center text-white font-black">
             Citas para el día seleccionado: <br />
             <span className="text-xl font-black">{dateDisplayText}</span>
           </p>
@@ -229,7 +230,7 @@ const Appointments = () => {
               })
               .map((appointment) => (
                 <>
-                  <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+                  <div className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px] border-softgreen shadow-md text-white">
                     <div className="flex flex-row mb-2">
                       <p>
                         Cliente:{" "}
@@ -256,7 +257,7 @@ const Appointments = () => {
                         </span>
                       </p>
                       <p className="ml-auto">
-                        <span className="text-green font-black">
+                        <span className="text-green font-black text-xl">
                           ${appointment.totalCost}
                         </span>
                       </p>
@@ -264,14 +265,20 @@ const Appointments = () => {
                     {appointment.servicesCart &&
                       appointment.servicesCart.map((service, serviceIndex) => (
                         <p key={serviceIndex} className="w-[62%]">
-                          • {service.name} (${service.price})
+                          • {service.name.toUpperCase()}{" "}
+                          <span className="text-green font-black">
+                            (${service.price})
+                          </span>
                         </p>
                       ))}
                     {appointment.extraServicesCart &&
                       appointment.extraServicesCart.map(
                         (extraService, extraServiceIndex) => (
                           <p key={extraServiceIndex} className="w-[62%]">
-                            • {extraService.name} (${extraService.price})
+                            • {extraService.name.toUpperCase()}
+                            <span className="text-green font-black">
+                              (${extraService.price})
+                            </span>
                           </p>
                         )
                       )}

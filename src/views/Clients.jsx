@@ -87,11 +87,11 @@ const Clients = () => {
   };
 
   return (
-    <div className="w-full min-h-screen">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        MIS CLIENTES
-      </h1>
-      <div className="w-full flex justify-center mt-8">
+    <div className="pt-10 w-full min-h-screen bg-strblue">
+      <div className="w-full flex flex-col justify-center items-center ">
+        <h1 className="text-2xl text-white font-black mb-8 text-center">
+          Mis Clientes
+        </h1>
         {/* Barra de búsqueda */}
         <input
           type="text"
@@ -101,7 +101,7 @@ const Clients = () => {
           className="border border-gray-700 p-2 rounded-md mb-4"
         />
       </div>
-      <div className="flex flex-col items-center justify-center mb-10">
+      <div className="flex flex-col items-center justify-center pb-10">
         {clientsLoaded && filteredClients.length > 0
           ? filteredClients.map((client, index) => {
               const closestAppointment = calculateClosestAppointment(client);
@@ -115,7 +115,7 @@ const Clients = () => {
               return (
                 <div
                   key={index}
-                  className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100"
+                  className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] bg-cover border-[5px] border-softgreen shadow-md text-white"
                 >
                   <div className="flex flex-row mb-2">
                     <p>

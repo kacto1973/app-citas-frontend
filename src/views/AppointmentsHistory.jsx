@@ -54,16 +54,16 @@ const AppointmentsHistory = () => {
   }
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        HISTORIAL DE CITAS
+    <div className="w-full flex flex-col justify-center items-center bg-strblue pb-10">
+      <h1 className="text-2xl font-black text-white mt-10 mb-2 text-center">
+        Historial de Citas
       </h1>
       <div className="w-[80%] flex flex-col justify-center items-center">
         {appointmentsHistory && appointmentsHistory.length > 0
           ? appointmentsHistory.map((appointment) => {
               return (
                 <>
-                  <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
+                  <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
                     <div className="flex flex-row mb-2">
                       <p>
                         Cliente:{" "}
@@ -90,7 +90,7 @@ const AppointmentsHistory = () => {
                         </span>
                       </p>
                       <p className="ml-auto">
-                        <span className="text-green font-black">
+                        <span className="text-green font-black text-xl">
                           ${appointment.totalCost}
                         </span>
                       </p>
@@ -98,14 +98,21 @@ const AppointmentsHistory = () => {
                     {appointment.servicesCart &&
                       appointment.servicesCart.map((service, serviceIndex) => (
                         <p key={serviceIndex} className="w-[62%]">
-                          • {service.name} (${service.price})
+                          • {service.name.toUpperCase()}{" "}
+                          <span className="font-black text-green">
+                            (${service.price})
+                          </span>
                         </p>
                       ))}
                     {appointment.extraServicesCart &&
                       appointment.extraServicesCart.map(
                         (extraService, extraServiceIndex) => (
                           <p key={extraServiceIndex} className="w-[62%]">
-                            • {extraService.name} (${extraService.price})
+                            • {extraService.name.toUpperCase()}
+                            <span className="font-black text-green">
+                              ($
+                              {extraService.price})
+                            </span>
                           </p>
                         )
                       )}
