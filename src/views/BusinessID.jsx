@@ -37,28 +37,32 @@ const BusinessID = () => {
 
   return (
     <>
-      <div className="absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[80%]  rounded-md  border border-gray-900 shadow-xl">
-        <h2 className="mx-auto mt-5">Ingrese el Identificador del Negocio</h2>
-        <form onSubmit={handleClick}>
-          <div className="flex flex-col justify-center items-center">
-            <input
-              type="text"
-              placeholder="ID_De_Negocio123"
-              value={businessID}
-              onChange={(e) => setBusinessID(e.target.value)}
-              onKeyDown={handleKeyDown}
-              required
-              className="w-[180px] border border-black rounded-md mt-4 py-1.5 text-center"
-            />
+      <div className="bg-[url('/src/assets/blob-scene.svg')] bg-cover bg-center min-h-screen flex justify-center items-center">
+        <div className=" absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[80%] bg-softblue rounded-md p-5">
+          <h1 className="mx-auto mt-5 text-white text-2xl font-black">
+            ID del Negocio
+          </h1>
+          <form onSubmit={handleClick}>
+            <div className="flex flex-col justify-center items-center">
+              <input
+                type="text"
+                placeholder="ID del negocio"
+                value={businessID}
+                onChange={(e) => setBusinessID(e.target.value)}
+                onKeyDown={handleKeyDown}
+                required
+                className="w-[180px] border border-black rounded-md mt-4 py-1.5 text-center"
+              />
 
-            <button
-              type="submit"
-              className="px-2 py-1 rounded-md mt-4 mb-5 bg-blue text-white w-[120px]"
-            >
-              Validar
-            </button>
-          </div>
-        </form>
+              <button
+                type="submit"
+                className="px-2 py-1 rounded-md mt-4 mb-5 bg-softgreen text-white w-[120px]"
+              >
+                Validar
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

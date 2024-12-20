@@ -119,13 +119,20 @@ const ClientDashboard = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen ">
+    <div
+      className="relative w-full min-h-screen bg-[url('/src/assets/blob-scatter.svg')]  bg-center  "
+      //style={{ backgroundImage: `url(${waves})` }}
+    >
       <div className="flex flex-col justify-center items-center w-full">
-        <h1 className="text-2xl font-black mt-10 mb-5">PANEL DE CITAS</h1>
+        <h1 className="mx-auto mt-10 text-white text-2xl font-black">
+          Panel de Citas
+        </h1>
         {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
-          <p className="mb-4 text-center">Sus próximas citas:</p>
+          <p className="mb-4 mt-5 text-center text-white font-black">
+            Sus próximas citas:
+          </p>
         ) : (
-          <p className="mb-4 text-center">
+          <p className="mb-4 mt-5 text-center text-white font-black">
             Por ahora no tiene citas agendadas...
           </p>
         )}
@@ -249,13 +256,12 @@ const ClientDashboard = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
             <p className="mb-5">
-              Estimada clienta, te recordamos que el tiempo máximo para realizar
-              el anticipo de tu cita es de 12 horas a partir de su creación. En
-              caso de no hacerlo, la cita se anulará en el sistema
-              automáticamente. <br />
+              Estimado cliente, le recordamos que el tiempo máximo para realizar
+              el anticipo de su cita es de 12 horas a partir de su creación. En
+              caso de no hacerlo, la cita será cancelada automáticamente. <br />
               <br />
               Esto con el fin de respetar el tiempo y espacio de todos. <br />
-              Agradecemos mucho tu comprensión y preferencia.
+              Agradecemos mucho su comprensión y preferencia.
             </p>
             <button
               className="bg-white text-blue px-2 py-1 rounded-md ml-2"

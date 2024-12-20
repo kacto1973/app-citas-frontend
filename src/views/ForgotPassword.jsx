@@ -32,9 +32,9 @@ const ForgotPassword = () => {
   }, [phoneNumber]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-scren w-full">
-      <h1 className="text-center mt-10">
-        Ingresa tu número de celular sin prefijo
+    <div className="relative bg-[url('/src/assets/stacked-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
+      <h1 className="mx-auto  text-white text-2xl font-black">
+        Ingresa tu número de celular
       </h1>
 
       <form className="w-full">
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
             type="number"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="6621314151"
+            placeholder="6623456789"
             required
           />
           <button
@@ -56,29 +56,30 @@ const ForgotPassword = () => {
               };
               asyncFunc();
             }}
-            className="px-2 py-1 rounded-md mt-4 mb-5 bg-blue text-white w-[120px]"
+            className="px-2 py-1 rounded-md mt-8 mb-10 bg-softgreen text-white w-[120px]"
           >
-            Listo
+            Buscar
           </button>
 
           {dataFound && (
-            <div className="flex flex-row  p-5 rounded-md drop-shadow-xl justify-center bg-gray-200 ">
-              <div className="mr-4">
-                <p className="text-center">Tu Usuario</p>
-                <input
-                  className="border border-black rounded-md mt-4 py-1 w-[150px] text-center"
-                  type="text"
-                  value={foundUsername}
-                />
-              </div>
-              <div className="ml-4">
-                <p className="text-center">Tu Contraseña</p>
-                <input
-                  className="border border-black rounded-md mt-4 py-1 w-[150px] text-center"
-                  type="text"
-                  value={foundPassword}
-                />
-              </div>
+            <div className="flex flex-col  p-5 rounded-md items-center justify-center ">
+              <h1 className="mx-auto  text-white text-xl font-black">
+                Usuario Encontrado
+              </h1>
+              <input
+                className="border border-black rounded-md mt-4 py-1 w-[150px] text-center"
+                type="text"
+                value={foundUsername}
+              />
+
+              <h1 className="mx-auto mt-6 text-white text- xl font-black">
+                Tu Contraseña
+              </h1>
+              <input
+                className="border border-black rounded-md mt-4 py-1 w-[150px] text-center"
+                type="text"
+                value={foundPassword}
+              />
             </div>
           )}
         </div>
