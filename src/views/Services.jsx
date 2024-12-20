@@ -407,8 +407,10 @@ const Services = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center">
-      <h1 className="text-2xl font-black mt-10 mb-5">Menú de Servicios</h1>
+    <div className="w-full min-h-screen flex flex-col items-center bg-strblue">
+      <h1 className="text-2xl text-white font-black mt-10 mb-5">
+        Menú de Servicios
+      </h1>
       <div className="w-full flex flex-col items-center justify-center">
         <div className="flex w-full items-center justify-center">
           <input
@@ -431,11 +433,11 @@ const Services = () => {
 
         <form>
           <div className="my-4 flex flex-col items-center justify-center">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-white">
               ¿Requiere saber longitud de cabello?
             </label>
             <div className="flex items-center space-x-6">
-              <label className="flex items-center">
+              <label className="flex items-center text-white">
                 <input
                   type="radio"
                   id="si"
@@ -443,12 +445,12 @@ const Services = () => {
                   value="si"
                   checked={hairLengthNeeded === true}
                   onChange={handleChange}
-                  className="mr-2"
+                  className="mr-2 text-white"
                 />
                 Sí
               </label>
 
-              <label className="flex items-center">
+              <label className="flex items-center text-white">
                 <input
                   type="radio"
                   id="no"
@@ -456,7 +458,7 @@ const Services = () => {
                   value="no"
                   checked={hairLengthNeeded === false} // Si el estado es false, se selecciona "No"
                   onChange={handleChange}
-                  className="mr-2"
+                  className="mr-2 text-white"
                 />
                 No
               </label>
@@ -470,7 +472,7 @@ const Services = () => {
           <>
             <div className="flex w-full items-center justify-center">
               <div className="flex flex-col items-center justify-center mb-3 mx-3">
-                <h1 className="mb-3">Duraciones</h1>
+                <h1 className="mb-3 text-white font-black">Duraciones</h1>
                 <input
                   type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
@@ -495,7 +497,7 @@ const Services = () => {
                 />
               </div>
               <div className="flex flex-col items-center justify-center mb-3 mx-3">
-                <h1 className="mb-3">Precios</h1>
+                <h1 className="mb-3 text-white font-black">Precios</h1>
                 <input
                   type="number"
                   className="mb-3 text-black w-[160px] border border-gray-400 text-center p-1 rounded-md"
@@ -550,7 +552,7 @@ const Services = () => {
         </button>
       ) : (
         <button
-          className="px-2 py-1 rounded-md my-5 bg-blue text-white"
+          className="px-2 py-1 rounded-md my-5 mb-10 bg-blue text-white"
           onClick={handleAdd}
         >
           Agregar Servicio
@@ -589,7 +591,7 @@ const Services = () => {
                     </td>
                     {service.hairLength ? (
                       <>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
+                        <td className="px-4 py-2 border ">N/A</td>
                         <td className="px-4 py-2 border">
                           {service.durationShort}
                         </td>
@@ -599,7 +601,7 @@ const Services = () => {
                         <td className="px-4 py-2 border">
                           {service.durationLong}
                         </td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
+                        <td className="px-4 py-2 border ">N/A</td>
                         <td className="px-4 py-2 border">
                           {service.priceShort}
                         </td>
@@ -613,13 +615,13 @@ const Services = () => {
                     ) : (
                       <>
                         <td className="px-4 py-2 border">{service.duration}</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
+                        <td className="px-4 py-2 border">N/A</td>
+                        <td className="px-4 py-2 border">N/A</td>
+                        <td className="px-4 py-2 border">N/A</td>
                         <td className="px-4 py-2 border">{service.price}</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
-                        <td className="px-4 py-2 border bg-black">No aplica</td>
+                        <td className="px-4 py-2 border">N/A</td>
+                        <td className="px-4 py-2 border">N/A</td>
+                        <td className="px-4 py-2 border">N/A</td>
                       </>
                     )}
                     <td className="border">
@@ -653,7 +655,7 @@ const Services = () => {
           </tbody>
         </table>
       </div>
-      <h1 className="text-2xl font-black mt-10 mb-5">
+      <h1 className="text-2xl text-white font-black mt-10 mb-5">
         Menú de Servicios Extras
       </h1>
       {/*<div className="w-full flex flex-col items-center justify-center">

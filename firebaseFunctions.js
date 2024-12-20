@@ -1,7 +1,8 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
-const businessID = localStorage.getItem("businessID");
+const itemID = localStorage.getItem("businessID");
+const businessID = itemID ? itemID.toLowerCase() : null;
 
 const path = `businesses/${businessID}`;
 
@@ -15,7 +16,7 @@ export const validateBusinessID = async (businessIDTyped) => {
     if (businessesSnap.exists()) {
       const businessesArray = Object.keys(businessesSnap.val());
       const foundBusiness = businessesArray.some(
-        (business) => business === businessIDTyped
+        (business) => business.toLowerCase() === businessIDTyped.toLowerCase()
       );
 
       return foundBusiness;
