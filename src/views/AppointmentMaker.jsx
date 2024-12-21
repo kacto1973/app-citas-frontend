@@ -9,12 +9,14 @@ import {
   addAppointment,
   getAllRestDays,
 } from "../../firebaseFunctions";
-import { set } from "firebase/database";
+import database from "../../firebaseConfig";
+import { set, get, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 
 const AppointmentMaker = () => {
   //use states
   const navigate = useNavigate();
+  const [showImages, setShowImages] = useState(false);
   const [dateDisplayText, setDateDisplayText] = useState("");
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
@@ -48,6 +50,25 @@ const AppointmentMaker = () => {
   const [disabledDays, setDisabledDays] = useState([]);
   const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
   //useEffect
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      try {
+        const businessID = localStorage.getItem("businessID").toLowerCase();
+        const imagesRef = ref(
+          database,
+          `businesses/${businessID}/settings/showImages`
+        );
+        const imagesSnapshot = await get(imagesRef);
+        if (imagesSnapshot.exists()) {
+          setShowImages(imagesSnapshot.val());
+        }
+      } catch (error) {
+        console.error("Error al cargar imagenes de referencia", error);
+      }
+    };
+    asyncFunc();
+  }, []);
 
   useEffect(() => {
     console.log("map ", appointmentsMap);
@@ -494,6 +515,36 @@ const AppointmentMaker = () => {
       </h1>
 
       <div className="flex flex-col justify-center items-center w-[80%] ">
+        {showImages && (
+          <>
+            <h1 className="mx-auto mt-5 text-white text-lg font-normal mb-5">
+              Imágenes de Referencia
+            </h1>
+            <div className="relative h-[150px] pt-10   bg-white rounded-md w-[90%]">
+              <p className="absolute top-4 left-8 font-black">Corto</p>
+              <img
+                className="absolute left-[6%]"
+                src="src/assets/images/short.png"
+                alt="shortHair"
+                width={80}
+              />
+              <p className="absolute top-4 left-[41%] font-black">Mediano</p>
+              <img
+                className="absolute right-[35%]"
+                src="src/assets/images/medium.png"
+                alt="shortHair"
+                width={75}
+              />
+              <p className="absolute top-4 right-[10%] font-black">Largo</p>
+              <img
+                className="absolute right-0"
+                src="src/assets/images/long.png"
+                alt="shortHair"
+                width={100}
+              />
+            </div>
+          </>
+        )}
         <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-softblue rounded-md ">
           <p className="text-center text-white font-black">
             Seleccione el servicio que desee (

@@ -9,8 +9,11 @@ import {
   addExtraService,
   deleteExtraService,
 } from "../../firebaseFunctions";
+import database from "../../firebaseConfig";
+import { ref, update, get } from "firebase/database";
 
 const Services = () => {
+  const [showImages, setShowImages] = useState(false);
   const [editing, setEditing] = useState(false);
   const [extraEditing, setExtraEditing] = useState(false);
 
@@ -42,6 +45,19 @@ const Services = () => {
   const [serviceOldName, setServiceOldName] = useState("");
   const [extraServiceOldName, setExtraServiceOldName] = useState("");
 
+  const handleToggle = () => {
+    setShowImages((prev) => !prev);
+    onToggle(!showImages);
+  };
+
+  const onToggle = (value) => {
+    const businessID = localStorage.getItem("businessID").toLowerCase();
+    const showImagesRef = ref(database, `businesses/${businessID}/settings/`);
+    update(showImagesRef, {
+      showImages: value,
+    });
+  };
+
   // Función para manejar el cambio en los radio buttons
   const handleChange = (event) => {
     // Si el valor del radio button es "si", establecemos true, si es "no", establecemos false
@@ -51,6 +67,23 @@ const Services = () => {
       setHairLengthNeeded(false);
     }
   };
+
+  useEffect(() => {
+    const businessID = localStorage.getItem("businessID").toLowerCase();
+    const showImagesRef = ref(
+      database,
+      `businesses/${businessID}/settings/showImages`
+    );
+
+    const asyncFunc = async () => {
+      const showImagesSnap = await get(showImagesRef);
+      if (showImagesSnap.exists()) {
+        setShowImages(showImagesSnap.val());
+        console.log(showImagesSnap.val());
+      }
+    };
+    asyncFunc();
+  }, []);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -815,6 +848,55 @@ const Services = () => {
               ))}
           </tbody>
         </table>
+      </div>
+      <div className="text-center flex flex-col items-center justify-center">
+        <h1 className="text-2xl text-white font-black mt-10 mb-3">
+          Imágenes de Referencia
+        </h1>
+        <div className="flex mt-5 mb-12">
+          <span className="text-white mr-5">
+            Mostrar imágenes de referencia al cliente
+          </span>
+          <input
+            type="checkbox"
+            checked={showImages}
+            onChange={() => {
+              const confirm = window.confirm(
+                "¿Estás seguro de querer cambiar la referencia de imágenes?"
+              );
+
+              if (confirm) {
+                handleToggle();
+              }
+            }}
+            className="form-checkbox"
+          />
+        </div>
+        {showImages && (
+          <div className="relative h-[150px] pt-10  mb-10  bg-white rounded-md w-[90%]">
+            <p className="absolute top-4 left-8 font-black">Corto</p>
+            <img
+              className="absolute left-[6%]"
+              src="src/assets/images/short.png"
+              alt="shortHair"
+              width={80}
+            />
+            <p className="absolute top-4 left-[41%] font-black">Mediano</p>
+            <img
+              className="absolute right-[35%]"
+              src="src/assets/images/medium.png"
+              alt="shortHair"
+              width={75}
+            />
+            <p className="absolute top-4 right-[10%] font-black">Largo</p>
+            <img
+              className="absolute right-0"
+              src="src/assets/images/long.png"
+              alt="shortHair"
+              width={100}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

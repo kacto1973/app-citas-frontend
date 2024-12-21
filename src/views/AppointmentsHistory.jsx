@@ -54,82 +54,84 @@ const AppointmentsHistory = () => {
   }
 
   return (
-    <div className="w-full flex flex-col justify-center items-center bg-strblue pb-10">
+    <div className="w-full min-h-screen flex flex-col  items-center bg-strblue pb-10">
       <h1 className="text-2xl font-black text-white mt-10 mb-2 text-center">
         Historial de Citas
       </h1>
       <div className="w-[80%] flex flex-col justify-center items-center">
-        {appointmentsHistory && appointmentsHistory.length > 0
-          ? appointmentsHistory.map((appointment) => {
-              return (
-                <>
-                  <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
-                    <div className="flex flex-row mb-2">
-                      <p>
-                        Cliente:{" "}
-                        <span className="font-black">
-                          {appointment.userFullName}
-                        </span>{" "}
-                        <br />
-                        Tel:{" "}
-                        <span className="font-black">
-                          {appointment.cellphone}
-                        </span>{" "}
-                        <br />
-                        Fecha:{" "}
-                        <span className="font-black">
-                          {formatDateForDisplay(appointment.selectedDate)} a las{" "}
-                          {appointment.selectedTime}
-                        </span>{" "}
-                        <br />
-                        Duración:{" "}
-                        <span className="font-black">
-                          {formatDuration(
-                            appointment.totalDurationOfAppointment
-                          )}
+        {appointmentsHistory && appointmentsHistory.length > 0 ? (
+          appointmentsHistory.map((appointment) => {
+            return (
+              <>
+                <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
+                  <div className="flex flex-row mb-2">
+                    <p>
+                      Cliente:{" "}
+                      <span className="font-black">
+                        {appointment.userFullName}
+                      </span>{" "}
+                      <br />
+                      Tel:{" "}
+                      <span className="font-black">
+                        {appointment.cellphone}
+                      </span>{" "}
+                      <br />
+                      Fecha:{" "}
+                      <span className="font-black">
+                        {formatDateForDisplay(appointment.selectedDate)} a las{" "}
+                        {appointment.selectedTime}
+                      </span>{" "}
+                      <br />
+                      Duración:{" "}
+                      <span className="font-black">
+                        {formatDuration(appointment.totalDurationOfAppointment)}
+                      </span>
+                    </p>
+                    <p className="ml-auto">
+                      <span className="text-green font-black text-xl">
+                        ${appointment.totalCost}
+                      </span>
+                    </p>
+                  </div>
+                  {appointment.servicesCart &&
+                    appointment.servicesCart.map((service, serviceIndex) => (
+                      <p key={serviceIndex} className="w-[62%]">
+                        • {service.name.toUpperCase()}{" "}
+                        <span className="font-black text-green">
+                          (${service.price})
                         </span>
                       </p>
-                      <p className="ml-auto">
-                        <span className="text-green font-black text-xl">
-                          ${appointment.totalCost}
-                        </span>
-                      </p>
-                    </div>
-                    {appointment.servicesCart &&
-                      appointment.servicesCart.map((service, serviceIndex) => (
-                        <p key={serviceIndex} className="w-[62%]">
-                          • {service.name.toUpperCase()}{" "}
+                    ))}
+                  {appointment.extraServicesCart &&
+                    appointment.extraServicesCart.map(
+                      (extraService, extraServiceIndex) => (
+                        <p key={extraServiceIndex} className="w-[62%]">
+                          • {extraService.name.toUpperCase()}
                           <span className="font-black text-green">
-                            (${service.price})
+                            ($
+                            {extraService.price})
                           </span>
                         </p>
-                      ))}
-                    {appointment.extraServicesCart &&
-                      appointment.extraServicesCart.map(
-                        (extraService, extraServiceIndex) => (
-                          <p key={extraServiceIndex} className="w-[62%]">
-                            • {extraService.name.toUpperCase()}
-                            <span className="font-black text-green">
-                              ($
-                              {extraService.price})
-                            </span>
-                          </p>
-                        )
-                      )}
-                    {appointment.state === "pagado" ? (
-                      <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
-                        Cita Confirmada
-                      </p>
-                    ) : (
-                      <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
-                        Sin Anticipo
-                      </button>
+                      )
                     )}
-                  </div>
-                </>
-              );
-            })
-          : null}
+                  {appointment.state === "pagado" ? (
+                    <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
+                      Cita Confirmada
+                    </p>
+                  ) : (
+                    <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
+                      Sin Anticipo
+                    </button>
+                  )}
+                </div>
+              </>
+            );
+          })
+        ) : (
+          <p className="text-white font-black text-xl mt-5 text-center">
+            Actualmente no hay citas pasadas de los últimos 7 días...
+          </p>
+        )}
       </div>
     </div>
   );

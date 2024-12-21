@@ -7,9 +7,38 @@ import {
   //cleanseAppointments,
   getAppointments,
 } from "../../firebaseFunctions";
+import database from "../../firebaseConfig";
+import { ref, update } from "firebase/database";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      try {
+        const businessID = localStorage.getItem("businessID").toLowerCase();
+        const lastSeenRef = ref(database, `businesses/${businessID}/admins`);
+
+        const now = new Date();
+
+        const readableDate = now.toLocaleString("es-MX", {
+          weekday: "long", // Nombre completo del día
+          year: "numeric", // Año con 4 dígitos
+          month: "long", // Nombre completo del mes
+          day: "numeric", // Día del mes
+          hour: "2-digit", // Hora en formato de 2 dígitos
+          minute: "2-digit", // Minutos en formato de 2 dígitos
+          second: "2-digit", // Segundos en formato de 2 dígitos
+          hour12: true, // Formato de 12 horas (true) o 24 horas (false)
+        });
+
+        await update(lastSeenRef, { lastSeen: readableDate });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    asyncFunc();
+  }, []);
 
   // useEffect(() => {
   //   const asyncFunct = async () => {
