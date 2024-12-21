@@ -1,8 +1,20 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { TrialContext } from "../context/TrialContext";
 
 const TrialExpired = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { isTrialExpired } = useContext(TrialContext); // Accedemos al contexto
+
+  useEffect(() => {
+    if (!isTrialExpired) {
+      navigate("/"); // Redirigir de forma imperativa
+    }
+  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
+
+  const business_id = localStorage.getItem("businessID")?.toLowerCase();
 
   const handlePayment = async () => {
     setLoading(true);
@@ -15,6 +27,7 @@ const TrialExpired = () => {
       body: JSON.stringify({
         external_reference: {
           business_id: business_id,
+          type: "subscription",
         },
       }),
     });
@@ -30,20 +43,21 @@ const TrialExpired = () => {
 
   return (
     <div className="fixed inset-0 bg-[url(src/assets/low-poly.svg)] min-h-screen  flex items-center justify-center z-20">
-      <div className="w-[90%] h-[48%] bg-softblue shadow-xl   text-white font-normal text-center p-3 rounded-md">
+      <div className="w-[85%] h-[48%] bg-softblue shadow-xl   text-white font-normal text-center p-3 rounded-md">
         <h1 className="font-black text-2xl my-3">Estimado usuario:</h1>
-        <p className="text-lg mb-8">
-          Lamentamos informarle que su suscripción de un mes, iniciada el
-          [fecha], ha expirado. Por el momento, debemos suspender el servicio
-          hasta que se realice la renovación. Pedimos disculpas por cualquier
-          inconveniente y le invitamos a renovar su suscripción haciendo clic en
-          el botón de abajo.
+        <p className="text- mb-8 w-[80%] mx-auto">
+          {" "}
+          Su licencia de aplicación, iniciada el [fecha], ha expirado. El
+          servicio está suspendido hasta que se realice el pago. Una vez
+          acreditado, podrá usar la plataforma nuevamente sin problemas. Lo cual
+          ocurre inmediatamente, con excepción de las Transferencias SPEI
+          (plazos de 24-48 horas hábiles)
         </p>
         <button
           className="bg-green font-black w-[150px] text-white px-2 py-1 rounded-md ml-2"
           onClick={handlePayment}
         >
-          Renovar Licencia
+          {loading ? "Cargando..." : "Renovar Licencia"}
         </button>
       </div>
     </div>

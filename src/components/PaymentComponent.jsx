@@ -48,6 +48,7 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
         external_reference: {
           appointmentId: appointmentId,
           business_id: business_id,
+          type: "unique_payment",
         },
         //business_id: business_id,
       }),

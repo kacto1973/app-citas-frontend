@@ -29,7 +29,6 @@ export const TrialProvider = ({ children }) => {
     const expirationDate = new Date(storedEndDateISO);
 
     if (new Date() > expirationDate) {
-      localStorage.setItem("ttotuh453xrd", "true");
       setIsTrialExpired(true);
     } else {
       setIsTrialExpired(false);
@@ -55,12 +54,7 @@ export const TrialProvider = ({ children }) => {
           createTrialExpirationDate();
         }
       };
-      const alreadyFetched = localStorage.getItem("ttotuh453xrd");
-      if (alreadyFetched) {
-        setIsTrialExpired(true);
-      } else {
-        asyncFunc();
-      }
+      asyncFunc();
     }
   }, []);
 
