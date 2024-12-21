@@ -5,7 +5,7 @@ import database from "../../firebaseConfig"; // Asegúrate de que apunte a tu co
 export const TrialContext = createContext();
 
 export const TrialProvider = ({ children }) => {
-  const [trialStartDate, setTrialStartDate] = useState(null);
+  //const [trialStartDate, setTrialStartDate] = useState(null);
   const [isTrialExpired, setIsTrialExpired] = useState(false);
 
   //tenemos que asegurarnos de que existan los tokens
@@ -14,20 +14,22 @@ export const TrialProvider = ({ children }) => {
   //nos permite saber de que negocio estamos hablando y a quien ponerle parones
   const businessID = localStorage.getItem("businessID")?.toLowerCase();
 
-  const createTrialStartDate = async () => {
+  const createTrialExpirationDate = async () => {
     //nos aseguramos de que existan los tokens
     const trialRef = ref(database, `businesses/${businessID}/settings`);
     await update(trialRef, {
-      trialStart: new Date().toISOString(),
+      trialEnd: new Date(
+        new Date().setMonth(new Date().getMonth() + 2)
+      ).toISOString(),
     });
   };
 
   //le pasamos el string iso de la fecha de inicio del trial de ese business
-  const checkTrialExpiration = (storedStartDateISO) => {
-    const expirationDate = new Date(storedStartDateISO);
-    expirationDate.setMonth(expirationDate.getMonth() + 1);
+  const checkTrialExpiration = (storedEndDateISO) => {
+    const expirationDate = new Date(storedEndDateISO);
 
     if (new Date() > expirationDate) {
+      localStorage.setItem("ttotuh453xrd", "true");
       setIsTrialExpired(true);
     } else {
       setIsTrialExpired(false);
@@ -41,24 +43,29 @@ export const TrialProvider = ({ children }) => {
       const asyncFunc = async () => {
         const trialRef = ref(
           database,
-          `businesses/${businessID}/settings/trialStart`
+          `businesses/${businessID}/settings/trialEnd`
         );
         const trialStoredSnap = await get(trialRef);
         if (trialStoredSnap.exists()) {
           //si si existe comprobaremos si ya vencio y tomamos accion en torno a ello
-          setTrialStartDate(trialStoredSnap.val());
+
           checkTrialExpiration(trialStoredSnap.val());
         } else {
           //si no existe entonces la crearemos
-          createTrialStartDate();
+          createTrialExpirationDate();
         }
       };
-      asyncFunc();
+      const alreadyFetched = localStorage.getItem("ttotuh453xrd");
+      if (alreadyFetched) {
+        setIsTrialExpired(true);
+      } else {
+        asyncFunc();
+      }
     }
   }, []);
 
   return (
-    <TrialContext.Provider value={{ trialStartDate, isTrialExpired }}>
+    <TrialContext.Provider value={{ isTrialExpired }}>
       {children}
     </TrialContext.Provider>
   );
