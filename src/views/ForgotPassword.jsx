@@ -33,6 +33,9 @@ const ForgotPassword = () => {
 
   return (
     <div className="relative bg-[url('/src/assets/stacked-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
+      {/* <p className="text-white text-sm absolute top-[1%]">
+        Si eres administrador, envía mensaje al +52 662-423-7920
+      </p> */}
       <h1 className="mx-auto  text-white text-2xl font-black">
         Ingresa tu número de celular
       </h1>

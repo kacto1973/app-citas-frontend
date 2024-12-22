@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const { isTrialExpired } = useContext(TrialContext); // Accedemos al contexto
+  const { isTrialExpired, trialEndDate } = useContext(TrialContext); // Accedemos al contexto
 
   useEffect(() => {
     if (isTrialExpired) {
@@ -79,6 +79,9 @@ const AdminDashboard = () => {
       className="
             relative min-h-screen bg-[url(src/assets/blob-scene.svg)] bg-cover w-full flex flex-col justify-center items-center"
     >
+      <p className="text-white font-black text-sm absolute top-[1%] text-center">
+        Su licencia vence el: <br /> {trialEndDate}{" "}
+      </p>
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -87,7 +90,7 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <>
-          <h1 className="text-2xl text-white font-black absolute top-[12%]  mb-5">
+          <h1 className="text-2xl text-white font-black absolute top-[20%]  mb-5">
             Panel de Administración
           </h1>
           <div className="w-[100%] flex flex-col">
