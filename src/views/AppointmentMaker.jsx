@@ -527,22 +527,22 @@ const AppointmentMaker = () => {
               <p className="absolute top-4 left-8 font-black">Corto</p>
               <img
                 className="absolute left-[6%]"
-                src="src/assets/images/short.png"
+                src="/images/short.png"
                 alt="shortHair"
                 width={80}
               />
               <p className="absolute top-4 left-[41%] font-black">Mediano</p>
               <img
                 className="absolute right-[35%]"
-                src="src/assets/images/medium.png"
-                alt="shortHair"
+                src="/images/medium.png"
+                alt="mediumHair"
                 width={75}
               />
               <p className="absolute top-4 right-[10%] font-black">Largo</p>
               <img
                 className="absolute right-0"
-                src="src/assets/images/long.png"
-                alt="shortHair"
+                src="/images/long.png"
+                alt="longHair"
                 width={100}
               />
             </div>
