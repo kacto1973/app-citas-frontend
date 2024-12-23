@@ -327,6 +327,8 @@ export const validateAdmin = async (username, password) => {
 
     const adminsSnap = await get(adminsRef);
 
+    console.log("adminsSnap: ", adminsSnap.val());
+
     if (adminsSnap.exists()) {
       const adminsArray = Object.values(adminsSnap.val());
       const foundAdmin = adminsArray.some(
@@ -336,6 +338,7 @@ export const validateAdmin = async (username, password) => {
       );
 
       if (foundAdmin) {
+        console.log("Admin encontrado", foundAdmin);
         localStorage.setItem("8w9j2fjsd", "true");
       }
 
