@@ -137,7 +137,7 @@ const Clients = () => {
                   return (
                     <div
                       key={index}
-                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] bg-cover border-[5px] border-softgreen shadow-md text-white"
+                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('/assets/blob-scene.svg')] bg-cover border-[5px] border-softgreen shadow-md text-white"
                     >
                       <div className="flex flex-row mb-2">
                         <p>

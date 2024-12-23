@@ -512,7 +512,7 @@ const AppointmentMaker = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-[url('/src/assets/blob-scene.svg')] bg-cover bg-center">
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-[url('/assets/blob-scene.svg')] bg-cover bg-center">
       <h1 className="mx-auto mt-10 text-white text-2xl font-black">
         Agendador de Citas
       </h1>

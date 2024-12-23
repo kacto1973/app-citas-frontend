@@ -37,7 +37,7 @@ const BusinessID = () => {
 
   return (
     <>
-      <div className="bg-[url('/src/assets/blob-scene.svg')] bg-cover bg-center min-h-screen flex justify-center items-center">
+      <div className="bg-[url('/assets/blob-scene.svg')] bg-cover bg-center min-h-screen flex justify-center items-center">
         <div className=" absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[80%] bg-softblue rounded-md p-5">
           <h1 className="mx-auto mt-5 text-white text-2xl font-black">
             ID del Negocio

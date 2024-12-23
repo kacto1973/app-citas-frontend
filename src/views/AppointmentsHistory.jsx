@@ -85,7 +85,7 @@ const AppointmentsHistory = () => {
               appointmentsHistory.map((appointment) => {
                 return (
                   <>
-                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
+                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
                       <div className="flex flex-row mb-2">
                         <p>
                           Cliente:{" "}

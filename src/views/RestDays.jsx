@@ -270,7 +270,7 @@ const RestDays = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/src/assets/layered-waves.svg')] bg-cover bg-center">
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/assets/layered-waves.svg')] bg-cover bg-center">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">

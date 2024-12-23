@@ -188,7 +188,7 @@ const Appointments = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-[url('src/assets/stacked-waves.svg')] bg-cover  bg-center">
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/assets/stacked-waves.svg')] bg-cover  bg-center">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -249,7 +249,7 @@ const Appointments = () => {
                   })
                   .map((appointment) => (
                     <>
-                      <div className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px] border-softgreen shadow-md text-white">
+                      <div className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('/assets/blob-scene.svg')] border-[5px] border-softgreen shadow-md text-white">
                         <div className="flex flex-row mb-2">
                           <p>
                             Cliente:{" "}

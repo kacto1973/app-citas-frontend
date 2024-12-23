@@ -49,7 +49,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="relative bg-[url('/src/assets/layered-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
+      <div className="relative bg-[url('/assets/layered-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
         {/* <img
           src="/images/logoBaza.png"
           alt="logo"

@@ -77,7 +77,7 @@ const AdminDashboard = () => {
   return (
     <div
       className="
-            relative min-h-screen bg-[url(src/assets/blob-scene.svg)] bg-cover w-full flex flex-col justify-center items-center"
+            relative min-h-screen bg-[url('/assets/blob-scene.svg')] bg-cover w-full flex flex-col justify-center items-center"
     >
       <p className="text-white font-black text-sm absolute top-[1%] text-center">
         Su licencia vence el: <br /> {trialEndDate}{" "}
