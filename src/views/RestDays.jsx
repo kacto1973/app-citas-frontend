@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import Calendar from "react-calendar";
 import {
   getAppointments,
@@ -8,8 +9,19 @@ import {
   getPaidAppointments,
   removeRestDays,
 } from "../../firebaseFunctions";
+import { TrialContext } from "../context/TrialContext";
 
 const RestDays = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  const { isTrialExpired } = useContext(TrialContext); // Accedemos al contexto
+
+  useEffect(() => {
+    if (isTrialExpired) {
+      navigate("/trialexpired"); // Redirigir de forma imperativa
+    }
+  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
   const [appointmentsMap, setAppointmentsMap] = useState({});
@@ -37,6 +49,7 @@ const RestDays = () => {
         setAppointmentsArray(appointments);
         setAppointmentsLoaded(true);
       }
+      setLoading(false);
     };
     fetchAppointments();
   }, []);
@@ -89,9 +102,7 @@ const RestDays = () => {
     tomorrow.setDate(today.getDate() + 1);
     return (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
-      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
-      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
     );
   };
 
@@ -133,9 +144,7 @@ const RestDays = () => {
     tomorrow.setDate(today.getDate() + 1);
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
-      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
-      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
@@ -261,61 +270,73 @@ const RestDays = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        MANEJO DE DÍAS LABORALES
-      </h1>
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/src/assets/layered-waves.svg')] bg-cover bg-center">
+      {loading ? (
+        <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
+          <div className="bg-white p-5 rounded-md shadow-md text-center">
+            <h1 className="font-black text-2xl">Cargando...</h1>
+          </div>
+        </div>
+      ) : (
+        <>
+          <h1 className="text-2xl text-white font-black mt-10 mb-2 text-center">
+            Manejo de Días de Descanso
+          </h1>
 
-      <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
-        <Calendar
-          view="month"
-          selectRange
-          value={range}
-          tileDisabled={handleTileDisabled}
-          onChange={(value) => {
-            setRange(value);
-          }}
-          onClickDay={setSelectedDate}
-          tileClassName={getTileClassName}
-          nextLabel=">"
-          prevLabel="<"
-          next2Label={null}
-          prev2Label={null}
-          navigationLabel={({ date }) => {
-            return (
-              <p
-                onClick={(e) => e.stopPropagation()}
-                className="text-center text-lg font-bold uppercase cursor-default"
-              >
-                {date.toLocaleDateString("es-MX", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-            );
-          }}
-        />
-      </div>
-      <p className="text-center">
-        Rango seleccionado: <br />{" "}
-        <span className="font-black text-xl">
-          {range[0]?.toLocaleDateString()} - {range[1]?.toLocaleDateString()}
-        </span>
-      </p>
-      <div className="flex w-full justify-around">
-        <button
-          onClick={disableDays}
-          className="px-2 py-1 rounded-md my-5 bg-green text-white w-[130px]"
-        >
-          Desactivar Días
-        </button>
-        <button
-          onClick={enableDays}
-          className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
-        >
-          Activar Días
-        </button>
-      </div>
+          <div className="w-[85%] rounded-md bg-softgreen p-2 my-10">
+            <Calendar
+              className="bg-white rounded-md"
+              view="month"
+              selectRange
+              value={range}
+              tileDisabled={handleTileDisabled}
+              onChange={(value) => {
+                setRange(value);
+              }}
+              onClickDay={setSelectedDate}
+              tileClassName={getTileClassName}
+              nextLabel=">"
+              prevLabel="<"
+              next2Label={null}
+              prev2Label={null}
+              navigationLabel={({ date }) => {
+                return (
+                  <p
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-center text-lg font-bold uppercase cursor-default"
+                  >
+                    {date.toLocaleDateString("es-MX", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                );
+              }}
+            />
+          </div>
+          <p className="text-center font-black text-white">
+            Rango seleccionado: <br />{" "}
+            <span className="font-black text-xl">
+              {range[0]?.toLocaleDateString()} -{" "}
+              {range[1]?.toLocaleDateString()}
+            </span>
+          </p>
+          <div className="flex w-full justify-around mt-10">
+            <button
+              onClick={disableDays}
+              className="px-2 py-1 rounded-md my-5 bg-softgreen text-white w-[130px]"
+            >
+              Desactivar Días
+            </button>
+            <button
+              onClick={enableDays}
+              className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
+            >
+              Activar Días
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

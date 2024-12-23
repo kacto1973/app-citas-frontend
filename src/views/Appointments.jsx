@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import {
@@ -7,8 +7,18 @@ import {
   getAllRestDays,
   getPaidAppointments,
 } from "../../firebaseFunctions";
+import { TrialContext } from "../context/TrialContext";
 
 const Appointments = () => {
+  const [loading, setLoading] = useState(true);
+  const { isTrialExpired } = useContext(TrialContext); // Accedemos al contexto
+
+  useEffect(() => {
+    if (isTrialExpired) {
+      navigate("/trialexpired"); // Redirigir de forma imperativa
+    }
+  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
+
   const navigate = useNavigate();
   const [dateDisplayText, setDateDisplayText] = useState("");
   const [appointmentsArray, setAppointmentsArray] = useState([]);
@@ -20,10 +30,6 @@ const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [allRestDays, setAllRestDays] = useState([]);
   const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
-
-  useEffect(() => {
-    console.log("appmnts of the day ", appointmentsOnSelectedDate);
-  }, [appointmentsOnSelectedDate]);
 
   useEffect(() => {
     const fetchRestDays = async () => {
@@ -45,6 +51,7 @@ const Appointments = () => {
         setAppointmentsArray(appointments);
         setAppointmentsLoaded(true);
       }
+      setLoading(false);
     };
     fetchAppointments();
   }, []);
@@ -181,114 +188,137 @@ const Appointments = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        VISTA DE CITAS
-      </h1>
-      <div className="w-[85%] border-2 border-gray-400 rounded-md shadow-xl my-10">
-        <Calendar
-          view="month"
-          value={selectedDate}
-          tileDisabled={handleTileDisabled}
-          onClickDay={(value) => {
-            handleDateClick(value);
-          }}
-          tileClassName={getTileClassName}
-          nextLabel=">"
-          prevLabel="<"
-          next2Label={null}
-          prev2Label={null}
-          navigationLabel={({ date }) => {
-            return (
-              <p
-                onClick={(e) => e.stopPropagation()}
-                className="text-center text-lg font-bold uppercase cursor-default"
-              >
-                {date.toLocaleDateString("es-MX", {
-                  month: "long",
-                  year: "numeric",
-                })}
+    <div className="w-full min-h-screen flex flex-col items-center bg-[url('src/assets/stacked-waves.svg')] bg-cover  bg-center">
+      {loading ? (
+        <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
+          <div className="bg-white p-5 rounded-md shadow-md text-center">
+            <h1 className="font-black text-2xl">Cargando...</h1>
+          </div>
+        </div>
+      ) : (
+        <>
+          <h1 className="text-2xl font-black text-white mt-10 mb-2 text-center">
+            Calendario de Citas
+          </h1>
+          <div className="w-[85%] rounded-md bg-softgreen p-2 my-10">
+            <Calendar
+              className="bg-white rounded-md"
+              view="month"
+              value={selectedDate}
+              tileDisabled={handleTileDisabled}
+              onClickDay={(value) => {
+                handleDateClick(value);
+              }}
+              tileClassName={getTileClassName}
+              nextLabel=">"
+              prevLabel="<"
+              next2Label={null}
+              prev2Label={null}
+              navigationLabel={({ date }) => {
+                return (
+                  <p
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-center text-lg font-bold uppercase cursor-default"
+                  >
+                    {date.toLocaleDateString("es-MX", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                );
+              }}
+            />
+          </div>
+          <div className="flex flex-col w-full items-center mb-20">
+            {selectedDate && selectedDate !== "" ? (
+              <p className="w-full text-center text-white font-black">
+                Citas para el día seleccionado: <br />
+                <span className="text-xl font-black">{dateDisplayText}</span>
               </p>
-            );
-          }}
-        />
-      </div>
-      <div className="flex flex-col w-full items-center mb-20">
-        {selectedDate && selectedDate !== "" ? (
-          <p className="w-full text-center">
-            Citas para el día seleccionado: <br />
-            <span className="text-xl font-black">{dateDisplayText}</span>
-          </p>
-        ) : null}
-        {appointmentsOnSelectedDate && appointmentsOnSelectedDate.length > 0
-          ? [...appointmentsOnSelectedDate]
-              .sort((a, b) => {
-                const dateA = new Date(`${a.selectedDate}T${a.selectedTime}`);
-                const dateB = new Date(`${b.selectedDate}T${b.selectedTime}`);
-                return dateA.getTime() - dateB.getTime();
-              })
-              .map((appointment) => (
-                <>
-                  <div className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100">
-                    <div className="flex flex-row mb-2">
-                      <p>
-                        Cliente:{" "}
-                        <span className="font-black">
-                          {appointment.userFullName}
-                        </span>{" "}
-                        <br />
-                        Tel:{" "}
-                        <span className="font-black">
-                          {appointment.cellphone}
-                        </span>{" "}
-                        <br />
-                        Fecha:{" "}
-                        <span className="font-black">
-                          {formatDateForDisplay(appointment.selectedDate)} a las{" "}
-                          {appointment.selectedTime}
-                        </span>{" "}
-                        <br />
-                        Duración:{" "}
-                        <span className="font-black">
-                          {formatDuration(
-                            appointment.totalDurationOfAppointment
-                          )}
-                        </span>
-                      </p>
-                      <p className="ml-auto">
-                        <span className="text-green font-black">
-                          ${appointment.totalCost}
-                        </span>
-                      </p>
-                    </div>
-                    {appointment.servicesCart &&
-                      appointment.servicesCart.map((service, serviceIndex) => (
-                        <p key={serviceIndex} className="w-[62%]">
-                          • {service.name} (${service.price})
-                        </p>
-                      ))}
-                    {appointment.extraServicesCart &&
-                      appointment.extraServicesCart.map(
-                        (extraService, extraServiceIndex) => (
-                          <p key={extraServiceIndex} className="w-[62%]">
-                            • {extraService.name} (${extraService.price})
+            ) : null}
+            {appointmentsOnSelectedDate && appointmentsOnSelectedDate.length > 0
+              ? [...appointmentsOnSelectedDate]
+                  .sort((a, b) => {
+                    const dateA = new Date(
+                      `${a.selectedDate}T${a.selectedTime}`
+                    );
+                    const dateB = new Date(
+                      `${b.selectedDate}T${b.selectedTime}`
+                    );
+                    return dateA.getTime() - dateB.getTime();
+                  })
+                  .map((appointment) => (
+                    <>
+                      <div className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] border-[5px] border-softgreen shadow-md text-white">
+                        <div className="flex flex-row mb-2">
+                          <p>
+                            Cliente:{" "}
+                            <span className="font-black">
+                              {appointment.userFullName}
+                            </span>{" "}
+                            <br />
+                            Tel:{" "}
+                            <span className="font-black">
+                              {appointment.cellphone}
+                            </span>{" "}
+                            <br />
+                            Fecha:{" "}
+                            <span className="font-black">
+                              {formatDateForDisplay(appointment.selectedDate)} a
+                              las {appointment.selectedTime}
+                            </span>{" "}
+                            <br />
+                            Duración:{" "}
+                            <span className="font-black">
+                              {formatDuration(
+                                appointment.totalDurationOfAppointment
+                              )}
+                            </span>
                           </p>
-                        )
-                      )}
-                    {appointment.state === "pagado" ? (
-                      <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
-                        Cita Confirmada
-                      </p>
-                    ) : (
-                      <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
-                        Sin Anticipo
-                      </button>
-                    )}
-                  </div>
-                </>
-              ))
-          : null}
-      </div>
+                          <p className="ml-auto">
+                            <span className="text-green font-black text-xl">
+                              ${appointment.totalCost}
+                            </span>
+                          </p>
+                        </div>
+                        {appointment.servicesCart &&
+                          appointment.servicesCart.map(
+                            (service, serviceIndex) => (
+                              <p key={serviceIndex} className="w-[62%]">
+                                • {service.name.toUpperCase()}{" "}
+                                <span className="text-green font-black">
+                                  (${service.price})
+                                </span>
+                              </p>
+                            )
+                          )}
+                        {appointment.extraServicesCart &&
+                          appointment.extraServicesCart.map(
+                            (extraService, extraServiceIndex) => (
+                              <p key={extraServiceIndex} className="w-[62%]">
+                                • {extraService.name.toUpperCase()}
+                                <span className="text-green font-black">
+                                  (${extraService.price})
+                                </span>
+                              </p>
+                            )
+                          )}
+                        {appointment.state === "pagado" ? (
+                          <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
+                            Cita Confirmada
+                          </p>
+                        ) : (
+                          <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
+                            Sin Anticipo
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  ))
+              : null}
+          </div>
+        </>
+      )}
     </div>
   );
 };

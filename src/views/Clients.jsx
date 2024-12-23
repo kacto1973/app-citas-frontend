@@ -1,8 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getAllClients, getAppointments } from "../../firebaseFunctions";
+import { useNavigate } from "react-router-dom";
+import { TrialContext } from "../context/TrialContext";
 
 const Clients = () => {
   //use states
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  const { isTrialExpired } = useContext(TrialContext); // Accedemos al contexto
+
+  useEffect(() => {
+    if (isTrialExpired) {
+      navigate("/trialexpired"); // Redirigir de forma imperativa
+    }
+  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
   const [clientsArray, setClientsArray] = useState([]);
   const [clientsLoaded, setClientsLoaded] = useState(false);
   const [filteredClients, setFilteredClients] = useState([]);
@@ -25,6 +37,7 @@ const Clients = () => {
         setAppointmentsArray(appointmentsList);
         setAppointmentsLoaded(true);
       }
+      setLoading(false);
     };
     asyncFunc();
   }, []);
@@ -87,60 +100,74 @@ const Clients = () => {
   };
 
   return (
-    <div className="w-full min-h-screen">
-      <h1 className="text-2xl font-black mt-10 mb-2 text-center">
-        MIS CLIENTES
-      </h1>
-      <div className="w-full flex justify-center mt-8">
-        {/* Barra de búsqueda */}
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
-          placeholder="Buscar por nombre"
-          className="border border-gray-700 p-2 rounded-md mb-4"
-        />
-      </div>
-      <div className="flex flex-col items-center justify-center mb-10">
-        {clientsLoaded && filteredClients.length > 0
-          ? filteredClients.map((client, index) => {
-              const closestAppointment = calculateClosestAppointment(client);
-              let formattedDate = "";
-              if (closestAppointment) {
-                formattedDate = formatDate(closestAppointment.selectedDate);
-              } else {
-                formattedDate = "No hay citas cercanas";
-              }
+    <div className="pt-10 w-full min-h-screen bg-strblue">
+      {loading ? (
+        <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
+          <div className="bg-white p-5 rounded-md shadow-md text-center">
+            <h1 className="font-black text-2xl">Cargando...</h1>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="w-full flex flex-col justify-center items-center ">
+            <h1 className="text-2xl text-white font-black mb-8 text-center">
+              Mis Clientes
+            </h1>
+            {/* Barra de búsqueda */}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
+              placeholder="Buscar por nombre"
+              className="border border-gray-700 p-2 rounded-md mb-4"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center pb-10">
+            {clientsLoaded && filteredClients.length > 0
+              ? filteredClients.map((client, index) => {
+                  const closestAppointment =
+                    calculateClosestAppointment(client);
+                  let formattedDate = "";
+                  if (closestAppointment) {
+                    formattedDate = formatDate(closestAppointment.selectedDate);
+                  } else {
+                    formattedDate = "No hay citas cercanas";
+                  }
 
-              return (
-                <div
-                  key={index}
-                  className="relative w-[80%] border border-gray-900 mt-6 flex flex-col p-5 rounded-md shadow-xl bg-gray-100"
-                >
-                  <div className="flex flex-row mb-2">
-                    <p>
-                      Cliente:{" "}
-                      <span className="font-black">{client.fullName}</span>{" "}
-                      <br />
-                      Tel: <span className="font-black"></span>
-                      {client.cellphone} <br />
-                      Citas Activas:{" "}
-                      <span className="font-black">
-                        {calculateClientActiveAppointments(client)}
-                      </span>{" "}
-                      <br />
-                      Cita más cercana:{" "}
-                      <span className="font-black">{formattedDate}</span> <br />
-                    </p>
-                    <p className="ml-auto">
-                      <span className="text-green font-black"></span>
-                    </p>
-                  </div>
-                </div>
-              );
-            })
-          : null}
-      </div>
+                  return (
+                    <div
+                      key={index}
+                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('src/assets/blob-scene.svg')] bg-cover border-[5px] border-softgreen shadow-md text-white"
+                    >
+                      <div className="flex flex-row mb-2">
+                        <p>
+                          Cliente:{" "}
+                          <span className="font-black">{client.fullName}</span>{" "}
+                          <br />
+                          Tel: <span className="font-black"></span>
+                          {client.cellphone} <br />
+                          Citas Activas:{" "}
+                          <span className="font-black">
+                            {calculateClientActiveAppointments(client)}
+                          </span>{" "}
+                          <br />
+                          Cita más cercana:{" "}
+                          <span className="font-black">
+                            {formattedDate}
+                          </span>{" "}
+                          <br />
+                        </p>
+                        <p className="ml-auto">
+                          <span className="text-green font-black"></span>
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </>
+      )}
     </div>
   );
 };

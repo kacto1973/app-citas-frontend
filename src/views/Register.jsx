@@ -50,12 +50,14 @@ const Register = () => {
   };
 
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-screen relative bg-strblue">
       <div
         className="absolute top-1/2 left-1/2 -translate-y-1/2 transform -translate-x-1/2
-     flex flex-col m-auto w-[80%]  rounded-md  border border-gray-900 shadow-xl"
+     flex flex-col m-auto w-[80%] bg-softblue rounded-md p-5"
       >
-        <h1 className="mx-auto mt-5 text-2xl">Registro de Usuario</h1>
+        <h1 className="mx-auto mt-5 text-white text-2xl font-black">
+          Registro de Usuario
+        </h1>
         <form onSubmit={handleRegister}>
           <div className="flex flex-col justify-center items-center">
             <input
@@ -104,18 +106,10 @@ const Register = () => {
 
             <div className="flex w-full justify-evenly">
               <button
-                onClick={() => {
-                  navigate("/");
-                }}
-                className="px-2 py-1 rounded-md my-5 bg-red text-white w-[120px]"
-              >
-                Cancelar
-              </button>
-              <button
                 type="submit"
-                className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[120px]"
+                className="px-2 py-1 rounded-md my-8 bg-softgreen text-white w-[120px]"
               >
-                Listo
+                Confirmar
               </button>
             </div>
           </div>

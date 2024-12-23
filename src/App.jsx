@@ -17,6 +17,8 @@ import BusinessID from "./views/BusinessID";
 import Services from "./views/Services";
 import AppointmentsHistory from "./views/AppointmentsHistory";
 import ForgotPassword from "./views/ForgotPassword";
+import TrialExpired from "./views/TrialExpired";
+import { TrialProvider } from "./context/TrialContext";
 
 const App = () => {
   const clientp9d4l8rwe = localStorage.getItem("p9d4l8rwe");
@@ -24,115 +26,127 @@ const App = () => {
   const businessID = localStorage.getItem("businessID");
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/" // esta barrita ba a representar el core de todo, el business ID
-          element={
-            !businessID ? (
-              <BusinessID />
-            ) : !clientp9d4l8rwe && !admin8w9j2fjsd ? (
-              <Login />
-            ) : clientp9d4l8rwe ? (
-              <ClientDashboard />
-            ) : admin8w9j2fjsd ? (
-              <AdminDashboard />
-            ) : null
-          }
-        />
-        //////////////
-        <Route
-          path="/admindashboard"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/appointments"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <Appointments />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <Clients />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/restdays"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <RestDays />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/register"
-          element={businessID ? <Register /> : <Navigate to="/" replace />}
-        />
-        <Route
-          path="/clientdashboard"
-          element={
-            clientp9d4l8rwe && businessID ? (
-              <ClientDashboard />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/appointmentmaker"
-          element={
-            clientp9d4l8rwe && businessID ? (
-              <AppointmentMaker />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/forgotpassword"
-          element={
-            businessID ? <ForgotPassword /> : <Navigate to="/" replace />
-          }
-        />
-        <Route
-          path="/services"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <Services />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        <Route
-          path="/appointmentshistory"
-          element={
-            admin8w9j2fjsd && businessID ? (
-              <AppointmentsHistory />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-      </Routes>
-    </Router>
+    <TrialProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/" // esta barrita ba a representar el core de todo, el business ID
+            element={
+              !businessID ? (
+                <BusinessID />
+              ) : !clientp9d4l8rwe && !admin8w9j2fjsd ? (
+                <Login />
+              ) : clientp9d4l8rwe ? (
+                <ClientDashboard />
+              ) : admin8w9j2fjsd ? (
+                <AdminDashboard />
+              ) : null
+            }
+          />
+          //////////////
+          <Route
+            path="/admindashboard"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <AdminDashboard />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/appointments"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <Appointments />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/clients"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <Clients />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/restdays"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <RestDays />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/register"
+            element={businessID ? <Register /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/clientdashboard"
+            element={
+              clientp9d4l8rwe && businessID ? (
+                <ClientDashboard />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/appointmentmaker"
+            element={
+              clientp9d4l8rwe && businessID ? (
+                <AppointmentMaker />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/forgotpassword"
+            element={
+              businessID ? <ForgotPassword /> : <Navigate to="/" replace />
+            }
+          />
+          <Route
+            path="/services"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <Services />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/appointmentshistory"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <AppointmentsHistory />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/trialexpired"
+            element={
+              admin8w9j2fjsd && businessID ? (
+                <TrialExpired />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+        </Routes>
+      </Router>
+    </TrialProvider>
   );
 };
 

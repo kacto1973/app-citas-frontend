@@ -1,11 +1,29 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
-const businessID = localStorage.getItem("businessID");
+const itemID = localStorage.getItem("businessID");
+const businessID = itemID ? itemID.toLowerCase() : null;
 
 const path = `businesses/${businessID}`;
 
 //Functions that interact with firebase
+
+export const getAppointmentExpirationTime = async (appointmentId) => {
+  try {
+    const appointment = await findAppointmentById(appointmentId);
+
+    if (appointment) {
+      return appointment.expiresAt;
+    }
+
+    return false;
+  } catch (error) {
+    console.error(
+      "Error al obtener la fecha de expiración de la cita: " + error.message
+    );
+    return false;
+  }
+};
 
 export const validateBusinessID = async (businessIDTyped) => {
   try {
@@ -15,7 +33,7 @@ export const validateBusinessID = async (businessIDTyped) => {
     if (businessesSnap.exists()) {
       const businessesArray = Object.keys(businessesSnap.val());
       const foundBusiness = businessesArray.some(
-        (business) => business === businessIDTyped
+        (business) => business.toLowerCase() === businessIDTyped.toLowerCase()
       );
 
       return foundBusiness;
