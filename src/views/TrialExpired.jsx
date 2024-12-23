@@ -20,7 +20,7 @@ const TrialExpired = () => {
     setLoading(true);
 
     const response = await fetch(
-      "https://df52-2806-2f0-2461-f100-40b-7f53-343c-f34b.ngrok-free.app/api/create-sub",
+      "https://app-citas-backend.vercel.app/api/create-sub",
       {
         method: "POST",
         headers: {

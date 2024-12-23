@@ -48,7 +48,7 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
     const expirationExactTime = appointment.expiresAt;
 
     const response = await fetch(
-      "https://3da2-2806-2f0-2461-f100-cd8d-abcb-42d2-6e5e.ngrok-free.app/api/create-order",
+      "https://app-citas-backend.vercel.app/api/create-order",
       {
         method: "POST",
         headers: {
