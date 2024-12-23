@@ -20,7 +20,7 @@ const TrialExpired = () => {
     setLoading(true);
 
     const response = await fetch(
-      "https://ab15-2806-2f0-2461-f100-f1cd-87ff-a4e4-b928.ngrok-free.app/api/create-sub",
+      "https://df52-2806-2f0-2461-f100-40b-7f53-343c-f34b.ngrok-free.app/api/create-sub",
       {
         method: "POST",
         headers: {
@@ -45,16 +45,14 @@ const TrialExpired = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[url(src/assets/low-poly.svg)] min-h-screen  flex items-center justify-center z-20">
+    <div className="fixed inset-0 bg-[url('/assets/low-poly.svg')] min-h-screen  flex items-center justify-center z-20">
       <div className="w-[85%] h-[48%] bg-softblue shadow-xl   text-white font-normal text-center p-3 rounded-md">
         <h1 className="font-black text-2xl my-3">Estimado usuario:</h1>
         <p className="text- mb-8 w-[80%] mx-auto">
-          {" "}
-          Su licencia de aplicación, iniciada el [fecha], ha expirado. El
-          servicio está suspendido hasta que se realice el pago. Una vez
-          acreditado, podrá usar la plataforma nuevamente sin problemas. Lo cual
-          ocurre inmediatamente, con excepción de las Transferencias SPEI
-          (plazos de 24-48 horas hábiles)
+          Su licencia de aplicación ha expirado. El servicio está suspendido
+          hasta que se realice el pago de renovación. Una vez acreditado, podrá
+          usar la plataforma nuevamente sin problemas ya que el pago se refleja
+          inmediatamente.
         </p>
         <button
           className="bg-green font-black w-[150px] text-white px-2 py-1 rounded-md ml-2"
