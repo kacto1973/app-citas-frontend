@@ -12,6 +12,7 @@ import {
 import database from "../../firebaseConfig";
 import { set, get, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 
 const AppointmentMaker = () => {
   //use states
@@ -962,14 +963,23 @@ const AppointmentMaker = () => {
 
                 const formattedExpiration = formatTime(expiresAt);
 
-                //es raro pero en calendario asi funciona por la timezone diff
-                const today = new Date(
-                  new Date().setDate(new Date().getDate() - 1)
-                );
+                const todayLocalDate = DateTime.now()
+                  .setZone("America/Hermosillo")
+                  .toFormat("yyyy-MM-dd");
 
-                if (new Date(selectedDate) === today) {
+                const dayAfterLocalDate = DateTime.now()
+                  .setZone("America/Hermosillo")
+                  .plus({ days: 1 })
+                  .toFormat("yyyy-MM-dd");
+
+                const selectedDateFormatted = formatDate(selectedDate);
+
+                if (
+                  selectedDateFormatted === todayLocalDate ||
+                  selectedDateFormatted === dayAfterLocalDate
+                ) {
                   alert(
-                    "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía)"
+                    "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
                   );
                 } else {
                   alert(
