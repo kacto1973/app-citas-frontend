@@ -350,7 +350,8 @@ const AppointmentMaker = () => {
   const handleTileDisabled = ({ date, view }) => {
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
+      // date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
       isRestDay(date)
     ) {
       return true;
@@ -362,7 +363,8 @@ const AppointmentMaker = () => {
     if (
       //inhabilitamos si es domingo o si ya transcurrio ese dia
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
+      // date < new Date(new Date().setDate(new Date().getDate() + 1)) ||
+      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
       isRestDay(date)
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
@@ -960,9 +962,21 @@ const AppointmentMaker = () => {
 
                 const formattedExpiration = formatTime(expiresAt);
 
-                alert(
-                  `Cita creada con éxito, para confirmarla es importante que realice su depósito dentro de las próximas 12 horas (antes de las ${formattedExpiration} horas), de lo contrario esta se cancelará. Puede hacer esto en el menú principal, gracias 😊.`
+                //es raro pero en calendario asi funciona por la timezone diff
+                const today = new Date(
+                  new Date().setDate(new Date().getDate() - 1)
                 );
+
+                if (new Date(selectedDate) === today) {
+                  alert(
+                    "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía)"
+                  );
+                } else {
+                  alert(
+                    `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
+                  );
+                }
+
                 navigate("/clientdashboard");
               } else {
                 console.error("Hubo un error al agregar la cita");

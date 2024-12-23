@@ -256,12 +256,15 @@ const ClientDashboard = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
             <p className="mb-5">
-              Estimado cliente, le recordamos que el tiempo máximo para realizar
-              el anticipo de su cita es de 12 horas a partir de su creación. En
-              caso de no hacerlo, la cita será cancelada automáticamente. <br />
-              <br />
-              Esto con el fin de respetar el tiempo y espacio de todos. <br />
-              Agradecemos mucho su comprensión y preferencia.
+              Estimado cliente, le recordamos que dispone de un máximo de 12
+              horas desde la programación de su cita para realizar el anticipo
+              (excepto si la cita es para el mismo día). De no hacerlo, la cita
+              será cancelada automáticamente. Asimismo, en caso de realizar un
+              pago por Transferencia SPEI, asegúrese de que el monto sea exacto,
+              ya que cualquier discrepancia provocará el rechazo del pago.{" "}
+              <br /> <br /> Esto nos permite respetar el tiempo y los espacios
+              de todos nuestros clientes. Agradecemos su comprensión y
+              preferencia.
             </p>
             <button
               className="bg-white text-blue px-2 py-1 rounded-md ml-2"

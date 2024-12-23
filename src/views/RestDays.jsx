@@ -102,9 +102,7 @@ const RestDays = () => {
     tomorrow.setDate(today.getDate() + 1);
     return (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
-      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
-      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
     );
   };
 
@@ -146,9 +144,7 @@ const RestDays = () => {
     tomorrow.setDate(today.getDate() + 1);
     if (
       date.getDay() === 0 ||
-      date < new Date(new Date().setDate(new Date().getDate() - 1)) ||
-      date.toDateString() === new Date().toDateString() || // Deshabilitar el día actual
-      date.toDateString() === tomorrow.toDateString() // Deshabilitar el día siguiente
+      date < new Date(new Date().setDate(new Date().getDate() - 1))
     ) {
       return "bg-gray-200 text-gray-500 border border-gray-300";
     }
