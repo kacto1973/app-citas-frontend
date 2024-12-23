@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { findAppointmentById } from "../../firebaseFunctions";
-import { set } from "firebase/database";
+import {
+  findAppointmentById,
+  getAppointmentExpirationTime,
+} from "../../firebaseFunctions";
+import { get, set } from "firebase/database";
 
 const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
   const [loading, setLoading] = useState(false);
@@ -38,8 +41,14 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
       }
     }
 
+    // const expirationExactTime = await getAppointmentExpirationTime(
+    //   appointmentId
+    // );
+
+    const expirationExactTime = appointment.expiresAt;
+
     const response = await fetch(
-      "https://ab15-2806-2f0-2461-f100-f1cd-87ff-a4e4-b928.ngrok-free.app/api/create-order",
+      "https://3da2-2806-2f0-2461-f100-cd8d-abcb-42d2-6e5e.ngrok-free.app/api/create-order",
       {
         method: "POST",
         headers: {
@@ -52,6 +61,7 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
             appointmentId: appointmentId,
             business_id: business_id,
             type: "unique_payment",
+            expirationExactTime: expirationExactTime,
           },
           //business_id: business_id,
         }),

@@ -8,6 +8,23 @@ const path = `businesses/${businessID}`;
 
 //Functions that interact with firebase
 
+export const getAppointmentExpirationTime = async (appointmentId) => {
+  try {
+    const appointment = await findAppointmentById(appointmentId);
+
+    if (appointment) {
+      return appointment.expiresAt;
+    }
+
+    return false;
+  } catch (error) {
+    console.error(
+      "Error al obtener la fecha de expiración de la cita: " + error.message
+    );
+    return false;
+  }
+};
+
 export const validateBusinessID = async (businessIDTyped) => {
   try {
     const businessesRef = ref(database, "businesses");
