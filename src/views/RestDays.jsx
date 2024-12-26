@@ -270,7 +270,7 @@ const RestDays = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-[url('/assets/layered-waves.svg')] bg-cover bg-center">
+    <div className="w-full min-h-screen flex flex-col items-center bg-black">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -283,7 +283,7 @@ const RestDays = () => {
             Manejo de Días de Descanso
           </h1>
 
-          <div className="w-[85%] rounded-md bg-softgreen p-2 my-10">
+          <div className="w-[85%] rounded-md bg-c1 p-2 my-10">
             <Calendar
               className="bg-white rounded-md"
               view="month"
@@ -324,7 +324,7 @@ const RestDays = () => {
           <div className="flex w-full justify-around mt-10">
             <button
               onClick={disableDays}
-              className="px-2 py-1 rounded-md my-5 bg-softgreen text-white w-[130px]"
+              className="px-2 py-1 rounded-md my-5 bg-c1 text-white w-[130px]"
             >
               Desactivar Días
             </button>

@@ -100,7 +100,7 @@ const Clients = () => {
   };
 
   return (
-    <div className="pt-10 w-full min-h-screen bg-strblue">
+    <div className="pt-10 w-full min-h-screen bg-black">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -118,8 +118,8 @@ const Clients = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
-              placeholder="Buscar por nombre"
-              className="border border-gray-700 p-2 rounded-md mb-4"
+              placeholder="Buscar por nombre..."
+              className="border text-center border-gray-700 p-2 rounded-md mb-4"
             />
           </div>
           <div className="flex flex-col items-center justify-center pb-10">
@@ -137,7 +137,7 @@ const Clients = () => {
                   return (
                     <div
                       key={index}
-                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md bg-[url('/assets/blob-scene.svg')] bg-cover border-[5px] border-softgreen shadow-md text-white"
+                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md  border-[5px] border-softgreen shadow-md text-white"
                     >
                       <div className="flex flex-row mb-2">
                         <p>

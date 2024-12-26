@@ -68,7 +68,7 @@ const AppointmentsHistory = () => {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col  items-center bg-strblue pb-10">
+    <div className="w-full min-h-screen flex flex-col  items-center bg-black pb-10">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -85,7 +85,7 @@ const AppointmentsHistory = () => {
               appointmentsHistory.map((appointment) => {
                 return (
                   <>
-                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md bg-[url('/assets/blob-scene.svg')] border-[5px]  border-softgreen shadow-md text-white">
+                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md  border-[5px]  border-softgreen shadow-md text-white">
                       <div className="flex flex-row mb-2">
                         <p>
                           Cliente:{" "}

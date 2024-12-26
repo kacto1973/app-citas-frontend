@@ -32,7 +32,7 @@ const ForgotPassword = () => {
   }, [phoneNumber]);
 
   return (
-    <div className="relative bg-[url('/assets/stacked-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
+    <div className="relative bg-black  min-h-screen flex flex-col justify-center items-center">
       {/* <p className="text-white text-sm absolute top-[1%]">
         Si eres administrador, envía mensaje al +52 662-423-7920
       </p> */}
@@ -59,15 +59,15 @@ const ForgotPassword = () => {
               };
               asyncFunc();
             }}
-            className="px-2 py-1 rounded-md mt-8 mb-10 bg-softgreen text-white w-[120px]"
+            className="px-2 py-1 rounded-md mt-8 mb-10 bg-c1 text-white w-[120px]"
           >
             Buscar
           </button>
 
           {dataFound && (
-            <div className="flex flex-col  p-5 rounded-md items-center justify-center ">
+            <div className="bg-c1 flex flex-col  p-5 rounded-md items-center justify-center ">
               <h1 className="mx-auto  text-white text-xl font-black">
-                Usuario Encontrado
+                Tu Usuario
               </h1>
               <input
                 className="border border-black rounded-md mt-4 py-1 w-[150px] text-center"

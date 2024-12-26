@@ -512,7 +512,7 @@ const AppointmentMaker = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-[url('/assets/blob-scene.svg')] bg-cover bg-center">
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-black">
       <h1 className="mx-auto mt-10 text-white text-2xl font-black">
         Agendador de Citas
       </h1>
@@ -548,8 +548,8 @@ const AppointmentMaker = () => {
             </div>
           </>
         )}
-        <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-softblue rounded-md ">
-          <p className="text-center text-white font-black">
+        <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-gray-100 rounded-md ">
+          <p className="text-center text-black font-black">
             Seleccione el servicio que desee (
             <span className="text-red">*</span>)
           </p>
@@ -561,7 +561,7 @@ const AppointmentMaker = () => {
               )
             }
             name="serviceName"
-            className="w-full  text-white bg-softgreen rounded-md h-[30px]  text-center my-2 mb-6"
+            className="w-full  text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-6"
           >
             <option value="">Seleccione una opción</option>
             {servicesArray.map((service, serviceIndex) => {
@@ -576,7 +576,7 @@ const AppointmentMaker = () => {
           </select>
           {selectedService && selectedService.hairLength === true ? (
             <>
-              <p className=" text-center text-white font-black">
+              <p className=" text-center text-black font-black">
                 Seleccione la longitud de su cabello (
                 <span className="text-red">*</span>)
               </p>
@@ -584,7 +584,7 @@ const AppointmentMaker = () => {
                 value={selectedHairLength || ""}
                 name="serviceName"
                 onChange={(e) => setSelectedHairLength(e.target.value)}
-                className="w-full  text-white bg-softgreen rounded-md h-[30px] text-center my-2 mb-6"
+                className="w-full  text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
               >
                 <option value="">Seleccione una opción</option>
                 <option value="short">Corto</option>
@@ -593,7 +593,7 @@ const AppointmentMaker = () => {
               </select>
             </>
           ) : null}
-          <p className="text-center text-white font-black">
+          <p className="text-center text-black font-black">
             ¿Algún servicio extra?
           </p>
           <select
@@ -606,7 +606,7 @@ const AppointmentMaker = () => {
               )
             }
             name="serviceName"
-            className="w-full text-white bg-softgreen rounded-md h-[30px] text-center my-2 mb-6"
+            className="w-full text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
           >
             <option value="">Seleccione una opción</option>
             {extraServicesArray.map((extraService, extraServiceIndex) => {
@@ -823,7 +823,7 @@ const AppointmentMaker = () => {
               Fecha de su Cita
             </h1>
 
-            <div className=" rounded-md bg-softgreen p-2  mb-10">
+            <div className=" rounded-md bg-c1 p-2  mb-10">
               <Calendar
                 className="bg-white rounded-md"
                 view="month"
@@ -868,7 +868,7 @@ const AppointmentMaker = () => {
                   onChange={(e) => setSelectedTime(e.target.value)}
                   name="selectedTime"
                   id=""
-                  className="w-full   text-white bg-softgreen rounded-md h-[30px]  text-center my-2 mb-10"
+                  className="w-full   text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-10"
                 >
                   <option value="">Seleccione una opción</option>
                   {timesCombobox &&
@@ -896,9 +896,9 @@ const AppointmentMaker = () => {
           <h1 className="text-lg  mb-2 font-black text-white text-center mt-10">
             Su cita quedaría así:
           </h1>
-          <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-softblue">
+          <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
             <div className="flex flex-row mb-2">
-              <p className="font-black text-white">
+              <p className="font-black text-black">
                 {dateDisplayText} a las
                 <br />
                 {selectedTime} (duración de{" "}
@@ -916,7 +916,7 @@ const AppointmentMaker = () => {
           <p>1 x Tinte de cabello - ($60) = $60</p>
           <p>1 x Peinado - ($40) = $40</p> */}
             {servicesCart.map((service, serviceIndex) => (
-              <p key={serviceIndex} className="text-white font-bold">
+              <p key={serviceIndex} className="text-black font-bold">
                 • {service.name.toUpperCase()}{" "}
                 <span className="font-black text-green">
                   (${service.price})
@@ -924,7 +924,7 @@ const AppointmentMaker = () => {
               </p>
             ))}
             {extraServicesCart.map((extraService, extraServiceIndex) => (
-              <p key={extraServiceIndex} className="text-white font-bold">
+              <p key={extraServiceIndex} className="text-black  font-bold">
                 • {extraService.name.toUpperCase()}{" "}
                 <span className="font-black text-green">
                   (${extraService.price})

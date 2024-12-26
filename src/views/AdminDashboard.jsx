@@ -77,7 +77,7 @@ const AdminDashboard = () => {
   return (
     <div
       className="
-            relative min-h-screen bg-[url('/assets/blob-scene.svg')] bg-cover w-full flex flex-col justify-center items-center"
+            relative min-h-screen bg-black w-full flex flex-col justify-center items-center"
     >
       <p className="text-white font-black text-sm absolute top-[1%] text-center">
         Su licencia vence el: <br /> {trialEndDate}{" "}
@@ -96,7 +96,7 @@ const AdminDashboard = () => {
           <div className="w-[100%] flex flex-col">
             <div className="flex w-full mb-4 space-x-4 justify-center">
               <button
-                className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+                className="px-2 py-1 rounded-md   bg-gray-100 text-black font-black w-[100px] h-[100px]"
                 onClick={() => {
                   navigate("/appointments");
                 }}
@@ -104,7 +104,7 @@ const AdminDashboard = () => {
                 Ver Citas
               </button>
               <button
-                className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+                className="px-2 py-1 rounded-md   bg-gray-100 text-black font-black w-[100px] h-[100px]"
                 onClick={() => {
                   navigate("/restdays");
                 }}
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
                 Días de Descanso
               </button>
               <button
-                className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+                className="px-2 py-1 rounded-md   bg-gray-100 text-black font-black w-[100px] h-[100px]"
                 onClick={() => {
                   navigate("/clients");
                 }}
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
             </div>
             <div className="flex w-full justify-center space-x-4">
               <button
-                className="px-2 py-1 rounded-md   bg-blue text-white w-[100px] h-[100px]"
+                className="px-2 py-1 rounded-md   bg-gray-100 text-black font-black w-[100px] h-[100px]"
                 onClick={() => {
                   navigate("/services");
                 }}
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
                 Menú de Servicios
               </button>
               <button
-                className="px-2 py-1 rounded-md  bg-blue text-white w-[100px] h-[100px]"
+                className="px-2 py-1 rounded-md  bg-gray-100 text-black font-black w-[100px] h-[100px]"
                 onClick={() => {
                   navigate("/appointmentshistory");
                 }}

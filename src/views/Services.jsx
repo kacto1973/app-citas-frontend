@@ -454,7 +454,7 @@ const Services = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-strblue">
+    <div className="w-full min-h-screen flex flex-col items-center bg-black">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">

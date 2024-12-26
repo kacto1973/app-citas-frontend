@@ -37,9 +37,9 @@ const BusinessID = () => {
 
   return (
     <>
-      <div className="bg-[url('/assets/blob-scene.svg')] bg-cover bg-center min-h-screen flex justify-center items-center">
-        <div className=" absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[80%] bg-softblue rounded-md p-5">
-          <h1 className="mx-auto mt-5 text-white text-2xl font-black">
+      <div className="min-h-screen flex justify-center items-center bg-black ">
+        <div className="bg-gray-100 absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[80%] bg-softblue rounded-md p-5">
+          <h1 className="mx-auto mt-5 text-black text-2xl font-black">
             ID del Negocio
           </h1>
           <form onSubmit={handleClick}>
@@ -56,7 +56,7 @@ const BusinessID = () => {
 
               <button
                 type="submit"
-                className="px-2 py-1 rounded-md mt-4 mb-5 bg-softgreen text-white w-[120px]"
+                className="px-2 py-1 rounded-md mt-4 mb-5 bg-softgreen text-white w-[120px] bg-c1"
               >
                 Validar
               </button>

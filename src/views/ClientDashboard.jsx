@@ -120,10 +120,7 @@ const ClientDashboard = () => {
   };
 
   return (
-    <div
-      className="relative w-full min-h-screen bg-softblue  "
-      //style={{ backgroundImage: `url(${waves})` }}
-    >
+    <div className="relative w-full min-h-screen bg-black ">
       <div className="flex flex-col justify-center items-center w-full">
         <h1 className="mx-auto mt-10 text-white text-2xl font-black">
           Panel de Citas
@@ -165,7 +162,7 @@ const ClientDashboard = () => {
 
                 return (
                   <>
-                    <div className="relative w-[86%]  mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
+                    <div className="relative w-[86%]  mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-gray-100">
                       <div
                         className={
                           appointment.state === "pagado" || forToday || nextDay
@@ -236,7 +233,7 @@ const ClientDashboard = () => {
                       Dejar Anticipo
                     </button> */}
                       {appointment.state === "pagado" || forToday || nextDay ? (
-                        <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
+                        <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[95px] absolute bottom-0 right-5">
                           Cita Confirmada
                         </p>
                       ) : (

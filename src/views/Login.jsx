@@ -49,15 +49,15 @@ const Login = () => {
 
   return (
     <>
-      <div className="relative bg-[url('/assets/layered-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
+      <div className="bg-black relative  min-h-screen flex flex-col justify-center items-center">
         <img
           src="/images/Screenshot_1.png"
           alt="logo"
           width={150}
           className="mx-auto mt-5 absolute top-[30px] rounded-full"
         />
-        <div className="top-[26%] absolute flex flex-col m-auto w-[70%] rounded-md p-1 bg-softblue">
-          <h2 className="mx-auto mt-5 text-white text-2xl font-black">
+        <div className="top-[27%] absolute flex flex-col m-auto w-[70%] rounded-md p-1 bg-gray-100">
+          <h2 className="mx-auto mt-5 text-black text-2xl font-black">
             Inicio de Sesión
           </h2>
           <form onSubmit={handleLogin}>
@@ -82,21 +82,21 @@ const Login = () => {
               />
               <button
                 type="submit"
-                className="px-2 py-1 rounded-md mt-4 mb-5 bg-softgreen text-white w-[120px]"
+                className="px-2 py-1 rounded-md mt-4 mb-5 bg-c1 text-white w-[120px]"
               >
                 Iniciar Sesión
               </button>
-              <p
-                className="text-white w-full text-center mt-2 mb-5 underline cursor-pointer"
-                onClick={handleRegister}
-              >
-                Regístrate Aquí
-              </p>
             </div>
           </form>
         </div>
         <p
-          className="absolute bottom-[30%] text-white w-full text-center my-6 underline cursor-pointer"
+          className="absolute bottom-[33%] text-white w-full text-center  mt-5 mb-5 underline cursor-pointer"
+          onClick={handleRegister}
+        >
+          Regístrate Aquí
+        </p>
+        <p
+          className="absolute bottom-[26%] text-white w-full text-center my-6 underline cursor-pointer"
           onClick={() => navigate("/forgotpassword")}
         >
           Olvidé mi contraseña

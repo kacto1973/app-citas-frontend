@@ -45,7 +45,7 @@ const TrialExpired = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[url('/assets/low-poly.svg')] min-h-screen  flex items-center justify-center z-20">
+    <div className="fixed inset-0 min-h-screen  flex items-center justify-center z-20">
       <div className="w-[85%] h-[48%] bg-softblue shadow-xl   text-white font-normal text-center p-3 rounded-md">
         <h1 className="font-black text-2xl my-3">Estimado usuario:</h1>
         <p className="text- mb-8 w-[80%] mx-auto">
