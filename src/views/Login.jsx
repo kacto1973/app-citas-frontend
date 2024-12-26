@@ -50,13 +50,13 @@ const Login = () => {
   return (
     <>
       <div className="relative bg-[url('/assets/layered-waves.svg')] bg-cover bg-center min-h-screen flex flex-col justify-center items-center">
-        {/* <img
-          src="/images/logoBaza.png"
+        <img
+          src="/images/Screenshot_1.png"
           alt="logo"
-          width={100}
-          className="mx-auto mt-10 absolute top-[1%]"
-        /> */}
-        <div className="top-[23%] absolute flex flex-col m-auto w-[70%] rounded-md p-1 bg-softblue">
+          width={150}
+          className="mx-auto mt-5 absolute top-[30px] rounded-full"
+        />
+        <div className="top-[26%] absolute flex flex-col m-auto w-[70%] rounded-md p-1 bg-softblue">
           <h2 className="mx-auto mt-5 text-white text-2xl font-black">
             Inicio de Sesión
           </h2>
