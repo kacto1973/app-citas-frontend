@@ -162,18 +162,18 @@ const ClientDashboard = () => {
 
                 return (
                   <>
-                    <div className="relative w-[86%]  mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-gray-100">
+                    <div className="relative w-[86%]  mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
                       <div
                         className={
                           appointment.state === "pagado" || forToday || nextDay
                             ? `absolute bg-green w-[100%] h-[10px] rounded-t-md top-0 left-0`
-                            : `absolute bg-blue w-[100%] h-[10px] rounded-t-md top-0 left-0`
+                            : `absolute bg-blue  w-[100%] h-[10px] rounded-t-md top-0 left-0`
                         }
                       ></div>
                       {appointment.state === "pagado" ||
                       forToday ||
                       nextDay ? null : (
-                        <p className="mb-4 text-white bg-blue rounded-md p-3 text-xs my-2">
+                        <p className="mb-4 text-white bg-blue   rounded-md p-3 text-xs my-2">
                           Favor de hacer su anticipo a tiempo antes de las{" "}
                           {formatTime(appointment.expiresAt)} horas para
                           confirmar su cita
@@ -233,7 +233,7 @@ const ClientDashboard = () => {
                       Dejar Anticipo
                     </button> */}
                       {appointment.state === "pagado" || forToday || nextDay ? (
-                        <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[95px] absolute bottom-0 right-5">
+                        <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[96px] absolute bottom-0 right-5">
                           Cita Confirmada
                         </p>
                       ) : (
@@ -264,7 +264,7 @@ const ClientDashboard = () => {
               })}
 
           <button
-            className="px-2 py-1 rounded-md mb-10 mt-5 bg-blue text-white w-[120px]"
+            className="px-2 py-1 rounded-md mb-10 mt-5 bg-white font-black text-black w-[120px]"
             onClick={() => {
               navigate("/appointmentmaker");
             }}

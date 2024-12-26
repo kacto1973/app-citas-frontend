@@ -20,6 +20,7 @@ export default {
         c2: "#7E99A3",
         c3: "#A5BFCC",
         c4: "#F4EDD3",
+        d1: "#1E201E",
       },
       fontFamily: {
         sans: ["Inter", "Poppins", "sans-serif"],
