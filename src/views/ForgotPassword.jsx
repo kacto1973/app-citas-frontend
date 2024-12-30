@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { findClientByPhoneNumber } from "../../firebaseFunctions";
-import { sendMessage } from "../../twilioFunctions";
 
 const ForgotPassword = () => {
   //const [dataFound, setDataFound] = useState(false);
@@ -24,11 +23,32 @@ const ForgotPassword = () => {
       //enviar mensaje al usuario con sus datos
       // setFoundUsername(foundClient.username);
       // setFoundPassword(foundClient.password);
-      const message = `Hola! 😊 tus datos de inicio de sesión son: \n
-       Usuario: ${foundClient.username} \n
-       Contraseña: ${foundClient.password}`;
+      const message = `Tus datos de inicio de sesión en easy agenda son los siguientes 😊:\n
+      *Usuario:* ${foundClient.username}\n
+      *Contraseña:* ${foundClient.password}\n
+      Si tienes alguna duda,\n
+      contáctanos al:\n
+      +52 662 423 7920.`;
 
-      sendMessage(foundClient.phoneNumber, message);
+      const body = {
+        phoneNumber: foundClient.cellphone,
+        message: message,
+      };
+
+      const response = await fetch(
+        "https://app-citas-backend.vercel.app/api/data-message",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      );
+
+      if (response.ok) {
+        alert("Mensaje enviado con éxito");
+      }
     } else {
       alert("El número de celular no se encontró, pruebe nuevamente");
     }
