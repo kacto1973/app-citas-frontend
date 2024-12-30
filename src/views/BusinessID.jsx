@@ -78,7 +78,7 @@ const BusinessID = () => {
 
               <button
                 type="submit"
-                className="px-2 py-2 rounded-md my-4 bg-softgreen text-white w-[120px] bg-g8"
+                className="px-2 py-2 rounded-md my-4 text-white w-[120px] bg-g8"
               >
                 Validar
               </button>

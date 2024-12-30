@@ -32,6 +32,7 @@ export default {
         g6: "#2E1B99",
         g7: "#F9F9F9",
         g8: "#5B49DE",
+        g9: "#D195EE",
       },
       fontFamily: {
         sans: ["Inter", "Poppins", "sans-serif"],

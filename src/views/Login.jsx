@@ -49,17 +49,19 @@ const Login = () => {
 
   return (
     <>
-      <div className="bg-black relative  min-h-screen flex flex-col justify-center items-center">
+      <div className="bg-[linear-gradient(209deg,#4C2DFF_0%,#DE9FFE_62%,#855F98_100%)] overflow-hidden relative   min-h-screen flex flex-col justify-center items-center">
         <img
-          src="/images/Screenshot_1.png"
+          src="/images/logoBaza.png"
           alt="logo"
-          width={150}
-          className="mx-auto mt-5 absolute top-[30px] rounded-full"
+          width={120}
+          className="mx-auto mt-5 absolute top-[13%] rounded-full"
         />
-        <div className="top-[27%] absolute flex flex-col m-auto w-[70%] rounded-md p-1 bg-gray-100">
-          <h2 className="mx-auto mt-5 text-black text-2xl font-black">
-            Inicio de Sesión
-          </h2>
+        <div className="absolute  bg-g4 -bottom-[135%] -right-[160%] w-[200%] h-[200%] rotate-144" />
+        <div className="absolute top-0 bg-g4 w-full text-center h-[13%] rounded-b-[30px] flex justify-center items-center">
+          <h1 className="text-3xl font-black text-white">Bienvenido</h1>
+        </div>
+        <div className="top-[34%] absolute flex flex-col m-auto w-[85%] rounded-3xl p-5 bg-g7 text-center">
+          <h2 className=" text-black text-2xl font-black">Inicio de Sesión</h2>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col justify-center items-center">
               <input
@@ -69,7 +71,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 onKeyDown={handleKeyDown}
                 required
-                className="w-[150px] border border-black rounded-md mt-4 py-1.5 text-center"
+                className="w-[90%] border border-black rounded-md my-4 py-1.5 text-center"
               />
               <input
                 type="password"
@@ -78,25 +80,29 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={handleKeyDown}
                 required
-                className="w-[150px] border border-black rounded-md mt-5 mb-4 py-1.5 text-center"
+                className="w-[90%] border border-black rounded-md mt-5 mb-4 py-1.5 text-center"
               />
               <button
                 type="submit"
-                className="px-2 py-1 rounded-md mt-4 mb-5 bg-c1 text-white w-[120px]"
+                className="px-2 py-1 rounded-md mt-4 mb-2 bg-g8 text-white w-[120px]"
               >
                 Iniciar Sesión
               </button>
             </div>
           </form>
         </div>
-        <p
-          className="absolute bottom-[33%] text-white w-full text-center  mt-5 mb-5 underline cursor-pointer"
+        <button
+          className="absolute bottom-[15%] text-white text-center  mt-5 mb-5 bg-g9 px-2 py-1 rounded-md w-[120px] cursor-pointer"
           onClick={handleRegister}
         >
-          Regístrate Aquí
+          Registrarme
+        </button>
+        <p className="text-white text-base font-black absolute bottom-[8%] text-center w-[90%]">
+          Si es su primera vez aquí, deberá registrarse con el botón de arriba e
+          iniciar sesión posteriormente
         </p>
         <p
-          className="absolute bottom-[26%] text-white w-full text-center my-6 underline cursor-pointer"
+          className="absolute bottom-[23%] text-white w-full text-center my-6 underline cursor-pointer"
           onClick={() => navigate("/forgotpassword")}
         >
           Olvidé mi contraseña
