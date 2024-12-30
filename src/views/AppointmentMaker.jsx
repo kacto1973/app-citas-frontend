@@ -514,7 +514,7 @@ const AppointmentMaker = () => {
   return (
     <div className="relative w-full min-h-screen flex flex-col items-center bg-black">
       <h1 className="mx-auto mt-10 text-white text-2xl font-black">
-        Agendador de Citas
+        Nuestros Servicios
       </h1>
 
       <div className="flex flex-col justify-center items-center w-[80%] ">

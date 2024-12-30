@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      rotate: {
+        144: "144deg",
+      },
       colors: {
         green: "#148527",
         red: "#dc2626",
@@ -21,6 +24,14 @@ export default {
         c3: "#A5BFCC",
         c4: "#F4EDD3",
         d1: "#1E201E",
+        g1: "#4C2DFF",
+        g2: "#DE9FFE",
+        g3: "#855F98",
+        g4: "#17153B",
+        g5: "#1400FF",
+        g6: "#2E1B99",
+        g7: "#F9F9F9",
+        g8: "#5B49DE",
       },
       fontFamily: {
         sans: ["Inter", "Poppins", "sans-serif"],
