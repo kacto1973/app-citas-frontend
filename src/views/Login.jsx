@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateClient, validateAdmin } from "../../firebaseFunctions";
 import { set } from "firebase/database";
+import Alert from "@mui/material/Alert";
 
 /*esto esta nomas en la rama main */
 
@@ -10,6 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   //functions
   const handleLogin = (e) => {
@@ -28,7 +30,7 @@ const Login = () => {
         window.location.reload();
         navigate("/admindashboard");
       } else {
-        alert("Usuario o contraseña incorrectos");
+        setError("Usuario o contraseña incorrectos, intente nuevamente");
         setUsername("");
         setPassword("");
       }
@@ -108,6 +110,13 @@ const Login = () => {
           Olvidé mi contraseña
         </p>
       </div>
+      {error && (
+        <div className="z-50 fixed bottom-[5%] left-[50%] -translate-x-1/2 w-[80%]">
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        </div>
+      )}
     </>
   );
 };

@@ -1,18 +1,23 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { findClientByPhoneNumber } from "../../firebaseFunctions";
+import Alert from "@mui/material/Alert";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   //const [dataFound, setDataFound] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   // const [foundUsername, setFoundUsername] = useState("");
   // const [foundPassword, setFoundPassword] = useState("");
+  const [success, setSuccess] = useState(false); // Estado para la alerta de éxito
+  const [error, setError] = useState(""); // Estado para posibles errores
 
   const handleClick = async (phoneNumber) => {
     const string = phoneNumber.toString();
     //filtramos los campos
     if (string.length !== 10) {
-      alert("El número de celular debe tener 10 dígitos");
+      setError("El número de celular debe tener 10 dígitos");
       return;
     }
     console.log("hola desde click, esto es phone number string ", string);
@@ -47,10 +52,15 @@ const ForgotPassword = () => {
       );
 
       if (response.ok) {
-        alert("Mensaje enviado con éxito");
+        setSuccess(true); // Mostrar alerta de éxito
+        setError(""); // Limpiar errores
+      } else {
+        setError("No se pudo enviar el mensaje, intenta nuevamente.");
       }
     } else {
-      alert("El número de celular no se encontró, pruebe nuevamente");
+      setError(
+        "No se encontró ese número en los registros, intenta nuevamente."
+      );
     }
   };
 
@@ -63,6 +73,15 @@ const ForgotPassword = () => {
       {/* <p className="text-white text-sm absolute top-[1%]">
         Si eres administrador, envía mensaje al +52 662-423-7920
       </p> */}
+      <img
+        className="absolute top-10 left-8 z-10"
+        src="/images/return.png"
+        width={25}
+        alt="return"
+        onClick={() => {
+          navigate("/");
+        }}
+      />
       <p className="absolute text-white top-[20%] font-black w-[80%] text-center">
         Si ya te registraste y olvidaste tus datos, te los enviaremos a tu
         whatsapp para que puedas iniciar sesión sin problemas
@@ -136,6 +155,20 @@ const ForgotPassword = () => {
           </div>
         </form>
       </div>
+      {success && (
+        <div className="z-50 fixed bottom-[5%] w-[80%]">
+          <Alert severity="success" onClose={() => setSuccess(false)}>
+            ¡Mensaje enviado con éxito!
+          </Alert>
+        </div>
+      )}
+      {error && (
+        <div className="z-50 fixed bottom-[5%] w-[80%]">
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        </div>
+      )}
     </div>
   );
 };

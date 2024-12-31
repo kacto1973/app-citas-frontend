@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateBusinessID } from "../../firebaseFunctions";
+import Alert from "@mui/material/Alert";
 
 const BusinessID = () => {
   //useStates
   const navigate = useNavigate();
   const [businessID, setBusinessID] = useState("");
+  const [error, setError] = useState(false);
 
   //functions
   const handleClick = (e) => {
@@ -21,8 +23,8 @@ const BusinessID = () => {
         window.location.reload();
         navigate("/login");
       } else {
+        setError("Código de negocio no encontrado, intente nuevamente");
         setBusinessID("");
-        alert("El ID de negocio no es válido, intente nuevamente por favor");
       }
     };
     asyncFunc();
@@ -86,6 +88,13 @@ const BusinessID = () => {
           </form>
         </div>
       </div>
+      {error && (
+        <div className="z-50 fixed bottom-[5%] left-[50%] -translate-x-1/2 w-[80%]">
+          <Alert severity="error" onClose={() => setError("")}>
+            {error}
+          </Alert>
+        </div>
+      )}
     </>
   );
 };
