@@ -121,10 +121,10 @@ const ClientDashboard = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-g10 overflow-hidden ">
-      <div className="absolute -top-[82%] left-[50%] -translate-x-1/2 rounded-full bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[100%] w-[200%]" />
-      <div className="flex flex-col justify-center items-center w-full pt-[25%]">
+      <div className=" fixed z-10 -top-[80%] left-[50%] -translate-x-1/2 rounded-full bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[100%] w-[200%] " />
+      <div className="relative flex flex-col justify-center items-center w-full pt-[25%] min-h-screen">
         <img
-          className="absolute top-12 left-8 z-10"
+          className="fixed top-12 left-8 z-10"
           src="/images/logout.png"
           width={30}
           alt="logout"
@@ -139,19 +139,53 @@ const ClientDashboard = () => {
             window.location.reload();
           }}
         />
-        <h1 className="absolute top-11 text-white text-3xl font-black">
+        <h1 className="fixed top-11 text-white text-3xl font-black z-50 ">
           EASY AGENDA
         </h1>
+        <p className="text-base font-black fixed top-[12%] text-white z-50">
+          {new Date().toLocaleDateString("es-MX", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
         {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
-          <p className="mb-4 mt-5 text-center text-white font-black">
-            Sus próximas citas:
-          </p>
+          <>
+            <p className="absolute top-[22%] z-0 text-center text-lg text-black font-black">
+              Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
+              <br />
+              <span className="text-gray-400 text-sm">
+                {" "}
+                Usamos el formato DD/MM/AAAA
+              </span>
+            </p>
+          </>
         ) : (
-          <p className="mb-4 mt-5 text-center text-white font-black">
-            Por ahora no tiene citas agendadas...
-          </p>
+          <>
+            <p className="absolute top-[90%] z-0 text-center text-lg text-black font-black">
+              Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
+            </p>
+            <p className="absolute top-[120%] w-[90%] text-center text-gray-500 text-lg font-black">
+              Por ahora no tiene citas agendadas, cuando quieras haz una con el
+              botón de abajo
+            </p>
+            <img
+              src="/images/side-calendar3d.png"
+              className="absolute top-[160%]"
+              width={140}
+            ></img>
+            {/* <img
+              src="/images/plus.png"
+              className="absolute bottom-[25%] z-50"
+              width={65}
+              onClick={() => {
+                navigate("/appointmentmaker");
+              }}
+            ></img> */}
+          </>
         )}
-        <div className="flex flex-col justify-center items-center w-full">
+        <div className="flex flex-col justify-center items-center w-full -z-0">
           {appointmentsOfClientLoaded &&
             [...appointmentsOfClient] // Copia inmutable del arreglo original
               .sort((a, b) => {
@@ -179,7 +213,7 @@ const ClientDashboard = () => {
 
                 return (
                   <>
-                    <div className="relative w-[86%]  mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
+                    <div className="relative w-[86%] mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
                       <div
                         className={
                           appointment.state === "pagado" || forToday || nextDay
@@ -279,17 +313,27 @@ const ClientDashboard = () => {
                   </>
                 );
               })}
-
-          <button
-            className="px-2 py-1 rounded-md mb-10 mt-5 bg-white font-black text-black w-[120px]"
-            onClick={() => {
-              navigate("/appointmentmaker");
-            }}
-          >
-            Nueva Cita
-          </button>
         </div>
       </div>
+      {appointmentsOfClientLoaded && appointmentsOfClient.length === 0 ? (
+        <img
+          src="/images/plus.png"
+          className="absolute bottom-[20%] left-[50%] -translate-x-1/2"
+          width={65}
+          onClick={() => {
+            navigate("/appointmentmaker");
+          }}
+        ></img>
+      ) : (
+        <img
+          src="/images/plus.png"
+          className="mx-auto"
+          width={65}
+          onClick={() => {
+            navigate("/appointmentmaker");
+          }}
+        ></img>
+      )}
       {!bannerShown && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
