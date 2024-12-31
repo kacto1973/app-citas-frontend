@@ -53,6 +53,18 @@ const Login = () => {
     <>
       <div className="bg-[linear-gradient(209deg,#4C2DFF_0%,#DE9FFE_62%,#855F98_100%)] overflow-hidden relative   min-h-screen flex flex-col justify-center items-center">
         <img
+          className="absolute top-12 left-8 z-10"
+          src="/images/logout.png"
+          width={30}
+          alt="logout"
+          onClick={() => {
+            console.log("logging out of business...");
+            localStorage.removeItem("businessID");
+
+            window.location.reload();
+          }}
+        />
+        <img
           src="/images/logoBaza.png"
           alt="logo"
           width={120}

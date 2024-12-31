@@ -120,10 +120,27 @@ const ClientDashboard = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-black ">
-      <div className="flex flex-col justify-center items-center w-full">
-        <h1 className="mx-auto mt-10 text-white text-2xl font-black">
-          Panel de Citas
+    <div className="relative w-full min-h-screen bg-g10 overflow-hidden ">
+      <div className="absolute -top-[82%] left-[50%] -translate-x-1/2 rounded-full bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[100%] w-[200%]" />
+      <div className="flex flex-col justify-center items-center w-full pt-[25%]">
+        <img
+          className="absolute top-12 left-8 z-10"
+          src="/images/logout.png"
+          width={30}
+          alt="logout"
+          onClick={() => {
+            console.log("logging out...");
+            localStorage.removeItem("cellphone");
+            localStorage.removeItem("p9d4l8rwe");
+            localStorage.removeItem("bannerShown");
+            localStorage.removeItem("username");
+            localStorage.removeItem("userFullName");
+
+            window.location.reload();
+          }}
+        />
+        <h1 className="absolute top-11 text-white text-3xl font-black">
+          EASY AGENDA
         </h1>
         {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
           <p className="mb-4 mt-5 text-center text-white font-black">
