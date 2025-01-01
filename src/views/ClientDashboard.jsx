@@ -120,62 +120,65 @@ const ClientDashboard = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen bg-g10 overflow-hidden ">
-      <div className=" fixed z-10 -top-[80%] left-[50%] -translate-x-1/2 rounded-full bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[100%] w-[200%] " />
-      <div className="relative flex flex-col justify-center items-center w-full pt-[25%] min-h-screen">
-        <img
-          className="fixed top-12 left-8 z-10"
-          src="/images/logout.png"
-          width={30}
-          alt="logout"
-          onClick={() => {
-            console.log("logging out...");
-            localStorage.removeItem("cellphone");
-            localStorage.removeItem("p9d4l8rwe");
-            localStorage.removeItem("bannerShown");
-            localStorage.removeItem("username");
-            localStorage.removeItem("userFullName");
+    // este es el background principal de todo
+    <div className="relative w-full min-h-screen bg-g10  ">
+      {/* este es el gradiente de fondo de arriba */}
+      <div className="fixed z-10 -top-[615px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[760px] w-[100vw] " />
 
-            window.location.reload();
-          }}
-        />
-        <h1 className="fixed top-11 text-white text-3xl font-black z-50 ">
-          EASY AGENDA
-        </h1>
-        <p className="text-base font-black fixed top-[12%] text-white z-50">
-          {new Date().toLocaleDateString("es-MX", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-        {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
-          <>
-            <p className="absolute top-[22%] z-0 text-center text-lg text-black font-black">
-              Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
-              <br />
-              <span className="text-gray-400 text-sm">
-                {" "}
-                Usamos el formato DD/MM/AAAA
-              </span>
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="absolute top-[90%] z-0 text-center text-lg text-black font-black">
-              Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
-            </p>
-            <p className="absolute top-[120%] w-[90%] text-center text-gray-500 text-lg font-black">
-              Por ahora no tiene citas agendadas, cuando quieras haz una con el
-              botón de abajo
-            </p>
-            <img
-              src="/images/side-calendar3d.png"
-              className="absolute top-[160%]"
-              width={140}
-            ></img>
-            {/* <img
+      {/* aqui vamos a poner demas elementos absolutamente colocados   */}
+      <img
+        className="fixed top-12 left-8 z-50"
+        src="/images/logout.png"
+        width={30}
+        alt="logout"
+        onClick={() => {
+          console.log("logging out...");
+          localStorage.removeItem("cellphone");
+          localStorage.removeItem("p9d4l8rwe");
+          localStorage.removeItem("bannerShown");
+          localStorage.removeItem("username");
+          localStorage.removeItem("userFullName");
+
+          window.location.reload();
+        }}
+      />
+      <h1 className="fixed top-11  w-full text-center text-white text-3xl font-black z-10 ">
+        EASY AGENDA
+      </h1>
+      <p className="text-base font-black fixed top-[5.5rem] text-center w-full text-white z-50">
+        {new Date().toLocaleDateString("es-MX", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </p>
+      {appointmentsOfClientLoaded && appointmentsOfClient.length > 0 ? (
+        <>
+          <p className="absolute top-[23%] w-full z-0 text-center text-lg text-black font-black">
+            Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
+            <br />
+            <span className="text-gray-400 text-sm">
+              {" "}
+              Usamos el formato DD/MM/AAAA
+            </span>
+          </p>
+        </>
+      ) : (
+        <>
+          <p className="absolute top-[23%] w-full z-0 text-center text-lg text-black font-black">
+            Bienvenid@ {localStorage.getItem("userFullName").split(" ")[0]}{" "}
+          </p>
+          <p className="absolute top-[32%] w-[80%] left-1/2 -translate-x-1/2 text-center text-gray-500 text-base font-black">
+            Por ahora no tiene citas agendadas, cuando quieras haz una con el
+            botón de abajo
+          </p>
+          <img
+            src="/images/side-calendar3d.png"
+            className="absolute top-[42%] left-[50%] -translate-x-1/2"
+            width={150}
+          ></img>
+          {/* <img
               src="/images/plus.png"
               className="absolute bottom-[25%] z-50"
               width={65}
@@ -183,98 +186,98 @@ const ClientDashboard = () => {
                 navigate("/appointmentmaker");
               }}
             ></img> */}
-          </>
-        )}
-        <div className="flex flex-col justify-center items-center w-full -z-0">
-          {appointmentsOfClientLoaded &&
-            [...appointmentsOfClient] // Copia inmutable del arreglo original
-              .sort((a, b) => {
-                const dateA = new Date(`${a.selectedDate}T${a.selectedTime}`);
-                const dateB = new Date(`${b.selectedDate}T${b.selectedTime}`);
-                return dateA - dateB; // Orden ascendente
-              })
-              .map((appointment, index) => {
-                const localeDateTime = DateTime.fromISO(appointment.createdAt)
-                  .setZone("America/Hermosillo")
-                  .toFormat("yyyy-MM-dd");
+        </>
+      )}
+      {/*  */}
 
-                const selectedDateTime = appointment.selectedDate;
+      {/* <div className="relative flex flex-col justify-center items-center w-full mt-[60%]"> */}
+      {/* este es el contenedor de todas las citas */}
+      <div className="absolute top-[30%] flex flex-col bg-g10 justify-center items-center w-full -z-0">
+        {appointmentsOfClientLoaded &&
+          [...appointmentsOfClient] // Copia inmutable del arreglo original
+            .sort((a, b) => {
+              const dateA = new Date(`${a.selectedDate}T${a.selectedTime}`);
+              const dateB = new Date(`${b.selectedDate}T${b.selectedTime}`);
+              return dateA - dateB; // Orden ascendente
+            })
+            .map((appointment, index) => {
+              const localeDateTime = DateTime.fromISO(appointment.createdAt)
+                .setZone("America/Hermosillo")
+                .toFormat("yyyy-MM-dd");
 
-                const forToday = localeDateTime === selectedDateTime;
+              const selectedDateTime = appointment.selectedDate;
 
-                const localeNextDateTime = DateTime.fromISO(
-                  appointment.createdAt
-                )
-                  .setZone("America/Hermosillo")
-                  .plus({ days: 1 })
-                  .toFormat("yyyy-MM-dd");
+              const forToday = localeDateTime === selectedDateTime;
 
-                const nextDay = localeNextDateTime === selectedDateTime;
+              const localeNextDateTime = DateTime.fromISO(appointment.createdAt)
+                .setZone("America/Hermosillo")
+                .plus({ days: 1 })
+                .toFormat("yyyy-MM-dd");
 
-                return (
-                  <>
-                    <div className="relative w-[86%] mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
-                      <div
-                        className={
-                          appointment.state === "pagado" || forToday || nextDay
-                            ? `absolute bg-green w-[100%] h-[10px] rounded-t-md top-0 left-0`
-                            : `absolute bg-blue  w-[100%] h-[10px] rounded-t-md top-0 left-0`
-                        }
-                      ></div>
-                      {appointment.state === "pagado" ||
-                      forToday ||
-                      nextDay ? null : (
-                        <p className="mb-4 text-white bg-blue   rounded-md p-3 text-xs my-2">
-                          Favor de hacer su anticipo a tiempo antes de las{" "}
-                          {formatTime(appointment.expiresAt)} horas para
-                          confirmar su cita
-                        </p>
-                      )}
-                      <div className="flex flex-row">
-                        <p className="mb-1 text-xl font-black">
-                          {formatDate(appointment.selectedDate)}-{" "}
-                          {appointment.selectedTime} <br />{" "}
-                          <span className=" text-sm font-normal text-gray-500">
-                            ( duración de{" "}
-                            {formatDuration(
-                              appointment.totalDurationOfAppointment
-                            )}
-                            )
-                          </span>
-                        </p>
-                        {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
+              const nextDay = localeNextDateTime === selectedDateTime;
+
+              return (
+                <>
+                  <div className="relative w-[86%] mt-6 mb-4 flex flex-col p-5 rounded-md shadow-md bg-white">
+                    <div
+                      className={
+                        appointment.state === "pagado" || forToday || nextDay
+                          ? `absolute bg-green w-[100%] h-[10px] rounded-t-md top-0 left-0`
+                          : `absolute bg-blue  w-[100%] h-[10px] rounded-t-md top-0 left-0`
+                      }
+                    ></div>
+                    {appointment.state === "pagado" ||
+                    forToday ||
+                    nextDay ? null : (
+                      <p className="mb-4 text-white bg-blue   rounded-md p-3 text-xs my-2">
+                        Favor de hacer su anticipo a tiempo antes de las{" "}
+                        {formatTime(appointment.expiresAt)} horas para confirmar
+                        su cita
+                      </p>
+                    )}
+                    <div className="flex flex-row">
+                      <p className="mb-1 text-xl font-black">
+                        {formatDate(appointment.selectedDate)}-{" "}
+                        {appointment.selectedTime} <br />{" "}
+                        <span className=" text-sm font-normal text-gray-500">
+                          ( duración de{" "}
+                          {formatDuration(
+                            appointment.totalDurationOfAppointment
+                          )}
+                          )
+                        </span>
+                      </p>
+                      {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                 Transfer
               </span> */}
-                        <p className="ml-auto">
-                          <span className="text-green font-black text-xl">
-                            ${appointment.totalCost}
+                      <p className="ml-auto">
+                        <span className="text-green font-black text-xl">
+                          ${appointment.totalCost}
+                        </span>
+                      </p>
+                    </div>
+                    <p className="font-bold">Servicios Enlistados</p>
+                    {appointment.servicesCart &&
+                      appointment.servicesCart.map((service, serviceIndex) => (
+                        <p key={serviceIndex} className="w-[62%]">
+                          • {service.name.toUpperCase()}{" "}
+                          <span className="text-green font-black">
+                            (${service.price})
                           </span>
                         </p>
-                      </div>
-                      <p className="font-bold">Servicios Enlistados</p>
-                      {appointment.servicesCart &&
-                        appointment.servicesCart.map(
-                          (service, serviceIndex) => (
-                            <p key={serviceIndex} className="w-[62%]">
-                              • {service.name.toUpperCase()}{" "}
-                              <span className="text-green font-black">
-                                (${service.price})
-                              </span>
-                            </p>
-                          )
-                        )}
-                      {appointment.extraServicesCart &&
-                        appointment.extraServicesCart.map(
-                          (extraService, extraServiceIndex) => (
-                            <p key={extraServiceIndex} className="w-[62%]">
-                              • {extraService.name.toUpperCase()}{" "}
-                              <span className="text-green font-black">
-                                (${extraService.price})
-                              </span>
-                            </p>
-                          )
-                        )}
-                      {/* <button
+                      ))}
+                    {appointment.extraServicesCart &&
+                      appointment.extraServicesCart.map(
+                        (extraService, extraServiceIndex) => (
+                          <p key={extraServiceIndex} className="w-[62%]">
+                            • {extraService.name.toUpperCase()}{" "}
+                            <span className="text-green font-black">
+                              (${extraService.price})
+                            </span>
+                          </p>
+                        )
+                      )}
+                    {/* <button
                       className="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
                       onClick={() => {
                         //downPayment(appointment.id);
@@ -283,57 +286,58 @@ const ClientDashboard = () => {
                     >
                       Dejar Anticipo
                     </button> */}
-                      {appointment.state === "pagado" || forToday || nextDay ? (
-                        <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[96px] absolute bottom-0 right-5">
-                          Cita Confirmada
-                        </p>
-                      ) : (
-                        <PaymentComponent
-                          business_id={localStorage.getItem("businessID")}
-                          appointmentId={appointment.id}
-                          classNames="py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5"
-                        />
-                      )}
+                    {appointment.state === "pagado" || forToday || nextDay ? (
+                      <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[96px] absolute bottom-0 right-5">
+                        Cita Confirmada
+                      </p>
+                    ) : (
+                      <PaymentComponent
+                        business_id={localStorage.getItem("businessID")}
+                        appointmentId={appointment.id}
+                        classNames="py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5"
+                      />
+                    )}
 
-                      <button
-                        className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute -top-7  -left-4"
-                        onClick={() => {
-                          const userConfirm = confirm(
-                            //aqui depende de si tiene anticipo o no pues mandar distintos alerts
-                            "¿Está usted seguro que desea eliminar esta cita? Una vez dejado el anticipo, no se puede recuperar"
-                          );
-                          if (userConfirm) {
-                            cancelAppointment(appointment.id);
-                          }
-                        }}
-                      >
-                        X
-                      </button>
-                    </div>
-                  </>
-                );
-              })}
-        </div>
+                    <button
+                      className=" py-1 rounded-md my-5 text-xs bg-red text-white w-[30px] absolute -top-7  -left-4"
+                      onClick={() => {
+                        const userConfirm = confirm(
+                          //aqui depende de si tiene anticipo o no pues mandar distintos alerts
+                          "¿Está usted seguro que desea eliminar esta cita? Una vez dejado el anticipo, no se puede recuperar"
+                        );
+                        if (userConfirm) {
+                          cancelAppointment(appointment.id);
+                        }
+                      }}
+                    >
+                      X
+                    </button>
+                  </div>
+                </>
+              );
+            })}
+        {appointmentsOfClientLoaded && appointmentsOfClient.length === 0 ? (
+          <img
+            src="/images/plus.png"
+            className="absolute -bottom-[25rem] left-[50%] -translate-x-1/2"
+            width={65}
+            onClick={() => {
+              navigate("/appointmentmaker");
+            }}
+          ></img>
+        ) : (
+          <img
+            src="/images/plus.png"
+            className="mx-auto relative my-10 z-50 "
+            width={65}
+            onClick={() => {
+              navigate("/appointmentmaker");
+            }}
+          ></img>
+        )}
       </div>
-      {appointmentsOfClientLoaded && appointmentsOfClient.length === 0 ? (
-        <img
-          src="/images/plus.png"
-          className="absolute bottom-[20%] left-[50%] -translate-x-1/2"
-          width={65}
-          onClick={() => {
-            navigate("/appointmentmaker");
-          }}
-        ></img>
-      ) : (
-        <img
-          src="/images/plus.png"
-          className="mx-auto"
-          width={65}
-          onClick={() => {
-            navigate("/appointmentmaker");
-          }}
-        ></img>
-      )}
+      {/* </div> */}
+
       {!bannerShown && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
