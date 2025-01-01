@@ -16,6 +16,9 @@ import { DateTime } from "luxon";
 
 const AppointmentMaker = () => {
   //use states
+  const [stage1, setStage1] = useState(true);
+  const [stage2, setStage2] = useState(false);
+  const [stage3, setStage3] = useState(false);
   const navigate = useNavigate();
   const [showImages, setShowImages] = useState(false);
   const [dateDisplayText, setDateDisplayText] = useState("");
@@ -512,123 +515,143 @@ const AppointmentMaker = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center bg-black">
-      <h1 className="mx-auto mt-10 text-white text-2xl font-black">
-        Nuestros Servicios
+    // fondo papa de todo
+    <div className="relative w-full min-h-screen flex flex-col items-center bg-g10">
+      {/* este es el gradiente de fondo de arriba */}
+      <div className="fixed z-10 -top-[615px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[760px] w-[100vw] " />
+      {/* demas elementos absolutos colocados aca */}
+      <img
+        className="fixed top-11 left-8 z-50"
+        src="/images/return.png"
+        width={25}
+        alt="logout"
+        onClick={() => {
+          navigate("/clientdashboard");
+        }}
+      />
+      <h1 className="fixed top-10  w-full text-center text-white text-2xl font-black z-10 ">
+        Agendando Cita
       </h1>
 
-      <div className="flex flex-col justify-center items-center w-[80%] ">
-        {showImages && (
-          <>
-            <h1 className="mx-auto mt-5 text-white text-lg font-normal mb-5">
-              Imágenes de Referencia
-            </h1>
-            <div className="relative h-[150px] pt-10   bg-white rounded-md w-[90%]">
-              <p className="absolute top-4 left-8 font-black">Corto</p>
-              <img
-                className="absolute left-[6%]"
-                src="/images/short.png"
-                alt="shortHair"
-                width={80}
-              />
-              <p className="absolute top-4 left-[41%] font-black">Mediano</p>
-              <img
-                className="absolute right-[35%]"
-                src="/images/medium.png"
-                alt="mediumHair"
-                width={75}
-              />
-              <p className="absolute top-4 right-[10%] font-black">Largo</p>
-              <img
-                className="absolute right-0"
-                src="/images/long.png"
-                alt="longHair"
-                width={100}
-              />
-            </div>
-          </>
-        )}
-        <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-gray-100 rounded-md ">
-          <p className="text-center text-black font-black">
-            Seleccione el servicio que desee (
-            <span className="text-red">*</span>)
-          </p>
-          <select
-            value={(selectedService && selectedService.name) || ""}
-            onChange={(e) =>
-              setSelectedService(
-                servicesArray.find((service) => service.name === e.target.value)
-              )
-            }
-            name="serviceName"
-            className="w-full  text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-6"
-          >
-            <option value="">Seleccione una opción</option>
-            {servicesArray.map((service, serviceIndex) => {
-              return (
-                <>
-                  <option id={serviceIndex} value={service.name}>
-                    {service.name}
-                  </option>
-                </>
-              );
-            })}
-          </select>
-          {selectedService && selectedService.hairLength === true ? (
+      <div className="absolute w-full flex flex-col items-center top-[16%]">
+        <h1 className="mx-auto mt-10 text-black text-2xl font-black ">
+          Nuestros Servicios
+        </h1>
+
+        <div className="flex flex-col justify-center items-center w-[80%] ">
+          {showImages && (
             <>
-              <p className=" text-center text-black font-black">
-                Seleccione la longitud de su cabello (
-                <span className="text-red">*</span>)
-              </p>
-              <select
-                value={selectedHairLength || ""}
-                name="serviceName"
-                onChange={(e) => setSelectedHairLength(e.target.value)}
-                className="w-full  text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
-              >
-                <option value="">Seleccione una opción</option>
-                <option value="short">Corto</option>
-                <option value="medium">Mediano</option>
-                <option value="long">Largo</option>
-              </select>
+              <h1 className="mx-auto mt-5 text-black text-lg font-normal mb-5">
+                Imágenes de Referencia
+              </h1>
+              <div className="relative h-[150px] pt-10   bg-white rounded-md w-[90%]">
+                <p className="absolute top-4 left-8 font-black">Corto</p>
+                <img
+                  className="absolute left-[6%]"
+                  src="/images/short.png"
+                  alt="shortHair"
+                  width={80}
+                />
+                <p className="absolute top-4 left-[41%] font-black">Mediano</p>
+                <img
+                  className="absolute right-[35%]"
+                  src="/images/medium.png"
+                  alt="mediumHair"
+                  width={75}
+                />
+                <p className="absolute top-4 right-[10%] font-black">Largo</p>
+                <img
+                  className="absolute right-0"
+                  src="/images/long.png"
+                  alt="longHair"
+                  width={100}
+                />
+              </div>
             </>
-          ) : null}
-          <p className="text-center text-black font-black">
-            ¿Algún servicio extra?
-          </p>
-          <select
-            value={(selectedExtraService && selectedExtraService.name) || ""}
-            onChange={(e) =>
-              setSelectedExtraService(
-                extraServicesArray.find(
-                  (extraService) => extraService.name === e.target.value
+          )}
+          <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-gray-100 rounded-md ">
+            <p className="text-center text-black font-black">
+              Seleccione el servicio que desee (
+              <span className="text-red">*</span>)
+            </p>
+            <select
+              value={(selectedService && selectedService.name) || ""}
+              onChange={(e) =>
+                setSelectedService(
+                  servicesArray.find(
+                    (service) => service.name === e.target.value
+                  )
                 )
-              )
-            }
-            name="serviceName"
-            className="w-full text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
+              }
+              name="serviceName"
+              className="w-full  text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-6"
+            >
+              <option value="">Seleccione una opción</option>
+              {servicesArray.map((service, serviceIndex) => {
+                return (
+                  <>
+                    <option id={serviceIndex} value={service.name}>
+                      {service.name}
+                    </option>
+                  </>
+                );
+              })}
+            </select>
+            {selectedService && selectedService.hairLength === true ? (
+              <>
+                <p className=" text-center text-black font-black">
+                  Seleccione la longitud de su cabello (
+                  <span className="text-red">*</span>)
+                </p>
+                <select
+                  value={selectedHairLength || ""}
+                  name="serviceName"
+                  onChange={(e) => setSelectedHairLength(e.target.value)}
+                  className="w-full  text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
+                >
+                  <option value="">Seleccione una opción</option>
+                  <option value="short">Corto</option>
+                  <option value="medium">Mediano</option>
+                  <option value="long">Largo</option>
+                </select>
+              </>
+            ) : null}
+            <p className="text-center text-black font-black">
+              ¿Algún servicio extra?
+            </p>
+            <select
+              value={(selectedExtraService && selectedExtraService.name) || ""}
+              onChange={(e) =>
+                setSelectedExtraService(
+                  extraServicesArray.find(
+                    (extraService) => extraService.name === e.target.value
+                  )
+                )
+              }
+              name="serviceName"
+              className="w-full text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
+            >
+              <option value="">Seleccione una opción</option>
+              {extraServicesArray.map((extraService, extraServiceIndex) => {
+                return (
+                  <option id={extraServiceIndex} value={extraService.name}>
+                    {extraService.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <button
+            onClick={addAllServicesToCart}
+            className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[200px]"
           >
-            <option value="">Seleccione una opción</option>
-            {extraServicesArray.map((extraService, extraServiceIndex) => {
-              return (
-                <option id={extraServiceIndex} value={extraService.name}>
-                  {extraService.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+            Agregar Seleccionados
+          </button>
 
-        <button
-          onClick={addAllServicesToCart}
-          className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[200px]"
-        >
-          Agregar Seleccionados
-        </button>
-
-        {servicesCart && servicesCart.length > 0 ? (
-          <>
-            {/* <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
+          {servicesCart && servicesCart.length > 0 ? (
+            <>
+              {/* <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
               <thead className="bg-blue text-white">
                 <tr>
                   <td className="border p-1 border-black">Nombre</td>
@@ -668,57 +691,58 @@ const AppointmentMaker = () => {
                 ))}
               </tbody>
             </table> */}
-            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
-              Servicios Seleccionados
-            </h1>
-            <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
-              <thead className="bg-blue text-white">
-                <tr>
-                  <th className="px-4 py-2 border border-black">Nombre</th>
-                  <th className="px-4 py-2 border border-black">Precio</th>
-                  <th className="px-4 py-2 border border-black">Acción</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {servicesCart.map((service, serviceIndex) => (
-                  <tr key={serviceIndex} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 border border-black">
-                      {service.name}
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      <span className="text-green font-bold">
-                        ${service.price}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      <button
-                        className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
-                        onClick={() => {
-                          const userConfirmation = confirm(
-                            `¿Eliminar servicio: ${service.name}?`
-                          );
-                          if (userConfirmation) {
-                            setServicesCart(
-                              servicesCart.filter(
-                                (serviceFiltered) => serviceFiltered !== service
-                              )
-                            );
-                          }
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
+              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
+                Servicios Seleccionados
+              </h1>
+              <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
+                <thead className="bg-blue text-white">
+                  <tr>
+                    <th className="px-4 py-2 border border-black">Nombre</th>
+                    <th className="px-4 py-2 border border-black">Precio</th>
+                    <th className="px-4 py-2 border border-black">Acción</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        ) : null}
+                </thead>
+                <tbody className="bg-white">
+                  {servicesCart.map((service, serviceIndex) => (
+                    <tr key={serviceIndex} className="hover:bg-gray-100">
+                      <td className="px-4 py-2 border border-black">
+                        {service.name}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        <span className="text-green font-bold">
+                          ${service.price}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        <button
+                          className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
+                          onClick={() => {
+                            const userConfirmation = confirm(
+                              `¿Eliminar servicio: ${service.name}?`
+                            );
+                            if (userConfirmation) {
+                              setServicesCart(
+                                servicesCart.filter(
+                                  (serviceFiltered) =>
+                                    serviceFiltered !== service
+                                )
+                              );
+                            }
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          ) : null}
 
-        {extraServicesCart && extraServicesCart.length > 0 ? (
-          <>
-            {/* <h1 className="text-lg mt-10 mb-2">
+          {extraServicesCart && extraServicesCart.length > 0 ? (
+            <>
+              {/* <h1 className="text-lg mt-10 mb-2">
               Servicios Extra Seleccionados
             </h1>
             <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
@@ -762,241 +786,248 @@ const AppointmentMaker = () => {
                 ))}
               </tbody>
             </table> */}
-            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
-              Servicios Extra Seleccionados
-            </h1>
-            <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
-              <thead className="bg-blue text-white">
-                <tr>
-                  <th className="px-4 py-2 border border-black">Nombre</th>
-                  <th className="px-4 py-2 border border-black">Precio</th>
-                  <th className="px-4 py-2 border border-black">Acción</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {extraServicesCart.map((extraService, extraServiceIndex) => (
-                  <tr key={extraServiceIndex} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 border border-black">
-                      {extraService.name}
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      <span className="text-green font-black">
-                        ${extraService.price}
-                      </span>
-                    </td>
-                    <td className="px-4 py-2 border border-black">
-                      <button
-                        className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
-                        onClick={() => {
-                          const userConfirmation = confirm(
-                            `¿Eliminar servicio extra: ${extraService.name}?`
-                          );
-                          if (userConfirmation) {
-                            setExtraServicesCart(
-                              extraServicesCart.filter(
-                                (extraServiceFiltered) =>
-                                  extraServiceFiltered !== extraService
-                              )
-                            );
-                          }
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
+              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
+                Servicios Extra Seleccionados
+              </h1>
+              <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
+                <thead className="bg-blue text-white">
+                  <tr>
+                    <th className="px-4 py-2 border border-black">Nombre</th>
+                    <th className="px-4 py-2 border border-black">Precio</th>
+                    <th className="px-4 py-2 border border-black">Acción</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        ) : null}
+                </thead>
+                <tbody className="bg-white">
+                  {extraServicesCart.map((extraService, extraServiceIndex) => (
+                    <tr key={extraServiceIndex} className="hover:bg-gray-100">
+                      <td className="px-4 py-2 border border-black">
+                        {extraService.name}
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        <span className="text-green font-black">
+                          ${extraService.price}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2 border border-black">
+                        <button
+                          className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
+                          onClick={() => {
+                            const userConfirmation = confirm(
+                              `¿Eliminar servicio extra: ${extraService.name}?`
+                            );
+                            if (userConfirmation) {
+                              setExtraServicesCart(
+                                extraServicesCart.filter(
+                                  (extraServiceFiltered) =>
+                                    extraServiceFiltered !== extraService
+                                )
+                              );
+                            }
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          ) : null}
 
-        <h1 className="text-2xl mt-3 mb-10 text-white font-black">
-          Costo Total:{" "}
-          <span className="text-green font-black">${totalCost}</span>
-        </h1>
+          <h1 className="text-2xl mt-3 mb-10 text-black font-black">
+            Costo Total:{" "}
+            <span className="text-green font-black">${totalCost}</span>
+          </h1>
 
-        {(servicesCart && servicesCart.length > 0) ||
-        (extraServicesCart && extraServicesCart.length > 0) ? (
-          <>
-            <h1 className="text-lg mt-10 mb-2 font-black text-white text-center">
-              Fecha de su Cita
-            </h1>
+          {(servicesCart && servicesCart.length > 0) ||
+          (extraServicesCart && extraServicesCart.length > 0) ? (
+            <>
+              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
+                Fecha de su Cita
+              </h1>
 
-            <div className=" rounded-md bg-c1 p-2  mb-10">
-              <Calendar
-                className="bg-white rounded-md"
-                view="month"
-                value={selectedDate}
-                tileDisabled={handleTileDisabled}
-                onClickDay={(value) => {
-                  handleDateClick(value);
-                }}
-                tileClassName={getTileClassName}
-                nextLabel=">"
-                prevLabel="<"
-                next2Label={null} // Elimina el botón para moverse entre años
-                prev2Label={null} // Elimina el botón para moverse entre años
-                navigationLabel={({ date }) => {
-                  return (
-                    <p
-                      onClick={(e) => e.stopPropagation()} // Detiene cualquier interacción
-                      className="text-center text-lg font-bold uppercase cursor-default "
-                    >
-                      {date.toLocaleDateString("es-MX", {
-                        month: "long",
-                        year: "numeric",
+              <div className=" rounded-md bg-c1 p-2  mb-10">
+                <Calendar
+                  className="bg-white rounded-md"
+                  view="month"
+                  value={selectedDate}
+                  tileDisabled={handleTileDisabled}
+                  onClickDay={(value) => {
+                    handleDateClick(value);
+                  }}
+                  tileClassName={getTileClassName}
+                  nextLabel=">"
+                  prevLabel="<"
+                  next2Label={null} // Elimina el botón para moverse entre años
+                  prev2Label={null} // Elimina el botón para moverse entre años
+                  navigationLabel={({ date }) => {
+                    return (
+                      <p
+                        onClick={(e) => e.stopPropagation()} // Detiene cualquier interacción
+                        className="text-center text-lg font-bold uppercase cursor-default "
+                      >
+                        {date.toLocaleDateString("es-MX", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    );
+                  }}
+                />
+              </div>
+
+              {selectedDate && selectedDate !== null && selectedDate !== "" ? (
+                <>
+                  <p className="text-lg  mb-2 font-black text-black text-center">
+                    Día Seleccionado: <br />
+                    <span className="text-sm font-normal">
+                      {dateDisplayText}
+                    </span>
+                  </p>
+                  <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
+                    Hora de su Cita
+                  </h1>
+
+                  <select
+                    value={selectedTime}
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    name="selectedTime"
+                    id=""
+                    className="w-full   text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-10"
+                  >
+                    <option value="">Seleccione una opción</option>
+                    {timesCombobox &&
+                      timesCombobox.map((time, timeIndex) => {
+                        const disabled = isDisabled(time);
+                        return (
+                          <option
+                            id={timeIndex}
+                            value={time}
+                            disabled={disabled}
+                          >
+                            {time}
+                          </option>
+                        );
                       })}
-                    </p>
-                  );
-                }}
-              />
-            </div>
+                  </select>
+                </>
+              ) : null}
+            </>
+          ) : null}
+        </div>
 
-            {selectedDate && selectedDate !== null && selectedDate !== "" ? (
-              <>
-                <p className="text-lg  mb-2 font-black text-white text-center">
-                  Día Seleccionado: <br />
-                  <span className="text-sm font-normal">{dateDisplayText}</span>
+        {((servicesCart && servicesCart.length > 0) ||
+          (extraServicesCart && extraServicesCart.length > 0)) &&
+        selectedDate !== null &&
+        selectedTime !== null &&
+        selectedTime !== "" ? (
+          <>
+            <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
+              Su cita quedaría así:
+            </h1>
+            <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
+              <div className="flex flex-row mb-2">
+                <p className="font-black text-black">
+                  {dateDisplayText} a las
+                  <br />
+                  {selectedTime} (duración de{" "}
+                  {durationInHours ? durationInHours : 0} hr
+                  {durationInMinutes ? ` ${durationInMinutes}m` : null})
                 </p>
-                <h1 className="text-lg  mb-2 font-black text-white text-center mt-10">
-                  Hora de su Cita
-                </h1>
+                {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
+                  Transfer
+                </span> */}
+                <p className="ml-auto">
+                  <span className="text-green font-black">${totalCost}</span>
+                </p>
+              </div>
+              {/* <p>1 x Corte de cabello - ($50) = $50</p>
+          <p>1 x Tinte de cabello - ($60) = $60</p>
+          <p>1 x Peinado - ($40) = $40</p> */}
+              {servicesCart.map((service, serviceIndex) => (
+                <p key={serviceIndex} className="text-black font-bold">
+                  • {service.name.toUpperCase()}{" "}
+                  <span className="font-black text-green">
+                    (${service.price})
+                  </span>
+                </p>
+              ))}
+              {extraServicesCart.map((extraService, extraServiceIndex) => (
+                <p key={extraServiceIndex} className="text-black  font-bold">
+                  • {extraService.name.toUpperCase()}{" "}
+                  <span className="font-black text-green">
+                    (${extraService.price})
+                  </span>
+                </p>
+              ))}
+            </div>
+            <button
+              type="submit"
+              className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
+              //Deberia aqui en vez de pasar selected date/time,
+              // combinarlos en un date object y pasar eso
+              //ademas me falta agregar cosas del anticipo, como true o cuanto es
+              onClick={async () => {
+                if (!validateTime(selectedTime)) {
+                  alert(
+                    "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
+                  );
+                  return;
+                }
 
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  name="selectedTime"
-                  id=""
-                  className="w-full   text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-10"
-                >
-                  <option value="">Seleccione una opción</option>
-                  {timesCombobox &&
-                    timesCombobox.map((time, timeIndex) => {
-                      const disabled = isDisabled(time);
-                      return (
-                        <option id={timeIndex} value={time} disabled={disabled}>
-                          {time}
-                        </option>
-                      );
-                    })}
-                </select>
-              </>
-            ) : null}
+                const success = await addAppointment(
+                  servicesCart,
+                  extraServicesCart,
+                  totalCost,
+                  selectedDate,
+                  selectedTime,
+                  username,
+                  userFullName,
+                  totalDurationOfAppointment
+                );
+                if (success) {
+                  const expiresAt = new Date(
+                    new Date().setHours(new Date().getHours() + 12)
+                  ).toISOString();
+
+                  const formattedExpiration = formatTime(expiresAt);
+
+                  const todayLocalDate = DateTime.now()
+                    .setZone("America/Hermosillo")
+                    .toFormat("yyyy-MM-dd");
+
+                  const dayAfterLocalDate = DateTime.now()
+                    .setZone("America/Hermosillo")
+                    .plus({ days: 1 })
+                    .toFormat("yyyy-MM-dd");
+
+                  const selectedDateFormatted = formatDate(selectedDate);
+
+                  if (
+                    selectedDateFormatted === todayLocalDate ||
+                    selectedDateFormatted === dayAfterLocalDate
+                  ) {
+                    alert(
+                      "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
+                    );
+                  } else {
+                    alert(
+                      `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
+                    );
+                  }
+
+                  navigate("/clientdashboard");
+                } else {
+                  console.error("Hubo un error al agregar la cita");
+                }
+              }}
+            >
+              Confirmar Cita
+            </button>
           </>
         ) : null}
       </div>
-
-      {((servicesCart && servicesCart.length > 0) ||
-        (extraServicesCart && extraServicesCart.length > 0)) &&
-      selectedDate !== null &&
-      selectedTime !== null &&
-      selectedTime !== "" ? (
-        <>
-          <h1 className="text-lg  mb-2 font-black text-white text-center mt-10">
-            Su cita quedaría así:
-          </h1>
-          <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
-            <div className="flex flex-row mb-2">
-              <p className="font-black text-black">
-                {dateDisplayText} a las
-                <br />
-                {selectedTime} (duración de{" "}
-                {durationInHours ? durationInHours : 0} hr
-                {durationInMinutes ? ` ${durationInMinutes}m` : null})
-              </p>
-              {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
-                  Transfer
-                </span> */}
-              <p className="ml-auto">
-                <span className="text-green font-black">${totalCost}</span>
-              </p>
-            </div>
-            {/* <p>1 x Corte de cabello - ($50) = $50</p>
-          <p>1 x Tinte de cabello - ($60) = $60</p>
-          <p>1 x Peinado - ($40) = $40</p> */}
-            {servicesCart.map((service, serviceIndex) => (
-              <p key={serviceIndex} className="text-black font-bold">
-                • {service.name.toUpperCase()}{" "}
-                <span className="font-black text-green">
-                  (${service.price})
-                </span>
-              </p>
-            ))}
-            {extraServicesCart.map((extraService, extraServiceIndex) => (
-              <p key={extraServiceIndex} className="text-black  font-bold">
-                • {extraService.name.toUpperCase()}{" "}
-                <span className="font-black text-green">
-                  (${extraService.price})
-                </span>
-              </p>
-            ))}
-          </div>
-          <button
-            type="submit"
-            className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
-            //Deberia aqui en vez de pasar selected date/time,
-            // combinarlos en un date object y pasar eso
-            //ademas me falta agregar cosas del anticipo, como true o cuanto es
-            onClick={async () => {
-              if (!validateTime(selectedTime)) {
-                alert(
-                  "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
-                );
-                return;
-              }
-
-              const success = await addAppointment(
-                servicesCart,
-                extraServicesCart,
-                totalCost,
-                selectedDate,
-                selectedTime,
-                username,
-                userFullName,
-                totalDurationOfAppointment
-              );
-              if (success) {
-                const expiresAt = new Date(
-                  new Date().setHours(new Date().getHours() + 12)
-                ).toISOString();
-
-                const formattedExpiration = formatTime(expiresAt);
-
-                const todayLocalDate = DateTime.now()
-                  .setZone("America/Hermosillo")
-                  .toFormat("yyyy-MM-dd");
-
-                const dayAfterLocalDate = DateTime.now()
-                  .setZone("America/Hermosillo")
-                  .plus({ days: 1 })
-                  .toFormat("yyyy-MM-dd");
-
-                const selectedDateFormatted = formatDate(selectedDate);
-
-                if (
-                  selectedDateFormatted === todayLocalDate ||
-                  selectedDateFormatted === dayAfterLocalDate
-                ) {
-                  alert(
-                    "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
-                  );
-                } else {
-                  alert(
-                    `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
-                  );
-                }
-
-                navigate("/clientdashboard");
-              } else {
-                console.error("Hubo un error al agregar la cita");
-              }
-            }}
-          >
-            Confirmar Cita
-          </button>
-        </>
-      ) : null}
     </div>
   );
 };
