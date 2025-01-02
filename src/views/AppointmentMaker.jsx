@@ -16,7 +16,7 @@ import { DateTime } from "luxon";
 
 const AppointmentMaker = () => {
   //use states
-  const [showServices, setShowServices] = useState(true);
+  const [showServices, setShowServices] = useState(false);
   const [stage1, setStage1] = useState(true);
   const [stage2, setStage2] = useState(false);
   const [stage3, setStage3] = useState(false);
@@ -546,6 +546,9 @@ const AppointmentMaker = () => {
         }`}
       >
         <h3 className="text-lg font-bold ml-4 mt-4">Servicios Seleccionados</h3>
+        <p className="absolute right-8 top-4 text-green font-black text-2xl">
+          ${totalCost}
+        </p>
         {servicesCart && servicesCart.length > 3 ? (
           <>
             <p className="ml-4 mt-2">
