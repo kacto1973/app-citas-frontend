@@ -13,9 +13,12 @@ import database from "../../firebaseConfig";
 import { set, get, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+import Alert from "@mui/material/Alert";
 
 const AppointmentMaker = () => {
   //use states
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [scrollVisible, setScrollVisible] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -579,8 +582,16 @@ const AppointmentMaker = () => {
             : "opacity-0 translate-y-10 scale-90 pointer-events-none" // Desaparece y se baja
         }`}
       >
-        <h3 className="text-lg font-bold ml-8 mt-4">Servicios Seleccionados</h3>
-        <p className="absolute right-8 top-4 text-green font-black text-2xl">
+        <h3 className="text-base font-bold ml-8 mt-4">{`${
+          selectedDate && selectedTime
+            ? `${dateDisplayText} - ${selectedTime}`
+            : ""
+        }`}</h3>
+        <h3 className="text-sm font-black ml-8 ">
+          {`${servicesCart.length > 3 ? `${servicesCart.length}` : ""}`}{" "}
+          Servicios Seleccionados
+        </h3>
+        <p className="absolute right-8 top-2 text-green font-black text-xl">
           ${totalCost}
         </p>
         {/* <button
@@ -591,9 +602,6 @@ const AppointmentMaker = () => {
         </button> */}
         {servicesCart && servicesCart.length > 3 ? (
           <>
-            <p className="ml-8 mt-2">
-              {servicesCart.length} servicios seleccionados
-            </p>
             <button
               onClick={() => setShowServices(!showServices)}
               className="ml-8 mt-4 bg-g1 text-white py-1 px-2 rounded-md "
@@ -637,6 +645,13 @@ const AppointmentMaker = () => {
         alt="next"
         onClick={() => {
           setCurrentStep((prev) => {
+            if (prev === 1 && servicesCart.length === 0) {
+              setError("Por favor selecciona al menos un servicio");
+              return prev;
+            } else if (prev === 2 && (!selectedDate || !selectedTime)) {
+              setError("Por favor selecciona una fecha y hora");
+              return prev;
+            }
             const step = prev + 1;
 
             // if (step === 4) {
@@ -723,6 +738,7 @@ const AppointmentMaker = () => {
           className={`overflow-y-auto fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
         >
           <h1 className="font-black text-black text-2xl text-center mt-4">
+            {`${servicesCart.length > 3 ? `${servicesCart.length}` : ""}`}{" "}
             Servicios Seleccionados
           </h1>
 
@@ -813,17 +829,21 @@ const AppointmentMaker = () => {
         </div>
 
         {/* div de la parte 2 */}
-        <div className={`${currentStep === 2 ? "" : "hidden"} w-full`}>
+        <div
+          className={`${
+            currentStep === 2 ? "" : "hidden"
+          } w-full flex flex-col items-center pb-[10rem] bg-g10`}
+        >
           {(servicesCart && servicesCart.length > 0) ||
           (extraServicesCart && extraServicesCart.length > 0) ? (
             <>
-              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
-                Fecha de su Cita
+              <h1 className=" text-black text-2xl font-black mb-8 ">
+                Seleccione el día
               </h1>
 
-              <div className=" rounded-md bg-c1 p-2  mb-10">
+              <div className="relative rounded-md bg-white p-2  mb-8 shadow-md w-[80vw]  h-[23rem]">
                 <Calendar
-                  className="bg-white rounded-md"
+                  className="bg-white rounded-md  text-center"
                   view="month"
                   value={selectedDate}
                   tileDisabled={handleTileDisabled}
@@ -849,159 +869,178 @@ const AppointmentMaker = () => {
                     );
                   }}
                 />
+                <div className="absolute bottom-[28%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[28%] left-11   ">Casi Libre</p>
+                <div className="absolute bottom-[19%] left-4 rounded-full bg-amber-300 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[19%] left-11  ">Ocupado</p>
+                <div className="absolute bottom-[9%] left-4 rounded-full bg-rose-400 w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[9%] left-11  ">Muy Ocupado</p>
+                <div className="absolute bottom-[28%] left-[50%] rounded-full bg-white w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[28%] left-[59%]  ">Todo Libre</p>
+                <div className="absolute bottom-[19%] left-[50%] rounded-full bg-gray-200 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[19%] left-[59%]  ">
+                  No Disponible
+                </p>
+                <div className="absolute bottom-[9%] left-[50%] rounded-full bg-blue  w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[9%] left-[59%]  ">
+                  Día Escogido
+                </p>
               </div>
 
-              {selectedDate && selectedDate !== null && selectedDate !== "" ? (
-                <>
-                  <p className="text-lg  mb-2 font-black text-black text-center">
-                    Día Seleccionado: <br />
-                    <span className="text-sm font-normal">
-                      {dateDisplayText}
-                    </span>
-                  </p>
-                  <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
-                    Hora de su Cita
-                  </h1>
+              <h1 className=" text-black text-2xl font-black my-5 ">
+                Elija la Hora
+              </h1>
 
-                  <select
-                    value={selectedTime}
-                    onChange={(e) => setSelectedTime(e.target.value)}
-                    name="selectedTime"
-                    id=""
-                    className="w-full   text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-10"
-                  >
-                    <option value="">Seleccione una opción</option>
-                    {timesCombobox &&
-                      timesCombobox.map((time, timeIndex) => {
-                        const disabled = isDisabled(time);
-                        return (
-                          <option
-                            id={timeIndex}
-                            value={time}
-                            disabled={disabled}
-                          >
-                            {time}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </>
-              ) : null}
+              <select
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                name="selectedTime"
+                id=""
+                className="w-[80vw] font-black shadow-md  text-black bg-white rounded-md h-[3rem]  text-center my-2 mb-10"
+              >
+                <option value="">Seleccione una opción</option>
+                {timesCombobox &&
+                  timesCombobox.map((time, timeIndex) => {
+                    const disabled = isDisabled(time);
+                    return (
+                      <option id={timeIndex} value={time} disabled={disabled}>
+                        {time}
+                      </option>
+                    );
+                  })}
+              </select>
             </>
           ) : null}
         </div>
 
-        {((servicesCart && servicesCart.length > 0) ||
-          (extraServicesCart && extraServicesCart.length > 0)) &&
-        selectedDate !== null &&
-        selectedTime !== null &&
-        selectedTime !== "" ? (
-          <>
-            <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
-              Su cita quedaría así:
-            </h1>
-            <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
-              <div className="flex flex-row mb-2">
-                <p className="font-black text-black">
-                  {dateDisplayText} a las
-                  <br />
-                  {selectedTime} (duración de{" "}
-                  {durationInHours ? durationInHours : 0} hr
-                  {durationInMinutes ? ` ${durationInMinutes}m` : null})
-                </p>
-                {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
+        <div
+          className={` ${
+            currentStep === 3 ? "" : "hidden"
+          } w-full flex flex-col items-center`}
+        >
+          {((servicesCart && servicesCart.length > 0) ||
+            (extraServicesCart && extraServicesCart.length > 0)) &&
+          selectedDate !== null &&
+          selectedTime !== null &&
+          selectedTime !== "" ? (
+            <>
+              <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
+                Su cita quedaría así:
+              </h1>
+              <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
+                <div className="flex flex-row mb-2">
+                  <p className="font-black text-black">
+                    {dateDisplayText} a las
+                    <br />
+                    {selectedTime} (duración de{" "}
+                    {durationInHours ? durationInHours : 0} hr
+                    {durationInMinutes ? ` ${durationInMinutes}m` : null})
+                  </p>
+                  {/* <span className="text-white bg-blue py-0.5 px-1 ml-2 rounded-lg">
                   Transfer
                 </span> */}
-                <p className="ml-auto">
-                  <span className="text-green font-black">${totalCost}</span>
-                </p>
-              </div>
-              {/* <p>1 x Corte de cabello - ($50) = $50</p>
+                  <p className="ml-auto">
+                    <span className="text-green font-black">${totalCost}</span>
+                  </p>
+                </div>
+                {/* <p>1 x Corte de cabello - ($50) = $50</p>
           <p>1 x Tinte de cabello - ($60) = $60</p>
           <p>1 x Peinado - ($40) = $40</p> */}
-              {servicesCart.map((service, serviceIndex) => (
-                <p key={serviceIndex} className="text-black font-bold">
-                  • {service.name.toUpperCase()}{" "}
-                  <span className="font-black text-green">
-                    (${service.price})
-                  </span>
-                </p>
-              ))}
-              {extraServicesCart.map((extraService, extraServiceIndex) => (
-                <p key={extraServiceIndex} className="text-black  font-bold">
-                  • {extraService.name.toUpperCase()}{" "}
-                  <span className="font-black text-green">
-                    (${extraService.price})
-                  </span>
-                </p>
-              ))}
-            </div>
-            <button
-              type="submit"
-              className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
-              //Deberia aqui en vez de pasar selected date/time,
-              // combinarlos en un date object y pasar eso
-              //ademas me falta agregar cosas del anticipo, como true o cuanto es
-              onClick={async () => {
-                if (!validateTime(selectedTime)) {
-                  alert(
-                    "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
-                  );
-                  return;
-                }
-
-                const success = await addAppointment(
-                  servicesCart,
-                  extraServicesCart,
-                  totalCost,
-                  selectedDate,
-                  selectedTime,
-                  username,
-                  userFullName,
-                  totalDurationOfAppointment
-                );
-                if (success) {
-                  const expiresAt = new Date(
-                    new Date().setHours(new Date().getHours() + 12)
-                  ).toISOString();
-
-                  const formattedExpiration = formatTime(expiresAt);
-
-                  const todayLocalDate = DateTime.now()
-                    .setZone("America/Hermosillo")
-                    .toFormat("yyyy-MM-dd");
-
-                  const dayAfterLocalDate = DateTime.now()
-                    .setZone("America/Hermosillo")
-                    .plus({ days: 1 })
-                    .toFormat("yyyy-MM-dd");
-
-                  const selectedDateFormatted = formatDate(selectedDate);
-
-                  if (
-                    selectedDateFormatted === todayLocalDate ||
-                    selectedDateFormatted === dayAfterLocalDate
-                  ) {
+                {servicesCart.map((service, serviceIndex) => (
+                  <p key={serviceIndex} className="text-black font-bold">
+                    • {service.name.toUpperCase()}{" "}
+                    <span className="font-black text-green">
+                      (${service.price})
+                    </span>
+                  </p>
+                ))}
+                {extraServicesCart.map((extraService, extraServiceIndex) => (
+                  <p key={extraServiceIndex} className="text-black  font-bold">
+                    • {extraService.name.toUpperCase()}{" "}
+                    <span className="font-black text-green">
+                      (${extraService.price})
+                    </span>
+                  </p>
+                ))}
+              </div>
+              <button
+                type="submit"
+                className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
+                //Deberia aqui en vez de pasar selected date/time,
+                // combinarlos en un date object y pasar eso
+                //ademas me falta agregar cosas del anticipo, como true o cuanto es
+                onClick={async () => {
+                  if (!validateTime(selectedTime)) {
                     alert(
-                      "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
+                      "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
                     );
-                  } else {
-                    alert(
-                      `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
-                    );
+                    return;
                   }
 
-                  navigate("/clientdashboard");
-                } else {
-                  console.error("Hubo un error al agregar la cita");
-                }
-              }}
-            >
-              Confirmar Cita
-            </button>
-          </>
-        ) : null}
+                  const success = await addAppointment(
+                    servicesCart,
+                    extraServicesCart,
+                    totalCost,
+                    selectedDate,
+                    selectedTime,
+                    username,
+                    userFullName,
+                    totalDurationOfAppointment
+                  );
+                  if (success) {
+                    const expiresAt = new Date(
+                      new Date().setHours(new Date().getHours() + 12)
+                    ).toISOString();
+
+                    const formattedExpiration = formatTime(expiresAt);
+
+                    const todayLocalDate = DateTime.now()
+                      .setZone("America/Hermosillo")
+                      .toFormat("yyyy-MM-dd");
+
+                    const dayAfterLocalDate = DateTime.now()
+                      .setZone("America/Hermosillo")
+                      .plus({ days: 1 })
+                      .toFormat("yyyy-MM-dd");
+
+                    const selectedDateFormatted = formatDate(selectedDate);
+
+                    if (
+                      selectedDateFormatted === todayLocalDate ||
+                      selectedDateFormatted === dayAfterLocalDate
+                    ) {
+                      alert(
+                        "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
+                      );
+                    } else {
+                      alert(
+                        `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
+                      );
+                    }
+
+                    navigate("/clientdashboard");
+                  } else {
+                    console.error("Hubo un error al agregar la cita");
+                  }
+                }}
+              >
+                Confirmar Cita
+              </button>
+            </>
+          ) : null}
+        </div>
       </div>
+      {error && (
+        <div className="z-50 fixed bottom-[5%] w-[90%] left-[50%] transform -translate-x-1/2">
+          <Alert
+            severity="error"
+            variant="filled"
+            onClose={() => setError(false)}
+          >
+            {error}
+          </Alert>
+        </div>
+      )}
     </div>
   );
 };
