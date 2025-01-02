@@ -16,11 +16,13 @@ import { DateTime } from "luxon";
 
 const AppointmentMaker = () => {
   //use states
+  const [showServices, setShowServices] = useState(true);
   const [stage1, setStage1] = useState(true);
   const [stage2, setStage2] = useState(false);
   const [stage3, setStage3] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const [showImages, setShowImages] = useState(false);
+  //const [showImages, setShowImages] = useState(false);
   const [dateDisplayText, setDateDisplayText] = useState("");
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
@@ -35,9 +37,9 @@ const AppointmentMaker = () => {
   const [servicesCart, setServicesCart] = useState([]);
   const [extraServicesCart, setExtraServicesCart] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
-  const [downPaymentTotal, setDownPaymentTotal] = useState(0);
-  const [downPaymentDone, setDownPaymentDone] = useState(false);
-  const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
+  // const [downPaymentTotal, setDownPaymentTotal] = useState(0);
+  // const [downPaymentDone, setDownPaymentDone] = useState(false);
+  // const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
   const [selectedHairLength, setSelectedHairLength] = useState("");
   const [appointmentsMap, setAppointmentsMap] = useState({});
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
@@ -55,24 +57,24 @@ const AppointmentMaker = () => {
   const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
   //useEffect
 
-  useEffect(() => {
-    const asyncFunc = async () => {
-      try {
-        const businessID = localStorage.getItem("businessID").toLowerCase();
-        const imagesRef = ref(
-          database,
-          `businesses/${businessID}/settings/showImages`
-        );
-        const imagesSnapshot = await get(imagesRef);
-        if (imagesSnapshot.exists()) {
-          setShowImages(imagesSnapshot.val());
-        }
-      } catch (error) {
-        console.error("Error al cargar imagenes de referencia", error);
-      }
-    };
-    asyncFunc();
-  }, []);
+  // useEffect(() => {
+  //   const asyncFunc = async () => {
+  //     try {
+  //       const businessID = localStorage.getItem("businessID").toLowerCase();
+  //       const imagesRef = ref(
+  //         database,
+  //         `businesses/${businessID}/settings/showImages`
+  //       );
+  //       const imagesSnapshot = await get(imagesRef);
+  //       if (imagesSnapshot.exists()) {
+  //         setShowImages(imagesSnapshot.val());
+  //       }
+  //     } catch (error) {
+  //       console.error("Error al cargar imagenes de referencia", error);
+  //     }
+  //   };
+  //   asyncFunc();
+  // }, []);
 
   useEffect(() => {
     console.log("map ", appointmentsMap);
@@ -203,21 +205,25 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
-    const fetchExtraServices = async () => {
-      const extraServices = await getExtraServices();
-      if (extraServices) {
-        const arrayOfExtraServices = Object.entries(extraServices).map(
-          ([key, value]) => ({
-            name: key,
-            ...value,
-          })
-        );
+    console.log("servicesArray: ", servicesArray);
+  }, [servicesArray]);
 
-        setExtraServicesArray(arrayOfExtraServices);
-      }
-    };
-    fetchExtraServices();
-  }, []);
+  // useEffect(() => {
+  //   const fetchExtraServices = async () => {
+  //     const extraServices = await getExtraServices();
+  //     if (extraServices) {
+  //       const arrayOfExtraServices = Object.entries(extraServices).map(
+  //         ([key, value]) => ({
+  //           name: key,
+  //           ...value,
+  //         })
+  //       );
+
+  //       setExtraServicesArray(arrayOfExtraServices);
+  //     }
+  //   };
+  //   fetchExtraServices();
+  // }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -238,6 +244,7 @@ const AppointmentMaker = () => {
   useEffect(() => {
     calculateTotalCost();
     calculateTotalDurationOfAppointment();
+    console.log("servicesCart: ", servicesCart);
   }, [servicesCart, extraServicesCart]);
 
   // useEffect(() => {
@@ -245,6 +252,19 @@ const AppointmentMaker = () => {
   // }, [totalDurationOfAppointment]);
 
   //funciones
+
+  const deleteServiceFromCart = (service) => {
+    const newCart = servicesCart.filter(
+      (serviceInCart) => serviceInCart.name !== service.name
+    );
+    setServicesCart(newCart);
+  };
+
+  const addServiceToCart = (service) => {
+    console.log("service: ", service);
+    const newCart = [...servicesCart, service];
+    setServicesCart(newCart);
+  };
 
   const formatTime = (timeInISOString) => {
     const dateObj = new Date(timeInISOString);
@@ -517,6 +537,38 @@ const AppointmentMaker = () => {
   return (
     // fondo papa de todo
     <div className="relative w-full min-h-screen flex flex-col items-center bg-g10">
+      {/* Carta animada */}
+      <div
+        className={`fixed bottom-0 z-50  w-[100vw] h-[18vh] bg-white shadow-black shadow-2xl border-b border-black rounded-t-[30px] transform transition-all duration-500 ${
+          servicesCart.length > 0
+            ? "opacity-100 translate-y-0 scale-100" // Aparece y se levanta
+            : "opacity-0 translate-y-10 scale-90 pointer-events-none" // Desaparece y se baja
+        }`}
+      >
+        <h3 className="text-lg font-bold ml-4 mt-4">Servicios Seleccionados</h3>
+        {servicesCart && servicesCart.length > 3 ? (
+          <>
+            <p className="ml-4 mt-2">
+              {servicesCart.length} servicios seleccionados
+            </p>
+            <button
+              onClick={() => setShowServices(!showServices)}
+              className="ml-4 mt-4 bg-blue text-white py-1 px-2 rounded-md "
+            >
+              Ver Servicios
+            </button>
+          </>
+        ) : (
+          <ul className="ml-4 mt-1">
+            {servicesCart.map((item, index) => (
+              <li key={index} className="text-gray-700">
+                • {item.name} -{" "}
+                <span className="font-black text-green">${item.price}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       {/* este es el gradiente de fondo de arriba */}
       <div className="fixed z-10 -top-[600px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
       {/* demas elementos absolutos colocados aca */}
@@ -536,7 +588,7 @@ const AppointmentMaker = () => {
       {/* wizard / stepper */}
 
       {/* aqui estan las barras */}
-      <div className="w-[70%] absolute top-[11%]">
+      <div className="w-[70%] fixed top-[11%] z-50">
         {/* div blanco de fondo */}
         <div className="absolute w-[100%] bg-white h-[3px] z-10" />
         {/* div negro izquierda */}
@@ -585,10 +637,10 @@ const AppointmentMaker = () => {
 
         {/* textos estaticos */}
         <p className="absolute text-xs text-white z-20 w-[100px] top-4 -left-10 text-center">
-          Selecciona servicios
+          Selecciona Servicios
         </p>
         <p className="absolute text-xs text-white z-20 w-[100px] top-4 left-1/2 -translate-x-1/2 text-center">
-          Elige <br /> fecha y hora
+          Elige <br /> Fecha y Hora
         </p>
         <p className="absolute text-xs text-white z-20 w-[100px] top-4 -right-10 text-center">
           Confirmación de Cita
@@ -596,313 +648,96 @@ const AppointmentMaker = () => {
       </div>
       {/* wizard / stepper */}
 
-      <div className="absolute w-full flex flex-col items-center top-[16%]">
-        <h1 className="mx-auto mt-10 text-black text-2xl font-black ">
-          Nuestros Servicios
-        </h1>
-
-        <div className="flex flex-col justify-center items-center w-[80%] ">
-          {showImages && (
-            <>
-              <h1 className="mx-auto mt-5 text-black text-lg font-normal mb-5">
-                Imágenes de Referencia
-              </h1>
-              <div className="relative h-[150px] pt-10   bg-white rounded-md w-[90%]">
-                <p className="absolute top-4 left-8 font-black">Corto</p>
-                <img
-                  className="absolute left-[6%]"
-                  src="/images/short.png"
-                  alt="shortHair"
-                  width={80}
-                />
-                <p className="absolute top-4 left-[41%] font-black">Mediano</p>
-                <img
-                  className="absolute right-[35%]"
-                  src="/images/medium.png"
-                  alt="mediumHair"
-                  width={75}
-                />
-                <p className="absolute top-4 right-[10%] font-black">Largo</p>
-                <img
-                  className="absolute right-0"
-                  src="/images/long.png"
-                  alt="longHair"
-                  width={100}
-                />
-              </div>
-            </>
-          )}
-          <div className="relative w-[100%] mt-6 mb-2 flex flex-col p-5 bg-gray-100 rounded-md ">
-            <p className="text-center text-black font-black">
-              Seleccione el servicio que desee (
-              <span className="text-red">*</span>)
-            </p>
-            <select
-              value={(selectedService && selectedService.name) || ""}
-              onChange={(e) =>
-                setSelectedService(
-                  servicesArray.find(
-                    (service) => service.name === e.target.value
-                  )
-                )
-              }
-              name="serviceName"
-              className="w-full  text-white bg-c1 rounded-md h-[30px]  text-center my-2 mb-6"
-            >
-              <option value="">Seleccione una opción</option>
-              {servicesArray.map((service, serviceIndex) => {
-                return (
-                  <>
-                    <option id={serviceIndex} value={service.name}>
-                      {service.name}
-                    </option>
-                  </>
-                );
-              })}
-            </select>
-            {selectedService && selectedService.hairLength === true ? (
-              <>
-                <p className=" text-center text-black font-black">
-                  Seleccione la longitud de su cabello (
-                  <span className="text-red">*</span>)
-                </p>
-                <select
-                  value={selectedHairLength || ""}
-                  name="serviceName"
-                  onChange={(e) => setSelectedHairLength(e.target.value)}
-                  className="w-full  text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
-                >
-                  <option value="">Seleccione una opción</option>
-                  <option value="short">Corto</option>
-                  <option value="medium">Mediano</option>
-                  <option value="long">Largo</option>
-                </select>
-              </>
-            ) : null}
-            <p className="text-center text-black font-black">
-              ¿Algún servicio extra?
-            </p>
-            <select
-              value={(selectedExtraService && selectedExtraService.name) || ""}
-              onChange={(e) =>
-                setSelectedExtraService(
-                  extraServicesArray.find(
-                    (extraService) => extraService.name === e.target.value
-                  )
-                )
-              }
-              name="serviceName"
-              className="w-full text-white bg-c1 rounded-md h-[30px] text-center my-2 mb-6"
-            >
-              <option value="">Seleccione una opción</option>
-              {extraServicesArray.map((extraService, extraServiceIndex) => {
-                return (
-                  <option id={extraServiceIndex} value={extraService.name}>
-                    {extraService.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-
-          <button
-            onClick={addAllServicesToCart}
-            className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[200px]"
-          >
-            Agregar Seleccionados
-          </button>
-
-          {servicesCart && servicesCart.length > 0 ? (
-            <>
-              {/* <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
-              <thead className="bg-blue text-white">
-                <tr>
-                  <td className="border p-1 border-black">Nombre</td>
-                  <td className="border px-2 border-black">Precio</td>
-                  <td className="border p-1 border-black">Acción</td>
-                </tr>
-              </thead>
-              <tbody>
-                {servicesCart.map((service, serviceIndex) => (
-                  <tr key={serviceIndex}>
-                    <td className="border border-black">{service.name}</td>
-                    <td className="border border-black">
-                      <span className="text-green font-black">
-                        ${service.price}
-                      </span>
-                    </td>
-                    <td className="border border-black">
-                      <button
-                        className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
-                        onClick={() => {
-                          const userConfirmation = confirm(
-                            `¿Eliminar servicio: ${service.name}?`
-                          );
-                          if (userConfirmation) {
-                            setServicesCart(
-                              servicesCart.filter(
-                                (serviceFiltered) => serviceFiltered !== service
-                              )
-                            );
-                          }
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
-              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
-                Servicios Seleccionados
-              </h1>
-              <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
-                <thead className="bg-blue text-white">
-                  <tr>
-                    <th className="px-4 py-2 border border-black">Nombre</th>
-                    <th className="px-4 py-2 border border-black">Precio</th>
-                    <th className="px-4 py-2 border border-black">Acción</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {servicesCart.map((service, serviceIndex) => (
-                    <tr key={serviceIndex} className="hover:bg-gray-100">
-                      <td className="px-4 py-2 border border-black">
-                        {service.name}
-                      </td>
-                      <td className="px-4 py-2 border border-black">
-                        <span className="text-green font-bold">
-                          ${service.price}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 border border-black">
-                        <button
-                          className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
-                          onClick={() => {
-                            const userConfirmation = confirm(
-                              `¿Eliminar servicio: ${service.name}?`
-                            );
-                            if (userConfirmation) {
-                              setServicesCart(
-                                servicesCart.filter(
-                                  (serviceFiltered) =>
-                                    serviceFiltered !== service
-                                )
-                              );
-                            }
-                          }}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          ) : null}
-
-          {extraServicesCart && extraServicesCart.length > 0 ? (
-            <>
-              {/* <h1 className="text-lg mt-10 mb-2">
-              Servicios Extra Seleccionados
-            </h1>
-            <table className="table-auto w-full border drop-shadow-xl border-black border-collapse text-sm text-center">
-              <thead>
-                <tr>
-                  <td className="border border-black">Nombre</td>
-                  <td className="border border-black">Precio</td>
-                  <td className="border border-black">Acción</td>
-                </tr>
-              </thead>
-              <tbody>
-                {extraServicesCart.map((extraService, extraServiceIndex) => (
-                  <tr key={extraServiceIndex}>
-                    <td className="border border-black">{extraService.name}</td>
-                    <td className="border border-black">
-                      <span className="text-green font-black">
-                        ${extraService.price}
-                      </span>
-                    </td>
-                    <td className="border border-black">
-                      <button
-                        className="px-1 py-0.5 rounded-md m-2.5 bg-red text-white w-[90px]"
-                        onClick={() => {
-                          const userConfirmation = confirm(
-                            `¿Eliminar servicio extra: ${extraService.name}?`
-                          );
-                          if (userConfirmation) {
-                            setExtraServicesCart(
-                              extraServicesCart.filter(
-                                (extraServiceFiltered) =>
-                                  extraServiceFiltered !== extraService
-                              )
-                            );
-                          }
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table> */}
-              <h1 className="text-lg mt-10 mb-2 font-black text-black text-center">
-                Servicios Extra Seleccionados
-              </h1>
-              <table className="table-auto w-full border shadow-md border-collapse text-sm rounded-lg overflow-hidden mb-5">
-                <thead className="bg-blue text-white">
-                  <tr>
-                    <th className="px-4 py-2 border border-black">Nombre</th>
-                    <th className="px-4 py-2 border border-black">Precio</th>
-                    <th className="px-4 py-2 border border-black">Acción</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {extraServicesCart.map((extraService, extraServiceIndex) => (
-                    <tr key={extraServiceIndex} className="hover:bg-gray-100">
-                      <td className="px-4 py-2 border border-black">
-                        {extraService.name}
-                      </td>
-                      <td className="px-4 py-2 border border-black">
-                        <span className="text-green font-black">
-                          ${extraService.price}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2 border border-black">
-                        <button
-                          className="px-3 py-1 rounded-md m-2 bg-red text-white hover:bg-red-700"
-                          onClick={() => {
-                            const userConfirmation = confirm(
-                              `¿Eliminar servicio extra: ${extraService.name}?`
-                            );
-                            if (userConfirmation) {
-                              setExtraServicesCart(
-                                extraServicesCart.filter(
-                                  (extraServiceFiltered) =>
-                                    extraServiceFiltered !== extraService
-                                )
-                              );
-                            }
-                          }}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          ) : null}
-
-          <h1 className="text-2xl mt-3 mb-10 text-black font-black">
-            Costo Total:{" "}
-            <span className="text-green font-black">${totalCost}</span>
+      {/* carta de servicios que se activa con el boton Ver Servicios */}
+      <div
+        className={`${
+          showServices ? "" : "hidden"
+        } w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
+      >
+        <div
+          className={`overflow-y-auto fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
+        >
+          <h1 className="font-black text-black text-2xl text-center mt-4">
+            Servicios Seleccionados
           </h1>
 
+          {servicesCart && servicesCart.length > 0 && (
+            <ul className="my-4 ml-7 text-xl">
+              {servicesCart.map((service, index) => (
+                <li key={index} className="text-black my-2">
+                  • {service.name} -{" "}
+                  <span className="font-black text-green">
+                    ${service.price}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <button
+          onClick={() => {
+            setShowServices(!setShowServices);
+          }}
+          className="fixed right-[8vw] top-[19vh] z-50 bg-red text-xl text-white py-1 px-4 rounded-md"
+        >
+          X
+        </button>
+      </div>
+
+      <div className="absolute w-full flex flex-col items-center top-[22%]">
+        <h1 className=" text-black text-2xl font-black ">Nuestros Servicios</h1>
+        {/* Barra de búsqueda */}
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
+          placeholder="Buscar por nombre..."
+          className="border text-center border-gray-700 p-2 rounded-md mt-4"
+        />
+
+        <div className=" flex flex-col justify-center items-center w-full mt-8  bg-g10">
+          {servicesArray &&
+            servicesArray.length > 0 &&
+            servicesArray
+              .filter((service) =>
+                service.name
+                  .toLowerCase()
+                  .includes(searchQuery.toLocaleLowerCase())
+              )
+              .map((service, serviceIndex) => (
+                <>
+                  <div
+                    id={serviceIndex}
+                    className="relative w-[80%] h-[11vh] text-black bg-white mb-10 rounded-[15px]"
+                  >
+                    <p className="text-lg font-black absolute left-4 top-2 w-[50%]">
+                      {service.name}
+                    </p>
+                    <p className="text-green font-black text-xl absolute right-4 top-2">
+                      ${service.price}
+                    </p>
+                    {servicesCart.some(
+                      (serviceInCart) => serviceInCart.name === service.name
+                    ) ? (
+                      <button
+                        onClick={() => deleteServiceFromCart(service)}
+                        className="text-white bg-red py-1 px-2 rounded-md absolute right-4 bottom-4"
+                      >
+                        Eliminar
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => addServiceToCart(service)}
+                        className="text-white bg-green py-1 px-2 rounded-md absolute right-4 bottom-4"
+                      >
+                        Añadir
+                      </button>
+                    )}
+                  </div>
+                </>
+              ))}
+
+          {/* DESPUESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS */}
           {(servicesCart && servicesCart.length > 0) ||
           (extraServicesCart && extraServicesCart.length > 0) ? (
             <>

@@ -63,7 +63,7 @@ const BusinessID = () => {
         <p className="text-white text-base font-black absolute bottom-[26%] text-center w-[80%]">
           Su código será entregado a usted por el encargado del negocio
         </p>
-        <div className=" text-center bg-g7 absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[85%] h-52 rounded-3xl p-5">
+        <div className=" text-center bg-g7 absolute left-[50%] top-[50%] transform -translate-x-1/2  -translate-y-1/2 flex flex-col m-auto w-[85%]  rounded-3xl p-5">
           <h1 className=" text-black text-xl my-2  font-black ">
             Ingrese el código del negocio
           </h1>

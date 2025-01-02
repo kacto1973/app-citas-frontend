@@ -5,11 +5,11 @@ import { useEffect, useContext } from "react";
 import { useState } from "react";
 import {
   getServices,
-  getExtraServices,
+  //getExtraServices,
   addService,
   deleteService,
-  addExtraService,
-  deleteExtraService,
+  //addExtraService,
+  //deleteExtraService,
 } from "../../firebaseFunctions";
 import database from "../../firebaseConfig";
 import { ref, update, get } from "firebase/database";
@@ -28,21 +28,21 @@ const Services = () => {
   }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
   const [showImages, setShowImages] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [extraEditing, setExtraEditing] = useState(false);
+  //const [extraEditing, setExtraEditing] = useState(false);
 
   const [hairLengthNeeded, setHairLengthNeeded] = useState(false);
 
   const [name, setName] = useState("");
-  const [extraName, setExtraName] = useState("");
+  //const [extraName, setExtraName] = useState("");
 
   const [restTime, setRestTime] = useState(0);
-  const [extraRestTime, setExtraRestTime] = useState(0);
+  //const [extraRestTime, setExtraRestTime] = useState(0);
 
   const [duration, setDuration] = useState("");
-  const [extraDuration, setExtraDuration] = useState("");
+  //const [extraDuration, setExtraDuration] = useState("");
 
   const [price, setPrice] = useState("");
-  const [extraPrice, setExtraPrice] = useState("");
+  //const [extraPrice, setExtraPrice] = useState("");
 
   const [shortDuration, setShortDuration] = useState(""); // Duración corta
   const [mediumDuration, setMediumDuration] = useState(""); // Duración media
@@ -53,10 +53,10 @@ const Services = () => {
   const [longPrice, setLongPrice] = useState(""); // Precio largo
 
   const [services, setServices] = useState([]);
-  const [extraServices, setExtraServices] = useState([]);
+  //const [extraServices, setExtraServices] = useState([]);
 
   const [serviceOldName, setServiceOldName] = useState("");
-  const [extraServiceOldName, setExtraServiceOldName] = useState("");
+  //const [extraServiceOldName, setExtraServiceOldName] = useState("");
 
   const handleToggle = () => {
     setShowImages((prev) => !prev);
@@ -101,24 +101,24 @@ const Services = () => {
   useEffect(() => {
     const asyncFunc = async () => {
       const services = await getServices();
-      const extraServices = await getExtraServices();
+      //const extraServices = await getExtraServices();
       if (services) {
         const arrayServices = Object.values(services);
         setServices(arrayServices);
       }
-      if (extraServices) {
-        const arrayExtraServices = Object.values(extraServices);
-        setExtraServices(arrayExtraServices);
-      }
+      // if (extraServices) {
+      //   const arrayExtraServices = Object.values(extraServices);
+      //   setExtraServices(arrayExtraServices);
+      // }
       setLoading(false);
     };
     asyncFunc();
   }, []);
 
-  useEffect(() => {
-    console.log(services);
-    console.log(extraServices);
-  }, [services, extraServices]);
+  // useEffect(() => {
+  //   console.log(services);
+  //   console.log(extraServices);
+  // }, [services, extraServices]);
 
   const handleAdd = () => {
     if (!name || restTime < 0 || restTime === "") {
@@ -354,104 +354,104 @@ const Services = () => {
 
   //////////////////////////////////////// Servicios Extra ////////////////////////////////////////
 
-  const handleExtraAdd = () => {
-    if (
-      !extraName ||
-      extraRestTime < 0 ||
-      extraRestTime === "" ||
-      !extraDuration ||
-      !extraPrice
-    ) {
-      alert("Por favor llena todos los campos");
-      return;
-    }
+  // const handleExtraAdd = () => {
+  //   if (
+  //     !extraName ||
+  //     extraRestTime < 0 ||
+  //     extraRestTime === "" ||
+  //     !extraDuration ||
+  //     !extraPrice
+  //   ) {
+  //     alert("Por favor llena todos los campos");
+  //     return;
+  //   }
 
-    if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
-      alert(
-        "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
-      );
-      return;
-    }
+  //   if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
+  //     alert(
+  //       "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+  //     );
+  //     return;
+  //   }
 
-    if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
-      alert(
-        "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
-      );
-      return;
-    }
+  //   if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
+  //     alert(
+  //       "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+  //     );
+  //     return;
+  //   }
 
-    const asyncFunct = async () => {
-      console.log("Agregando servicio extra");
-      const newExtraService = {
-        name: extraName,
-        restTime: Number(extraRestTime),
-        duration: Number(extraDuration),
-        price: Number(extraPrice),
-      };
+  //   const asyncFunct = async () => {
+  //     console.log("Agregando servicio extra");
+  //     const newExtraService = {
+  //       name: extraName,
+  //       restTime: Number(extraRestTime),
+  //       duration: Number(extraDuration),
+  //       price: Number(extraPrice),
+  //     };
 
-      await addExtraService(newExtraService);
-    };
-    asyncFunct();
-  };
+  //     await addExtraService(newExtraService);
+  //   };
+  //   asyncFunct();
+  // };
 
-  const handleExtraEdit = (extraService) => {
-    setExtraEditing(true);
-    setExtraServiceOldName(extraService.name);
-    setExtraName(extraService.name);
-    setExtraRestTime(extraService.restTime);
-    setExtraDuration(extraService.duration);
-    setExtraPrice(extraService.price);
-  };
+  // const handleExtraEdit = (extraService) => {
+  //   setExtraEditing(true);
+  //   setExtraServiceOldName(extraService.name);
+  //   setExtraName(extraService.name);
+  //   setExtraRestTime(extraService.restTime);
+  //   setExtraDuration(extraService.duration);
+  //   setExtraPrice(extraService.price);
+  // };
 
-  const saveExtraEdit = () => {
-    if (
-      !extraName ||
-      extraRestTime < 0 ||
-      extraRestTime === "" ||
-      !extraDuration ||
-      !extraPrice
-    ) {
-      alert("Por favor llena todos los campos");
-      return;
-    }
+  // const saveExtraEdit = () => {
+  //   if (
+  //     !extraName ||
+  //     extraRestTime < 0 ||
+  //     extraRestTime === "" ||
+  //     !extraDuration ||
+  //     !extraPrice
+  //   ) {
+  //     alert("Por favor llena todos los campos");
+  //     return;
+  //   }
 
-    if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
-      alert(
-        "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
-      );
-      return;
-    }
+  //   if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
+  //     alert(
+  //       "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
+  //     );
+  //     return;
+  //   }
 
-    if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
-      alert(
-        "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
-      );
-      return;
-    }
+  //   if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
+  //     alert(
+  //       "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
+  //     );
+  //     return;
+  //   }
 
-    const asyncFunct = async () => {
-      console.log("guardando datos editados del servicio extra");
-      const newExtraService = {
-        name: extraName,
-        restTime: Number(extraRestTime),
-        duration: Number(extraDuration),
-        price: Number(extraPrice),
-      };
+  //   const asyncFunct = async () => {
+  //     console.log("guardando datos editados del servicio extra");
+  //     const newExtraService = {
+  //       name: extraName,
+  //       restTime: Number(extraRestTime),
+  //       duration: Number(extraDuration),
+  //       price: Number(extraPrice),
+  //     };
 
-      await addExtraService(newExtraService, extraServiceOldName);
-    };
-    asyncFunct();
-  };
+  //     await addExtraService(newExtraService, extraServiceOldName);
+  //   };
+  //   asyncFunct();
+  // };
 
-  const handleExtraDelete = (extraService) => {
-    console.log("Borrando servicio extra");
+  // const handleExtraDelete = (extraService) => {
+  //   console.log("Borrando servicio extra");
 
-    const asyncFunct = async () => {
-      await deleteExtraService(extraService);
-    };
+  //   const asyncFunct = async () => {
+  //     await deleteExtraService(extraService);
+  //   };
 
-    asyncFunct();
-  };
+  //   asyncFunct();
+  // };
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-black">
@@ -486,7 +486,7 @@ const Services = () => {
               />
             </div>
 
-            <form>
+            {/* <form>
               <div className="my-4 flex flex-col items-center justify-center">
                 <label className="block text-sm font-medium text-white">
                   ¿Requiere saber longitud de cabello?
@@ -519,7 +519,7 @@ const Services = () => {
                   </label>
                 </div>
               </div>
-            </form>
+            </form> */}
           </div>{" "}
           {/**esta parte de arriba se queda siempre lo que cambia es lo de abajp */}
           <div>
@@ -621,19 +621,19 @@ const Services = () => {
                   <th className="px-4 py-2 border text-left">
                     Tiempo Descanso
                   </th>
-                  <th className="px-4 py-2 border text-left">
+                  {/* <th className="px-4 py-2 border text-left">
                     Longitud Cabello
-                  </th>
+                  </th> */}
                   <th className="px-4 py-2 border text-left">Duración</th>
-                  <th className="px-4 py-2 border text-left">Duración Corta</th>
+                  {/* <th className="px-4 py-2 border text-left">Duración Corta</th>
                   <th className="px-4 py-2 border text-left">
                     Duración Mediana
                   </th>
-                  <th className="px-4 py-2 border text-left">Duración Larga</th>
+                  <th className="px-4 py-2 border text-left">Duración Larga</th> */}
                   <th className="px-4 py-2 border text-left">Precio</th>
-                  <th className="px-4 py-2 border text-left">Precio Corto</th>
+                  {/* <th className="px-4 py-2 border text-left">Precio Corto</th>
                   <th className="px-4 py-2 border text-left">Precio Mediano</th>
-                  <th className="px-4 py-2 border text-left">Precio Largo</th>
+                  <th className="px-4 py-2 border text-left">Precio Largo</th> */}
                   <th className="px-4 py-2 border text-left">Acción</th>
                 </tr>
               </thead>
@@ -647,10 +647,10 @@ const Services = () => {
                       <tr className="bg-white">
                         <td className="px-4 py-2 border">{service.name}</td>
                         <td className="px-4 py-2 border">{service.restTime}</td>
-                        <td className="px-4 py-2 border">
+                        {/* <td className="px-4 py-2 border">
                           {service.hairLength ? "Sí" : "No"}
-                        </td>
-                        {service.hairLength ? (
+                        </td> */}
+                        {/* {service.hairLength ? (
                           <>
                             <td className="px-4 py-2 border ">N/A</td>
                             <td className="px-4 py-2 border">
@@ -688,7 +688,10 @@ const Services = () => {
                             <td className="px-4 py-2 border">N/A</td>
                             <td className="px-4 py-2 border">N/A</td>
                           </>
-                        )}
+                        )} */}
+                        <td className="px-4 py-2 border">{service.duration}</td>
+                        <td className="px-4 py-2 border">{service.price}</td>
+
                         <td className="border">
                           <div className="flex justify-evenly">
                             <button
@@ -720,7 +723,7 @@ const Services = () => {
               </tbody>
             </table>
           </div>
-          <h1 className="text-2xl text-white font-black mt-10 mb-5">
+          {/* <h1 className="text-2xl text-white font-black mt-10 mb-5">
             Menú de Servicios Extras
           </h1>
           {/*<div className="w-full flex flex-col items-center justify-center">
@@ -777,7 +780,7 @@ const Services = () => {
             </div>
           </div>
         </form>
-      </div>{" "} */}
+      </div>{" "} 
           <div className="w-full flex flex-col items-center justify-center">
             <div className="flex w-full items-center justify-center mb-3">
               <input
@@ -886,8 +889,8 @@ const Services = () => {
                   ))}
               </tbody>
             </table>
-          </div>
-          <div className="text-center flex flex-col items-center justify-center">
+          </div> */}
+          {/* <div className="text-center flex flex-col items-center justify-center">
             <h1 className="text-2xl text-white font-black mt-10 mb-3">
               Imágenes de Referencia
             </h1>
@@ -935,7 +938,7 @@ const Services = () => {
                 />
               </div>
             )}
-          </div>
+          </div> */}
         </>
       )}
     </div>
