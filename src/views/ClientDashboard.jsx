@@ -127,7 +127,7 @@ const ClientDashboard = () => {
 
       {/* aqui vamos a poner demas elementos absolutamente colocados   */}
       <img
-        className="fixed top-12 left-8 z-50"
+        className="fixed top-5 left-5 z-50"
         src="/images/logout.png"
         width={30}
         alt="logout"

@@ -518,10 +518,10 @@ const AppointmentMaker = () => {
     // fondo papa de todo
     <div className="relative w-full min-h-screen flex flex-col items-center bg-g10">
       {/* este es el gradiente de fondo de arriba */}
-      <div className="fixed z-10 -top-[615px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[760px] w-[100vw] " />
+      <div className="fixed z-10 -top-[600px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
       {/* demas elementos absolutos colocados aca */}
       <img
-        className="fixed top-11 left-8 z-50"
+        className="fixed top-7 left-8 z-50"
         src="/images/return.png"
         width={25}
         alt="logout"
@@ -529,9 +529,72 @@ const AppointmentMaker = () => {
           navigate("/clientdashboard");
         }}
       />
-      <h1 className="fixed top-10  w-full text-center text-white text-2xl font-black z-10 ">
+      <h1 className="fixed top-6  w-full text-center text-white text-2xl font-black z-10 ">
         Agendando Cita
       </h1>
+
+      {/* wizard / stepper */}
+
+      {/* aqui estan las barras */}
+      <div className="w-[70%] absolute top-[11%]">
+        {/* div blanco de fondo */}
+        <div className="absolute w-[100%] bg-white h-[3px] z-10" />
+        {/* div negro izquierda */}
+        <div
+          className={`${
+            stage1 ? "hidden" : ""
+          } left-0  absolute w-[50%] bg-black h-[3px] z-10`}
+        />
+        {/* div negro derecha */}
+        <div
+          className={` ${
+            stage3 ? "" : "hidden"
+          } absolute right-0  w-[50%] bg-black h-[3px] z-10`}
+        />
+
+        {/* aqui estan los pasos */}
+
+        {/* 1s*/}
+        <div className="w-[30px] h-[30px] bg-black absolute -left-1 -top-4 z-20 rounded-full text-white flex items-center justify-center font-black text-2xl">
+          1
+        </div>
+
+        {/* 2s */}
+        <div className="w-[30px] h-[30px] bg-white absolute left-1/2 -translate-x-1/2 -top-4 z-20 rounded-full text-black flex items-center justify-center font-black text-2xl">
+          2
+        </div>
+        <div
+          className={` ${
+            stage2 || stage3 ? "" : "hidden"
+          } w-[30px] h-[30px] bg-black absolute left-1/2 -translate-x-1/2 -top-4 z-20 rounded-full text-white flex items-center justify-center font-black text-2xl`}
+        >
+          2
+        </div>
+
+        {/* 3s */}
+        <div className="w-[30px] h-[30px] bg-white absolute -right-1 -top-4 z-20 rounded-full text-black flex items-center justify-center font-black text-2xl">
+          3
+        </div>
+        <div
+          className={` ${
+            stage3 ? "" : "hidden"
+          } w-[30px] h-[30px] bg-black absolute -right-1 -top-4 z-20 rounded-full text-white flex items-center justify-center font-black text-2xl`}
+        >
+          3
+        </div>
+
+        {/* textos estaticos */}
+        <p className="absolute text-xs text-white z-20 w-[100px] top-4 -left-10 text-center">
+          Selecciona servicios
+        </p>
+        <p className="absolute text-xs text-white z-20 w-[100px] top-4 left-1/2 -translate-x-1/2 text-center">
+          Elige <br /> fecha y hora
+        </p>
+        <p className="absolute text-xs text-white z-20 w-[100px] top-4 -right-10 text-center">
+          Confirmación de Cita
+        </p>
+      </div>
+      {/* wizard / stepper */}
 
       <div className="absolute w-full flex flex-col items-center top-[16%]">
         <h1 className="mx-auto mt-10 text-black text-2xl font-black ">
