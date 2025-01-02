@@ -16,10 +16,9 @@ import { DateTime } from "luxon";
 
 const AppointmentMaker = () => {
   //use states
+  const [scrollVisible, setScrollVisible] = useState(false);
   const [showServices, setShowServices] = useState(false);
-  const [stage1, setStage1] = useState(true);
-  const [stage2, setStage2] = useState(false);
-  const [stage3, setStage3] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   //const [showImages, setShowImages] = useState(false);
@@ -251,7 +250,24 @@ const AppointmentMaker = () => {
   //   console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
   // }, [totalDurationOfAppointment]);
 
+  // Registrar y limpiar el evento de scroll
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   //funciones
+
+  // Manejar el evento de scroll
+  const handleScroll = () => {
+    if (window.scrollY > 300) {
+      setScrollVisible(true); // Mostrar el botón si se pasa cierta distancia
+    } else {
+      setScrollVisible(false); // Ocultar el botón si se vuelve hacia arriba
+    }
+  };
 
   const deleteServiceFromCart = (service) => {
     const newCart = servicesCart.filter(
@@ -537,6 +553,24 @@ const AppointmentMaker = () => {
   return (
     // fondo papa de todo
     <div className="relative w-full min-h-screen flex flex-col items-center bg-g10">
+      <img
+        src="/images/scrollup.png"
+        width={40}
+        alt="arrow"
+        onClick={() => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+        className={`${
+          scrollVisible
+            ? "opacity-100 translate-y-0 scale-100"
+            : "opacity-0 translate-y-10 scale-90 pointer-events-none"
+        } fixed bottom-[24vh] left-3 z-50 transform transition-all duration-500
+               `}
+      />
+
       {/* Carta animada */}
       <div
         className={`fixed bottom-0 z-50  w-[100vw] h-[18vh] bg-white shadow-black shadow-2xl border-b border-black rounded-t-[30px] transform transition-all duration-500 ${
@@ -545,24 +579,30 @@ const AppointmentMaker = () => {
             : "opacity-0 translate-y-10 scale-90 pointer-events-none" // Desaparece y se baja
         }`}
       >
-        <h3 className="text-lg font-bold ml-4 mt-4">Servicios Seleccionados</h3>
+        <h3 className="text-lg font-bold ml-8 mt-4">Servicios Seleccionados</h3>
         <p className="absolute right-8 top-4 text-green font-black text-2xl">
           ${totalCost}
         </p>
+        {/* <button
+          onClick={() => {}}
+          className=" py-1 px-2 rounded-md bg-g1 absolute right-8 bottom-5 text-white"
+        >
+          Siguiente
+        </button> */}
         {servicesCart && servicesCart.length > 3 ? (
           <>
-            <p className="ml-4 mt-2">
+            <p className="ml-8 mt-2">
               {servicesCart.length} servicios seleccionados
             </p>
             <button
               onClick={() => setShowServices(!showServices)}
-              className="ml-4 mt-4 bg-blue text-white py-1 px-2 rounded-md "
+              className="ml-8 mt-4 bg-g1 text-white py-1 px-2 rounded-md "
             >
               Ver Servicios
             </button>
           </>
         ) : (
-          <ul className="ml-4 mt-1">
+          <ul className="ml-8 mt-1">
             {servicesCart.map((item, index) => (
               <li key={index} className="text-gray-700">
                 • {item.name} -{" "}
@@ -579,9 +619,31 @@ const AppointmentMaker = () => {
         className="fixed top-7 left-8 z-50"
         src="/images/return.png"
         width={25}
-        alt="logout"
+        alt="back"
         onClick={() => {
-          navigate("/clientdashboard");
+          setCurrentStep((prev) => {
+            const step = prev - 1;
+            if (step === 0) {
+              navigate("/clientdashboard");
+            }
+            return step;
+          });
+        }}
+      />
+      <img
+        className="fixed top-7 right-8 z-50 scale-x-[-1]"
+        src="/images/return.png"
+        width={25}
+        alt="next"
+        onClick={() => {
+          setCurrentStep((prev) => {
+            const step = prev + 1;
+
+            // if (step === 4) {
+            //   navigate("/clientdashboard");
+            // }
+            return step;
+          });
         }}
       />
       <h1 className="fixed top-6  w-full text-center text-white text-2xl font-black z-10 ">
@@ -597,13 +659,13 @@ const AppointmentMaker = () => {
         {/* div negro izquierda */}
         <div
           className={`${
-            stage1 ? "hidden" : ""
+            currentStep === 1 ? "hidden" : ""
           } left-0  absolute w-[50%] bg-black h-[3px] z-10`}
         />
         {/* div negro derecha */}
         <div
           className={` ${
-            stage3 ? "" : "hidden"
+            currentStep === 3 ? "" : "hidden"
           } absolute right-0  w-[50%] bg-black h-[3px] z-10`}
         />
 
@@ -620,7 +682,7 @@ const AppointmentMaker = () => {
         </div>
         <div
           className={` ${
-            stage2 || stage3 ? "" : "hidden"
+            currentStep === 2 || currentStep === 3 ? "" : "hidden"
           } w-[30px] h-[30px] bg-black absolute left-1/2 -translate-x-1/2 -top-4 z-20 rounded-full text-white flex items-center justify-center font-black text-2xl`}
         >
           2
@@ -632,7 +694,7 @@ const AppointmentMaker = () => {
         </div>
         <div
           className={` ${
-            stage3 ? "" : "hidden"
+            currentStep === 3 ? "" : "hidden"
           } w-[30px] h-[30px] bg-black absolute -right-1 -top-4 z-20 rounded-full text-white flex items-center justify-center font-black text-2xl`}
         >
           3
@@ -667,7 +729,7 @@ const AppointmentMaker = () => {
           {servicesCart && servicesCart.length > 0 && (
             <ul className="my-4 ml-7 text-xl">
               {servicesCart.map((service, index) => (
-                <li key={index} className="text-black my-2">
+                <li key={index} className="text-black my-2 w-[80%]">
                   • {service.name} -{" "}
                   <span className="font-black text-green">
                     ${service.price}
@@ -688,59 +750,70 @@ const AppointmentMaker = () => {
       </div>
 
       <div className="absolute w-full flex flex-col items-center top-[22%]">
-        <h1 className=" text-black text-2xl font-black ">Nuestros Servicios</h1>
-        {/* Barra de búsqueda */}
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
-          placeholder="Buscar por nombre..."
-          className="border text-center border-gray-700 p-2 rounded-md mt-4"
-        />
+        {/* div padre de la parte 1 */}
+        <div
+          className={`${
+            currentStep === 1 ? "" : "hidden"
+          } w-full flex flex-col items-center`}
+        >
+          <h1 className=" text-black text-2xl font-black ">
+            Nuestros Servicios
+          </h1>
+          {/* Barra de búsqueda */}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
+            placeholder="Buscar por nombre..."
+            className="border text-center border-gray-700 p-2 rounded-md mt-4"
+          />
 
-        <div className=" flex flex-col justify-center items-center w-full mt-8  bg-g10">
-          {servicesArray &&
-            servicesArray.length > 0 &&
-            servicesArray
-              .filter((service) =>
-                service.name
-                  .toLowerCase()
-                  .includes(searchQuery.toLocaleLowerCase())
-              )
-              .map((service, serviceIndex) => (
-                <>
-                  <div
-                    id={serviceIndex}
-                    className="relative w-[80%] h-[11vh] text-black bg-white mb-10 rounded-[15px]"
-                  >
-                    <p className="text-lg font-black absolute left-4 top-2 w-[50%]">
-                      {service.name}
-                    </p>
-                    <p className="text-green font-black text-xl absolute right-4 top-2">
-                      ${service.price}
-                    </p>
-                    {servicesCart.some(
-                      (serviceInCart) => serviceInCart.name === service.name
-                    ) ? (
-                      <button
-                        onClick={() => deleteServiceFromCart(service)}
-                        className="text-white bg-red py-1 px-2 rounded-md absolute right-4 bottom-4"
-                      >
-                        Eliminar
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => addServiceToCart(service)}
-                        className="text-white bg-green py-1 px-2 rounded-md absolute right-4 bottom-4"
-                      >
-                        Añadir
-                      </button>
-                    )}
-                  </div>
-                </>
-              ))}
+          <div className=" flex flex-col justify-center items-center w-full mt-8 pb-[20vh] bg-g10">
+            {servicesArray &&
+              servicesArray.length > 0 &&
+              servicesArray
+                .filter((service) =>
+                  service.name
+                    .toLowerCase()
+                    .includes(searchQuery.toLocaleLowerCase())
+                )
+                .map((service, serviceIndex) => (
+                  <>
+                    <div
+                      id={serviceIndex}
+                      className="relative w-[80%] h-[11vh] text-black bg-white mb-5 rounded-[15px]"
+                    >
+                      <p className="text-lg font-black absolute left-4 top-2 w-[50%]">
+                        {service.name}
+                      </p>
+                      <p className="text-green font-black text-xl absolute right-4 top-2">
+                        ${service.price}
+                      </p>
+                      {servicesCart.some(
+                        (serviceInCart) => serviceInCart.name === service.name
+                      ) ? (
+                        <button
+                          onClick={() => deleteServiceFromCart(service)}
+                          className="text-white bg-red py-1 px-2 rounded-md absolute right-4 bottom-4"
+                        >
+                          Eliminar
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => addServiceToCart(service)}
+                          className="text-white bg-green py-1 px-2 rounded-md absolute right-4 bottom-4"
+                        >
+                          Añadir
+                        </button>
+                      )}
+                    </div>
+                  </>
+                ))}
+          </div>
+        </div>
 
-          {/* DESPUESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS */}
+        {/* div de la parte 2 */}
+        <div className={`${currentStep === 2 ? "" : "hidden"} w-full`}>
           {(servicesCart && servicesCart.length > 0) ||
           (extraServicesCart && extraServicesCart.length > 0) ? (
             <>
