@@ -924,10 +924,10 @@ const AppointmentMaker = () => {
           selectedTime !== null &&
           selectedTime !== "" ? (
             <>
-              <h1 className="text-lg  mb-2 font-black text-black text-center mt-10">
-                Su cita quedaría así:
+              <h1 className=" text-black text-2xl font-black mb-8 ">
+                ¡Listo! Solo confirma tu cita
               </h1>
-              <div className=" w-[80%]  my-6 flex flex-col p-5 rounded-md  bg-gray-100">
+              <div className=" w-[80%]   flex flex-col p-5 rounded-md  bg-white">
                 <div className="flex flex-row mb-2">
                   <p className="font-black text-black">
                     {dateDisplayText} a las
