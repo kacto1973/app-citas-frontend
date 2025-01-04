@@ -263,6 +263,18 @@ const AppointmentMaker = () => {
 
   //funciones
 
+  const isDepositNeeded = () =>{
+    const today = DateTime.now().toISODate();
+    const tomorrow = DateTime.now().plus({days: 1}).toISODate();
+    const selectedDateISO = DateTime.fromJSDate(selectedDate).toISODate();
+
+    if(selectedDateISO === today || selectedDateISO === tomorrow){
+      return false;
+    }
+
+    return true;
+  }
+
   // Manejar el evento de scroll
   const handleScroll = () => {
     if (window.scrollY > 300) {
@@ -576,10 +588,10 @@ const AppointmentMaker = () => {
 
       {/* Carta animada */}
       <div
-        className={`fixed bottom-0 z-50  w-[100vw] h-[18vh] bg-white shadow-black shadow-2xl border-b border-black rounded-t-[30px] transform transition-all duration-500 ${
-          servicesCart.length > 0
-            ? "opacity-100 translate-y-0 scale-100" // Aparece y se levanta
-            : "opacity-0 translate-y-10 scale-90 pointer-events-none" // Desaparece y se baja
+        className={` fixed bottom-0 z-50  w-[100vw] h-[18vh] bg-white shadow-black shadow-2xl border-b border-black rounded-t-[30px] transform transition-all duration-300 ${
+          servicesCart.length === 0 || currentStep === 3
+            ? "opacity-0 translate-y-10 scale-90 pointer-events-none" // desaparece
+            : "opacity-100 translate-y-0 scale-100" // aparece
         }`}
       >
         <h3 className="text-base font-bold ml-8 mt-4">{`${
@@ -625,7 +637,7 @@ const AppointmentMaker = () => {
       {/* demas elementos absolutos colocados aca */}
       <img
         className="fixed top-7 left-8 z-50"
-        src="/images/return.png"
+        src={`${currentStep === 1 ? '/images/logout.png' :  '/images/return.png'}`}
         width={25}
         alt="back"
         onClick={() => {
@@ -639,7 +651,7 @@ const AppointmentMaker = () => {
         }}
       />
       <img
-        className="fixed top-7 right-8 z-50 scale-x-[-1]"
+        className={`${currentStep === 3 ? 'hidden' : ''} fixed top-7 right-8 z-50 scale-x-[-1]`}
         src="/images/return.png"
         width={25}
         alt="next"
@@ -924,12 +936,12 @@ const AppointmentMaker = () => {
           selectedTime !== null &&
           selectedTime !== "" ? (
             <>
-              <h1 className=" text-black text-2xl font-black mb-8 ">
-                ¡Listo! Solo confirma tu cita
+              <h1 className=" text-black text-2xl font-black mb-8 text-center ">
+                Un último detalle
               </h1>
-              <div className=" w-[80%]   flex flex-col p-5 rounded-md  bg-white">
+              <div className={ ` w-[80%]   flex flex-col p-5 rounded-md  bg-white `}>
                 <div className="flex flex-row mb-2">
-                  <p className="font-black text-black">
+                  <p className="font-black text-black text-lg">
                     {dateDisplayText} a las
                     <br />
                     {selectedTime} (duración de{" "}
@@ -940,15 +952,15 @@ const AppointmentMaker = () => {
                   Transfer
                 </span> */}
                   <p className="ml-auto">
-                    <span className="text-green font-black">${totalCost}</span>
+                    <span className="text-green font-black text-xl">${totalCost}</span>
                   </p>
                 </div>
                 {/* <p>1 x Corte de cabello - ($50) = $50</p>
           <p>1 x Tinte de cabello - ($60) = $60</p>
           <p>1 x Peinado - ($40) = $40</p> */}
                 {servicesCart.map((service, serviceIndex) => (
-                  <p key={serviceIndex} className="text-black font-bold">
-                    • {service.name.toUpperCase()}{" "}
+                  <p key={serviceIndex} className="text-black font-regular text-base">
+                    • {service.name}{" "}
                     <span className="font-black text-green">
                       (${service.price})
                     </span>
@@ -963,16 +975,17 @@ const AppointmentMaker = () => {
                   </p>
                 ))}
               </div>
+            <p className="my-8 text-center text-sm w-[80%]">{`${isDepositNeeded() ? 'Le pedimos confirmar su cita con un anticipo, esto debe hacerlo desde el menú principal. Puede hacerlo cuando sea dentro de  las próximas 12 horas o sería cancelada, agradecemos su comprensión ' : 'No es necesario que haga su depósito para citas intradía o del día siguiente. ¡Todo ya quedó listo!'}`}</p>
               <button
                 type="submit"
-                className="px-3 py-2 font-black rounded-md my-5 mb-10 bg-blue text-white w-[150px]"
+                className={`px-3 py-2 font-black rounded-md my-5 mb-10 ${isDepositNeeded() ? 'bg-blue' : 'bg-green'} text-white w-[200px]`}
                 //Deberia aqui en vez de pasar selected date/time,
                 // combinarlos en un date object y pasar eso
                 //ademas me falta agregar cosas del anticipo, como true o cuanto es
                 onClick={async () => {
                   if (!validateTime(selectedTime)) {
-                    alert(
-                      "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora con más tiempo disponible"
+                    setError(
+                      "La duración de la cita excede la disponibilidad del horario, por favor seleccione otra hora o día con más flexibilidad"
                     );
                     return;
                   }
@@ -1010,11 +1023,11 @@ const AppointmentMaker = () => {
                       selectedDateFormatted === dayAfterLocalDate
                     ) {
                       alert(
-                        "Cita creada con éxito, le esperamos en el establecimiento! Gracias por su preferencia (No es necesario hacer anticipos para citas intradía o del día siguiente)"
+                        "Cita agendada con éxito, le esperamos en el establecimiento 😊"
                       );
                     } else {
                       alert(
-                        `Cita creada con éxito, le recordamos realice su anticipo dentro de las próximas 12 horas para confirmar su asistencia (antes de las ${formattedExpiration} horas). Puede hacer esto en el menú principal, gracias 😊.`
+                        `Cita creada con éxito, gracias su preferencia 😊`
                       );
                     }
 
@@ -1024,8 +1037,14 @@ const AppointmentMaker = () => {
                   }
                 }}
               >
-                Confirmar Cita
+                Agendar y Continuar
               </button>
+              <img
+          className=""
+          src="/images/hucha-3d.png"
+          width={100}
+          alt="bookmark3d"
+        />
             </>
           ) : null}
         </div>

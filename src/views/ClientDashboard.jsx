@@ -129,7 +129,7 @@ const ClientDashboard = () => {
       <img
         className="fixed top-5 left-5 z-50"
         src="/images/logout.png"
-        width={30}
+        width={25}
         alt="logout"
         onClick={() => {
           console.log("logging out...");
@@ -340,15 +340,15 @@ const ClientDashboard = () => {
 
       {!bannerShown && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="w-[70%] bg-blue text-white text-center p-3 rounded-md">
+          <div className="w-[70%] bg-blue text-white text-center p-5 rounded-md">
             <p className="mb-5">
               Estimado cliente, le recordamos que dispone de un máximo de 12
               horas desde la programación de su cita para realizar el anticipo
               (excepto citas intradía o del día siguiente). De no hacerlo, la
-              cita será cancelada automáticamente. Asimismo, en caso de realizar
-              un pago por Transferencia SPEI, asegúrese de que el monto sea
-              exacto, ya que cualquier discrepancia provocará el rechazo del
-              pago. <br /> <br /> Esto nos permite respetar el tiempo y los
+              cita será cancelada automáticamente. Asimismo al realizar
+              un pago, asegúrese de que el monto sea
+              exacto, ya que cualquier discrepancia provocaría el rechazo del
+              mismo. <br /> <br /> Esto nos permite respetar el tiempo y los
               espacios de todos nuestros clientes. Agradecemos su comprensión y
               preferencia.
             </p>
