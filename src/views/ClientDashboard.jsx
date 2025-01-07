@@ -232,7 +232,8 @@ const ClientDashboard = () => {
                       <p className="mb-4 text-white bg-blue   rounded-md p-3 text-xs my-2">
                         Favor de hacer su anticipo a tiempo antes de las{" "}
                         {formatTime(appointment.expiresAt)} horas para confirmar
-                        su cita
+                        su cita (el anticipo se definirá según sus servicios al
+                        dar click en "Dar Anticipo")
                       </p>
                     )}
                     <div className="flex flex-row">
@@ -345,12 +346,11 @@ const ClientDashboard = () => {
               Estimado cliente, le recordamos que dispone de un máximo de 12
               horas desde la programación de su cita para realizar el anticipo
               (excepto citas intradía o del día siguiente). De no hacerlo, la
-              cita será cancelada automáticamente. Asimismo al realizar
-              un pago, asegúrese de que el monto sea
-              exacto, ya que cualquier discrepancia provocaría el rechazo del
-              mismo. <br /> <br /> Esto nos permite respetar el tiempo y los
-              espacios de todos nuestros clientes. Agradecemos su comprensión y
-              preferencia.
+              cita será cancelada automáticamente. Asimismo al realizar un pago,
+              asegúrese de que el monto sea exacto, ya que cualquier
+              discrepancia provocaría el rechazo del mismo. <br /> <br /> Esto
+              nos permite respetar el tiempo y los espacios de todos nuestros
+              clientes. Agradecemos su comprensión y preferencia.
             </p>
             <button
               className="bg-white text-blue px-2 py-1 rounded-md ml-2"

@@ -329,14 +329,20 @@ export const validateAdmin = async (username, password) => {
 
     if (adminsSnap.exists()) {
       const adminsArray = Object.values(adminsSnap.val());
-      const foundAdmin = adminsArray.some(
-        (admin) =>
+      let adminUsername = "";
+      const foundAdmin = adminsArray.some((admin) => {
+        if (
           admin.username === username.toLowerCase() &&
           admin.password === password.toLowerCase()
-      );
+        ) {
+          adminUsername = admin.username;
+          return true;
+        }
+      });
 
       if (foundAdmin) {
         localStorage.setItem("8w9j2fjsd", "true");
+        localStorage.setItem("adminUsername", adminUsername);
       }
 
       return foundAdmin;

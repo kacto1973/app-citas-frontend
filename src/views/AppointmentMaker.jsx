@@ -263,17 +263,17 @@ const AppointmentMaker = () => {
 
   //funciones
 
-  const isDepositNeeded = () =>{
+  const isDepositNeeded = () => {
     const today = DateTime.now().toISODate();
-    const tomorrow = DateTime.now().plus({days: 1}).toISODate();
+    const tomorrow = DateTime.now().plus({ days: 1 }).toISODate();
     const selectedDateISO = DateTime.fromJSDate(selectedDate).toISODate();
 
-    if(selectedDateISO === today || selectedDateISO === tomorrow){
+    if (selectedDateISO === today || selectedDateISO === tomorrow) {
       return false;
     }
 
     return true;
-  }
+  };
 
   // Manejar el evento de scroll
   const handleScroll = () => {
@@ -637,7 +637,9 @@ const AppointmentMaker = () => {
       {/* demas elementos absolutos colocados aca */}
       <img
         className="fixed top-7 left-8 z-50"
-        src={`${currentStep === 1 ? '/images/logout.png' :  '/images/return.png'}`}
+        src={`${
+          currentStep === 1 ? "/images/logout.png" : "/images/return.png"
+        }`}
         width={25}
         alt="back"
         onClick={() => {
@@ -651,7 +653,9 @@ const AppointmentMaker = () => {
         }}
       />
       <img
-        className={`${currentStep === 3 ? 'hidden' : ''} fixed top-7 right-8 z-50 scale-x-[-1]`}
+        className={`${
+          currentStep === 3 ? "hidden" : ""
+        } fixed top-7 right-8 z-50 scale-x-[-1]`}
         src="/images/return.png"
         width={25}
         alt="next"
@@ -777,7 +781,7 @@ const AppointmentMaker = () => {
         </button>
       </div>
 
-      <div className="absolute w-full flex flex-col items-center top-[22%]">
+      <div className="absolute bg-g10 w-full flex flex-col items-center top-[22%]">
         {/* div padre de la parte 1 */}
         <div
           className={`${
@@ -881,20 +885,20 @@ const AppointmentMaker = () => {
                     );
                   }}
                 />
-                <div className="absolute bottom-[28%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
-                <p className="absolute bottom-[28%] left-11   ">Casi Libre</p>
-                <div className="absolute bottom-[19%] left-4 rounded-full bg-amber-300 w-[24px] h-[24px]   border border-black" />
-                <p className="absolute bottom-[19%] left-11  ">Ocupado</p>
-                <div className="absolute bottom-[9%] left-4 rounded-full bg-rose-400 w-[24px] h-[24px]  border border-black" />
-                <p className="absolute bottom-[9%] left-11  ">Muy Ocupado</p>
-                <div className="absolute bottom-[28%] left-[50%] rounded-full bg-white w-[24px] h-[24px]  border border-black" />
-                <p className="absolute bottom-[28%] left-[59%]  ">Todo Libre</p>
-                <div className="absolute bottom-[19%] left-[50%] rounded-full bg-gray-200 w-[24px] h-[24px]   border border-black" />
-                <p className="absolute bottom-[19%] left-[59%]  ">
+                <div className="absolute bottom-[25%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[25%] left-11   ">Casi Libre</p>
+                <div className="absolute bottom-[15%] left-4 rounded-full bg-amber-300 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[15%] left-11  ">Ocupado</p>
+                <div className="absolute bottom-[5%] left-4 rounded-full bg-rose-400 w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[5%] left-11  ">Muy Ocupado</p>
+                <div className="absolute bottom-[25%] left-[50%] rounded-full bg-white w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[25%] left-[59%]  ">Todo Libre</p>
+                <div className="absolute bottom-[15%] left-[50%] rounded-full bg-gray-200 w-[24px] h-[24px]   border border-black" />
+                <p className="absolute bottom-[15%] left-[59%]  ">
                   No Disponible
                 </p>
-                <div className="absolute bottom-[9%] left-[50%] rounded-full bg-blue  w-[24px] h-[24px]  border border-black" />
-                <p className="absolute bottom-[9%] left-[59%]  ">
+                <div className="absolute bottom-[5%] left-[50%] rounded-full bg-blue  w-[24px] h-[24px]  border border-black" />
+                <p className="absolute bottom-[5%] left-[59%]  ">
                   Día Escogido
                 </p>
               </div>
@@ -939,12 +943,12 @@ const AppointmentMaker = () => {
               <h1 className=" text-black text-2xl font-black mb-8 text-center ">
                 Un último detalle
               </h1>
-              <div className={ ` w-[80%]   flex flex-col p-5 rounded-md  bg-white `}>
+              <div
+                className={` w-[80%]   flex flex-col p-5 rounded-md  bg-white `}
+              >
                 <div className="flex flex-row mb-2">
-                  <p className="font-black text-black text-lg">
-                    {dateDisplayText} a las
-                    <br />
-                    {selectedTime} (duración de{" "}
+                  <p className="font-black text-black text-lg w-[75%]">
+                    {dateDisplayText} a las {selectedTime} (duración de{" "}
                     {durationInHours ? durationInHours : 0} hr
                     {durationInMinutes ? ` ${durationInMinutes}m` : null})
                   </p>
@@ -952,14 +956,19 @@ const AppointmentMaker = () => {
                   Transfer
                 </span> */}
                   <p className="ml-auto">
-                    <span className="text-green font-black text-xl">${totalCost}</span>
+                    <span className="text-green font-black text-xl">
+                      ${totalCost}
+                    </span>
                   </p>
                 </div>
                 {/* <p>1 x Corte de cabello - ($50) = $50</p>
           <p>1 x Tinte de cabello - ($60) = $60</p>
           <p>1 x Peinado - ($40) = $40</p> */}
                 {servicesCart.map((service, serviceIndex) => (
-                  <p key={serviceIndex} className="text-black font-regular text-base">
+                  <p
+                    key={serviceIndex}
+                    className="text-black font-regular text-base"
+                  >
                     • {service.name}{" "}
                     <span className="font-black text-green">
                       (${service.price})
@@ -975,10 +984,16 @@ const AppointmentMaker = () => {
                   </p>
                 ))}
               </div>
-            <p className="my-8 text-center text-sm w-[80%]">{`${isDepositNeeded() ? 'Le pedimos confirmar su cita con un anticipo, esto debe hacerlo desde el menú principal. Puede hacerlo cuando sea dentro de  las próximas 12 horas o sería cancelada, agradecemos su comprensión ' : 'No es necesario que haga su depósito para citas intradía o del día siguiente. ¡Todo ya quedó listo!'}`}</p>
+              <p className="my-8 text-center text-sm w-[80%]">{`${
+                isDepositNeeded()
+                  ? "Le pedimos confirmar su cita con un anticipo, esto debe hacerlo desde el menú principal. Puede hacerlo cuando sea dentro de  las próximas 12 horas o su cita tendrá que ser anulada, agradecemos su comprensión "
+                  : "No es necesario que haga su depósito para citas intradía o del día siguiente. ¡Todo ya quedó listo!"
+              }`}</p>
               <button
                 type="submit"
-                className={`px-3 py-2 font-black rounded-md my-5 mb-10 ${isDepositNeeded() ? 'bg-blue' : 'bg-green'} text-white w-[200px]`}
+                className={`px-3 py-2 font-black rounded-md my-5 mb-10 ${
+                  isDepositNeeded() ? "bg-blue" : "bg-green"
+                } text-white w-[200px]`}
                 //Deberia aqui en vez de pasar selected date/time,
                 // combinarlos en un date object y pasar eso
                 //ademas me falta agregar cosas del anticipo, como true o cuanto es
@@ -1026,9 +1041,7 @@ const AppointmentMaker = () => {
                         "Cita agendada con éxito, le esperamos en el establecimiento 😊"
                       );
                     } else {
-                      alert(
-                        `Cita creada con éxito, gracias su preferencia 😊`
-                      );
+                      alert(`Cita creada con éxito, gracias su preferencia 😊`);
                     }
 
                     navigate("/clientdashboard");
@@ -1040,11 +1053,11 @@ const AppointmentMaker = () => {
                 Agendar y Continuar
               </button>
               <img
-          className=""
-          src="/images/hucha-3d.png"
-          width={100}
-          alt="bookmark3d"
-        />
+                className=" mb-10"
+                src="/images/hucha-3d.png"
+                width={100}
+                alt="bookmark3d"
+              />
             </>
           ) : null}
         </div>

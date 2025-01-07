@@ -39,7 +39,7 @@ const App = () => {
               ) : clientp9d4l8rwe ? (
                 <ClientDashboard />
               ) : admin8w9j2fjsd ? (
-                <AdminDashboard />
+                <Appointments />
               ) : null
             }
           />
