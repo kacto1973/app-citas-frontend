@@ -203,11 +203,31 @@ const Appointments = () => {
 
             {/* elementos posicionados absolutamente */}
 
-            <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex">
+            <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
               <img
-                src="/images/calendar-svgrepo-com (1).svg"
-                width={40}
-                alt=""
+                src="/images/calendar_black_icon.svg"
+                width={35}
+                alt="calendar icon"
+              />
+              <img
+                src="/images/moon_black_icon.svg"
+                width={35}
+                alt="moon icon"
+              />
+              <img
+                src="/images/people_black_icon.svg"
+                width={35}
+                alt="people icon"
+              />
+              <img
+                src="/images/scissors_black_icon.svg"
+                width={30}
+                alt="scissors icon"
+              />
+              <img
+                src="/images/history_black_icon.svg"
+                width={35}
+                alt="history icon"
               />
             </div>
 
