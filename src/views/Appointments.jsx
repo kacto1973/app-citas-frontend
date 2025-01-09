@@ -202,6 +202,15 @@ const Appointments = () => {
             <div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
 
             {/* elementos posicionados absolutamente */}
+
+            <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex">
+              <img
+                src="/images/calendar-svgrepo-com (1).svg"
+                width={40}
+                alt=""
+              />
+            </div>
+
             <img
               className="fixed top-7 left-7 z-50"
               src="/images/logout.png"
