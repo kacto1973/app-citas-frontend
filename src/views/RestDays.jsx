@@ -217,7 +217,7 @@ const RestDays = () => {
   const disableDays = () => {
     if (!range || range.length === 0 || range.length === 1) {
       alert(
-        "Seleccione primero un rango de días para establecerlos como descanso"
+        "Seleccione primero un rango de días para establecerlos como descanso (solo blancos)"
       );
       return;
     }
@@ -270,7 +270,7 @@ const RestDays = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-black">
+    <div className="w-full min-h-screen flex flex-col items-center bg-g10">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -278,14 +278,99 @@ const RestDays = () => {
           </div>
         </div>
       ) : (
-        <>
-          <h1 className="text-2xl text-white font-black mt-10 mb-2 text-center">
-            Manejo de Días de Descanso
-          </h1>
+        <div className="absolute top-[7rem] w-full flex flex-col justify-center items-center bg-g10">
+          {" "}
+          {/* gradiente de arriba */}
+          <div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
+          {/* elementos posicionados absolutamente */}
+          <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/calendar_black_icon.svg"
+                width={30}
+                alt="calendar icon"
+                onClick={() => {
+                  navigate("/appointments");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Citas</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/moon_purple_icon.svg"
+                width={30}
+                alt="moon icon"
+                onClick={() => {
+                  navigate("/restdays");
+                }}
+              />
+              <p className="font-extrabold text-xs text-g1">Descansos</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/people_black_icon.svg"
+                width={30}
+                alt="people icon"
+                onClick={() => {
+                  navigate("/clients");
+                }}
+              />
+              <p className="font-extrabold text-xs">Clientes</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/scissors_black_icon.svg"
+                width={30}
+                alt="scissors icon"
+                onClick={() => {
+                  navigate("/services");
+                }}
+              />
+              <p className="font-extrabold text-xs">Servicios</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/history_black_icon.svg"
+                width={30}
+                alt="history icon"
+                onClick={() => {
+                  navigate("/appointmentshistory");
+                }}
+              />
+              <p className="font-extrabold text-xs">Historial</p>
+            </div>
+          </div>
+          <img
+            className="fixed top-7 left-7 z-50"
+            src="/images/logout.png"
+            width={30}
+            alt="logout"
+            onClick={() => {
+              console.log("logging out...");
+              localStorage.removeItem("8w9j2fjsd");
+              localStorage.removeItem("adminUsername");
 
-          <div className="w-[85%] rounded-md bg-c1 p-2 my-10">
+              window.location.reload();
+            }}
+          />
+          <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
+            {localStorage.getItem("adminUsername")}
+          </h1>
+          <img
+            className="fixed top-7 right-7 z-50"
+            src="/images/menu.png"
+            width={32}
+            alt="menu"
+            onClick={() => {
+              console.log("menu clicked");
+            }}
+          />
+          <h1 className="text-lg font-black w-[90%] text-black text-center">
+            Haga click sobre dos días para seleccionar un rango
+          </h1>
+          <div className="relative rounded-md bg-white p-2 mt-5 mb-8 shadow-md w-[80vw]  h-[24rem]">
             <Calendar
-              className="bg-white rounded-md"
+              className="bg-white rounded-md text-center"
               view="month"
               selectRange
               value={range}
@@ -313,29 +398,53 @@ const RestDays = () => {
                 );
               }}
             />
+            <div className="absolute bottom-[25%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
+            <p className="absolute bottom-[25%] left-11   ">Casi Libre</p>
+            <div className="absolute bottom-[15%] left-4 rounded-full bg-amber-300 w-[24px] h-[24px]   border border-black" />
+            <p className="absolute bottom-[15%] left-11  ">Ocupado</p>
+            <div className="absolute bottom-[5%] left-4 rounded-full bg-rose-400 w-[24px] h-[24px]  border border-black" />
+            <p className="absolute bottom-[5%] left-11  ">Muy Ocupado</p>
+            <div className="absolute bottom-[35%] left-4 rounded-full bg-white w-[24px] h-[24px]  border border-black" />
+            <p className="absolute bottom-[35%] left-11  ">Todo Libre</p>
+            <div className="absolute bottom-[35%] left-[50%] rounded-full bg-gray-200 w-[24px] h-[24px]   border border-black" />
+            <p className="absolute bottom-[35%] left-[59%]  ">No Disponible</p>
+            <div className="absolute bottom-[15%] left-[50%] rounded-full bg-blue  w-[24px] h-[24px]  border border-black" />
+            <p className="absolute bottom-[15%] left-[59%]  ">Indicador</p>
+            <div className="absolute bottom-[25%] left-[50%] rounded-full bg-gray-400  w-[24px] h-[24px]  border border-black" />
+            <p className="absolute bottom-[25%] left-[59%]  ">Inhabilitado</p>
+            <div className="absolute bottom-[5%] left-[50%] rounded-full bg-cyan-400  w-[24px] h-[24px]  border border-black" />
+            <p className="absolute bottom-[5%] left-[59%]  ">Rango Escogido</p>
           </div>
-          <p className="text-center font-black text-white">
+          <p
+            className={`${
+              range[0] && range[1]
+                ? "text-center font-semibold text-black"
+                : "hidden"
+            }`}
+          >
             Rango seleccionado: <br />{" "}
             <span className="font-black text-xl">
               {range[0]?.toLocaleDateString()} -{" "}
               {range[1]?.toLocaleDateString()}
             </span>
           </p>
-          <div className="flex w-full justify-around mt-10">
-            <button
-              onClick={disableDays}
-              className="px-2 py-1 rounded-md my-5 bg-c1 text-white w-[130px]"
-            >
-              Desactivar Días
-            </button>
-            <button
-              onClick={enableDays}
-              className="px-2 py-1 rounded-md my-5 bg-blue text-white w-[130px]"
-            >
-              Activar Días
-            </button>
+          <div className="flex justify-around my-10 mb-[7rem] bg-white w-[80%] shadow-md rounded-2xl p-5">
+            <div className="flex flex-col items-center">
+              <img
+                onClick={disableDays}
+                width={50}
+                src="/images/pause.svg"
+                className="scale-[90%]"
+              />
+              <p>Deshabilitar</p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <img onClick={enableDays} width={50} src="/images/play.svg" />
+              <p>Habilitar</p>
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

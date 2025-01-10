@@ -204,31 +204,61 @@ const Appointments = () => {
             {/* elementos posicionados absolutamente */}
 
             <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
-              <img
-                src="/images/calendar_black_icon.svg"
-                width={35}
-                alt="calendar icon"
-              />
-              <img
-                src="/images/moon_black_icon.svg"
-                width={35}
-                alt="moon icon"
-              />
-              <img
-                src="/images/people_black_icon.svg"
-                width={35}
-                alt="people icon"
-              />
-              <img
-                src="/images/scissors_black_icon.svg"
-                width={30}
-                alt="scissors icon"
-              />
-              <img
-                src="/images/history_black_icon.svg"
-                width={35}
-                alt="history icon"
-              />
+              <div className="flex flex-col items-center">
+                <img
+                  src="/images/calendar_purple_icon.svg"
+                  width={30}
+                  alt="calendar icon"
+                  onClick={() => {
+                    navigate("/appointments");
+                  }}
+                />
+                <p className="font-extrabold text-xs text-g1">Citas</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img
+                  src="/images/moon_black_icon.svg"
+                  width={30}
+                  alt="moon icon"
+                  onClick={() => {
+                    navigate("/restdays");
+                  }}
+                />
+                <p className="font-extrabold text-xs">Descansos</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img
+                  src="/images/people_black_icon.svg"
+                  width={30}
+                  alt="people icon"
+                  onClick={() => {
+                    navigate("/clients");
+                  }}
+                />
+                <p className="font-extrabold text-xs">Clientes</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img
+                  src="/images/scissors_black_icon.svg"
+                  width={30}
+                  alt="scissors icon"
+                  onClick={() => {
+                    navigate("/services");
+                  }}
+                />
+                <p className="font-extrabold text-xs">Servicios</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <img
+                  src="/images/history_black_icon.svg"
+                  width={30}
+                  alt="history icon"
+                  onClick={() => {
+                    navigate("/appointmentshistory");
+                  }}
+                />
+                <p className="font-extrabold text-xs">Historial</p>
+              </div>
             </div>
 
             <img
@@ -259,8 +289,8 @@ const Appointments = () => {
               }}
             />
 
-            <h1 className="text-2xl font-black  text-black text-center">
-              Calendario de Citas
+            <h1 className="text-lg font-black w-[90%] text-black text-center">
+              Haga click en un día para ver sus citas
             </h1>
             <div className="relative rounded-md bg-white p-2 mt-5 mb-8 shadow-md w-[80vw]  h-[24rem]">
               <Calendar
@@ -290,26 +320,6 @@ const Appointments = () => {
                   );
                 }}
               />
-              {/* <div className="absolute bottom-[22%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
-              <p className="absolute bottom-[22%] left-11   ">Casi Libre</p>
-              <div className="absolute bottom-[12%] left-4 rounded-full bg-amber-300 w-[24px] h-[24px]   border border-black" />
-              <p className="absolute bottom-[12%] left-11  ">Ocupado</p>
-              <div className="absolute bottom-[2%] left-4 rounded-full bg-rose-400 w-[24px] h-[24px]  border border-black" />
-              <p className="absolute bottom-[2%] left-11  ">Muy Ocupado</p>
-              <div className="absolute bottom-[32%] left-4 rounded-full bg-white w-[24px] h-[24px]  border border-black" />
-              <p className="absolute bottom-[32%] left-11  ">Todo Libre</p>
-              <div className="absolute bottom-[32%] left-[50%] rounded-full bg-gray-200 w-[24px] h-[24px]   border border-black" />
-              <p className="absolute bottom-[32%] left-[59%]  ">
-                No Disponible
-              </p>
-              <div className="absolute bottom-[12%] left-[50%] rounded-full bg-blue  w-[24px] h-[24px]  border border-black" />
-              <p className="absolute bottom-[12%] left-[59%]  ">Indicador</p>
-              <div className="absolute bottom-[22%] left-[50%] rounded-full bg-gray-400  w-[24px] h-[24px]  border border-black" />
-              <p className="absolute bottom-[22%] left-[59%]  ">Inhabilitado</p>
-              <div className="absolute bottom-[2%] left-[50%] rounded-full bg-gray-400  w-[24px] h-[24px]  border border-black" />
-              <p className="absolute bottom-[2%] left-[59%]  ">
-                Rango Escogido
-              </p> */}
 
               <div className="absolute bottom-[25%] left-4 rounded-full bg-lime-400 w-[24px] h-[24px]   border border-black" />
               <p className="absolute bottom-[25%] left-11   ">Casi Libre</p>
@@ -331,80 +341,80 @@ const Appointments = () => {
 
             <div className="flex flex-col w-full items-center mb-20">
               {selectedDate && selectedDate !== "" ? (
-                <p className="w-full text-center text-black font-black mt-4">
+                <p className="w-full text-center text-black font-semibold mt-4">
                   Citas para el día seleccionado: <br />
                   <span className="text-xl font-black">{dateDisplayText}</span>
                 </p>
               ) : null}
               {appointmentsOnSelectedDate &&
-              appointmentsOnSelectedDate.length > 0
-                ? [...appointmentsOnSelectedDate]
-                    .sort((a, b) => {
-                      const dateA = new Date(
-                        `${a.selectedDate}T${a.selectedTime}`
-                      );
-                      const dateB = new Date(
-                        `${b.selectedDate}T${b.selectedTime}`
-                      );
-                      return dateA.getTime() - dateB.getTime();
-                    })
-                    .map((appointment) => (
-                      <>
-                        <div className="relative w-[80%]  mt-6 flex flex-col p-3 rounded-md  bg-white shadow-md text-black">
-                          <div className="flex flex-row mb-2">
-                            <p>
-                              Cliente:{" "}
-                              <span className="font-black">
-                                {appointment.userFullName}
-                              </span>{" "}
-                              <br />
-                              Tel:{" "}
-                              <span className="font-black">
-                                {appointment.cellphone}
-                              </span>{" "}
-                              <br />
-                              Fecha:{" "}
-                              <span className="font-black">
-                                {formatDateForDisplay(appointment.selectedDate)}{" "}
-                                a las {appointment.selectedTime}
-                              </span>{" "}
-                              <br />
-                              Duración:{" "}
-                              <span className="font-black">
-                                {formatDuration(
-                                  appointment.totalDurationOfAppointment
-                                )}
-                              </span>
-                            </p>
-                            <p className="ml-auto">
-                              <span className="text-green font-black text-xl">
-                                ${appointment.totalCost}
-                              </span>
-                            </p>
-                          </div>
-                          {appointment.servicesCart &&
-                            appointment.servicesCart.map(
-                              (service, serviceIndex) => (
-                                <p key={serviceIndex} className="w-[62%]">
-                                  • {service.name.toUpperCase()}{" "}
-                                  <span className="text-green font-black">
-                                    (${service.price})
-                                  </span>
-                                </p>
-                              )
-                            )}
-                          {appointment.extraServicesCart &&
-                            appointment.extraServicesCart.map(
-                              (extraService, extraServiceIndex) => (
-                                <p key={extraServiceIndex} className="w-[62%]">
-                                  • {extraService.name.toUpperCase()}
-                                  <span className="text-green font-black">
-                                    (${extraService.price})
-                                  </span>
-                                </p>
-                              )
-                            )}
-                          {/* {appointment.state === "pagado" ? (
+              appointmentsOnSelectedDate.length > 0 ? (
+                [...appointmentsOnSelectedDate]
+                  .sort((a, b) => {
+                    const dateA = new Date(
+                      `${a.selectedDate}T${a.selectedTime}`
+                    );
+                    const dateB = new Date(
+                      `${b.selectedDate}T${b.selectedTime}`
+                    );
+                    return dateA.getTime() - dateB.getTime();
+                  })
+                  .map((appointment) => (
+                    <>
+                      <div className="relative w-[80%]  mt-6 flex flex-col p-3 rounded-md  bg-white shadow-md text-black">
+                        <div className="flex flex-row mb-2">
+                          <p>
+                            Cliente:{" "}
+                            <span className="font-black">
+                              {appointment.userFullName}
+                            </span>{" "}
+                            <br />
+                            Tel:{" "}
+                            <span className="font-black">
+                              {appointment.cellphone}
+                            </span>{" "}
+                            <br />
+                            Fecha:{" "}
+                            <span className="font-black">
+                              {formatDateForDisplay(appointment.selectedDate)} a
+                              las {appointment.selectedTime}
+                            </span>{" "}
+                            <br />
+                            Duración:{" "}
+                            <span className="font-black">
+                              {formatDuration(
+                                appointment.totalDurationOfAppointment
+                              )}
+                            </span>
+                          </p>
+                          <p className="ml-auto">
+                            <span className="text-green font-black text-xl">
+                              ${appointment.totalCost}
+                            </span>
+                          </p>
+                        </div>
+                        {appointment.servicesCart &&
+                          appointment.servicesCart.map(
+                            (service, serviceIndex) => (
+                              <p key={serviceIndex} className="w-[62%]">
+                                • {service.name.toUpperCase()}{" "}
+                                <span className="text-green font-black">
+                                  (${service.price})
+                                </span>
+                              </p>
+                            )
+                          )}
+                        {appointment.extraServicesCart &&
+                          appointment.extraServicesCart.map(
+                            (extraService, extraServiceIndex) => (
+                              <p key={extraServiceIndex} className="w-[62%]">
+                                • {extraService.name.toUpperCase()}
+                                <span className="text-green font-black">
+                                  (${extraService.price})
+                                </span>
+                              </p>
+                            )
+                          )}
+                        {/* {appointment.state === "pagado" ? (
                             <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
                               Cita Confirmada
                             </p>
@@ -413,10 +423,16 @@ const Appointments = () => {
                               Sin Anticipo
                             </button>
                           )} */}
-                        </div>
-                      </>
-                    ))
-                : null}
+                      </div>
+                    </>
+                  ))
+              ) : selectedDate && appointmentsOnSelectedDate.length === 0 ? (
+                <>
+                  <p className="font-black text-base text-center my-10 w-[90%]">
+                    Por ahora no hay citas programadas para este día
+                  </p>
+                </>
+              ) : null}
             </div>
           </div>
         </>
