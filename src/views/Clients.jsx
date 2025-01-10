@@ -100,7 +100,7 @@ const Clients = () => {
   };
 
   return (
-    <div className="pt-10 w-full min-h-screen bg-black">
+    <div className="pt-10 w-full min-h-screen bg-g10 ">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -108,9 +108,95 @@ const Clients = () => {
           </div>
         </div>
       ) : (
-        <>
-          <div className="w-full flex flex-col justify-center items-center ">
-            <h1 className="text-2xl text-white font-black mb-8 text-center">
+        <div className="absolute top-[7rem] w-full flex flex-col justify-center items-center bg-g10 ">
+          {/* gradiente de arriba */}
+          <div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
+          {/* elementos posicionados absolutamente */}
+          <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/calendar_black_icon.svg"
+                width={30}
+                alt="calendar icon"
+                onClick={() => {
+                  navigate("/appointments");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Citas</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/moon_black_icon.svg"
+                width={30}
+                alt="moon icon"
+                onClick={() => {
+                  navigate("/restdays");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Descansos</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/people_purple_icon.svg"
+                width={30}
+                alt="people icon"
+                onClick={() => {
+                  navigate("/clients");
+                }}
+              />
+              <p className="font-extrabold text-g1 text-xs">Clientes</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/scissors_black_icon.svg"
+                width={30}
+                alt="scissors icon"
+                onClick={() => {
+                  navigate("/services");
+                }}
+              />
+              <p className="font-extrabold text-xs">Servicios</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/history_black_icon.svg"
+                width={30}
+                alt="history icon"
+                onClick={() => {
+                  navigate("/appointmentshistory");
+                }}
+              />
+              <p className="font-extrabold text-xs">Historial</p>
+            </div>
+          </div>
+          <img
+            className="fixed top-7 left-7 z-50"
+            src="/images/logout.png"
+            width={30}
+            alt="logout"
+            onClick={() => {
+              console.log("logging out...");
+              localStorage.removeItem("8w9j2fjsd");
+              localStorage.removeItem("adminUsername");
+
+              window.location.reload();
+            }}
+          />
+          <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
+            {localStorage.getItem("adminUsername")}
+          </h1>
+          <img
+            className="fixed top-7 right-7 z-50"
+            src="/images/menu.png"
+            width={32}
+            alt="menu"
+            onClick={() => {
+              console.log("menu clicked");
+            }}
+          />
+
+          <div className="w-full flex flex-col justify-center items-center  ">
+            <h1 className="text-lg font-black w-[90%] mb-8 text-black text-center">
               Mis Clientes
             </h1>
             {/* Barra de búsqueda */}
@@ -119,10 +205,10 @@ const Clients = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
               placeholder="Buscar por nombre..."
-              className="border text-center border-gray-700 p-2 rounded-md mb-4"
+              className=" text-center shadow-md p-2 rounded-md mb-4"
             />
           </div>
-          <div className="flex flex-col items-center justify-center pb-10">
+          <div className="flex flex-col items-center justify-center pb-10 mb-16 bg-g10">
             {clientsLoaded && filteredClients.length > 0
               ? filteredClients.map((client, index) => {
                   const closestAppointment =
@@ -137,7 +223,7 @@ const Clients = () => {
                   return (
                     <div
                       key={index}
-                      className="relative w-[80%]  mt-6 flex flex-col p-5 rounded-md  border-[5px] border-softgreen shadow-md text-white"
+                      className="relative w-[80%]   mt-6 flex flex-col p-5 rounded-md bg-white shadow-sm text-black"
                     >
                       <div className="flex flex-row mb-2">
                         <p>
@@ -166,7 +252,7 @@ const Clients = () => {
                 })
               : null}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

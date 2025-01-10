@@ -32,6 +32,11 @@ const Services = () => {
 
   const [hairLengthNeeded, setHairLengthNeeded] = useState(false);
 
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
+  const [showEditServiceModal, setShowEditServiceModal] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [name, setName] = useState("");
   //const [extraName, setExtraName] = useState("");
 
@@ -352,109 +357,8 @@ const Services = () => {
     asyncFunct();
   };
 
-  //////////////////////////////////////// Servicios Extra ////////////////////////////////////////
-
-  // const handleExtraAdd = () => {
-  //   if (
-  //     !extraName ||
-  //     extraRestTime < 0 ||
-  //     extraRestTime === "" ||
-  //     !extraDuration ||
-  //     !extraPrice
-  //   ) {
-  //     alert("Por favor llena todos los campos");
-  //     return;
-  //   }
-
-  //   if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
-  //     alert(
-  //       "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
-  //     );
-  //     return;
-  //   }
-
-  //   if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
-  //     alert(
-  //       "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
-  //     );
-  //     return;
-  //   }
-
-  //   const asyncFunct = async () => {
-  //     console.log("Agregando servicio extra");
-  //     const newExtraService = {
-  //       name: extraName,
-  //       restTime: Number(extraRestTime),
-  //       duration: Number(extraDuration),
-  //       price: Number(extraPrice),
-  //     };
-
-  //     await addExtraService(newExtraService);
-  //   };
-  //   asyncFunct();
-  // };
-
-  // const handleExtraEdit = (extraService) => {
-  //   setExtraEditing(true);
-  //   setExtraServiceOldName(extraService.name);
-  //   setExtraName(extraService.name);
-  //   setExtraRestTime(extraService.restTime);
-  //   setExtraDuration(extraService.duration);
-  //   setExtraPrice(extraService.price);
-  // };
-
-  // const saveExtraEdit = () => {
-  //   if (
-  //     !extraName ||
-  //     extraRestTime < 0 ||
-  //     extraRestTime === "" ||
-  //     !extraDuration ||
-  //     !extraPrice
-  //   ) {
-  //     alert("Por favor llena todos los campos");
-  //     return;
-  //   }
-
-  //   if (extraRestTime < 0 || extraDuration <= 0 || extraPrice <= 0) {
-  //     alert(
-  //       "Por favor llena todos los campos de duraciones y precios con valores mayores a 0"
-  //     );
-  //     return;
-  //   }
-
-  //   if (extraRestTime % 15 !== 0 || extraDuration % 15 !== 0) {
-  //     alert(
-  //       "Los tiempos deben ser múltiplos de 15 (duraciones y descanso | 15, 30, 45, 60, ...)"
-  //     );
-  //     return;
-  //   }
-
-  //   const asyncFunct = async () => {
-  //     console.log("guardando datos editados del servicio extra");
-  //     const newExtraService = {
-  //       name: extraName,
-  //       restTime: Number(extraRestTime),
-  //       duration: Number(extraDuration),
-  //       price: Number(extraPrice),
-  //     };
-
-  //     await addExtraService(newExtraService, extraServiceOldName);
-  //   };
-  //   asyncFunct();
-  // };
-
-  // const handleExtraDelete = (extraService) => {
-  //   console.log("Borrando servicio extra");
-
-  //   const asyncFunct = async () => {
-  //     await deleteExtraService(extraService);
-  //   };
-
-  //   asyncFunct();
-  // };
-
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-black">
+    <div className="w-full min-h-screen flex flex-col items-center bg-g10">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -462,11 +366,143 @@ const Services = () => {
           </div>
         </div>
       ) : (
-        <>
-          <h1 className="text-2xl text-white font-black mt-10 mb-5">
-            Menú de Servicios
+        <div className="absolute top-[7rem] w-full flex flex-col justify-center items-center ">
+          {/* modales para agregar y editar servicios */}
+
+          {/* gradiente de arriba */}
+          <div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
+          {/* elementos posicionados absolutamente */}
+          <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/calendar_black_icon.svg"
+                width={30}
+                alt="calendar icon"
+                onClick={() => {
+                  navigate("/appointments");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Citas</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/moon_black_icon.svg"
+                width={30}
+                alt="moon icon"
+                onClick={() => {
+                  navigate("/restdays");
+                }}
+              />
+              <p className="font-extrabold text-xs">Descansos</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/people_black_icon.svg"
+                width={30}
+                alt="people icon"
+                onClick={() => {
+                  navigate("/clients");
+                }}
+              />
+              <p className="font-extrabold text-xs">Clientes</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/scissors_purple_icon.svg"
+                width={30}
+                alt="scissors icon"
+                onClick={() => {
+                  navigate("/services");
+                }}
+              />
+              <p className="font-extrabold text-xs text-g1">Servicios</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/history_black_icon.svg"
+                width={30}
+                alt="history icon"
+                onClick={() => {
+                  navigate("/appointmentshistory");
+                }}
+              />
+              <p className="font-extrabold text-xs">Historial</p>
+            </div>
+          </div>
+          <img
+            className="fixed top-7 left-7 z-50"
+            src="/images/logout.png"
+            width={30}
+            alt="logout"
+            onClick={() => {
+              console.log("logging out...");
+              localStorage.removeItem("8w9j2fjsd");
+              localStorage.removeItem("adminUsername");
+
+              window.location.reload();
+            }}
+          />
+          <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
+            {localStorage.getItem("adminUsername")}
           </h1>
-          <div className="w-full flex flex-col items-center justify-center">
+          <img
+            className="fixed top-7 right-7 z-50"
+            src="/images/menu.png"
+            width={32}
+            alt="menu"
+            onClick={() => {
+              console.log("menu clicked");
+            }}
+          />
+
+          <div
+            className={`${
+              showAddServiceModal ? "" : "hidden"
+            } w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
+          >
+            <div
+              className={`overflow-y-auto fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
+            >
+              <h1 className="font-black text-black text-lg text-center mt-4">
+                Agregar Servicio
+              </h1>
+              <button
+                onClick={() => {
+                  setShowAddServiceModal(false);
+                }}
+                className="fixed right-4 top-4 z-50 bg-red text-sm text-white py-1 px-2 rounded-md"
+              >
+                X
+              </button>
+            </div>
+          </div>
+
+          <h1 className="text-lg font-black w-[90%] text-black mb-8 text-center">
+            Servicios
+          </h1>
+
+          <div className="w-[90%] flex  items-center justify-between mb-4">
+            {/* Barra de búsqueda */}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Actualizamos el estado con lo que escribe el usuario
+              placeholder="Buscar por nombre..."
+              className="text-center shadow-md p-2 rounded-md mb-4 w-[70%]"
+            />
+
+            <img
+              src="/images/plus.png"
+              width={50}
+              className="mb-2"
+              alt="plus icon"
+              onClick={() => {
+                setShowAddServiceModal(true);
+              }}
+            />
+          </div>
+
+          {/* <div className="w-full flex flex-col items-center justify-center">
             <div className="flex w-full items-center justify-center">
               <input
                 type="text"
@@ -485,43 +521,7 @@ const Services = () => {
                 required
               />
             </div>
-
-            {/* <form>
-              <div className="my-4 flex flex-col items-center justify-center">
-                <label className="block text-sm font-medium text-white">
-                  ¿Requiere saber longitud de cabello?
-                </label>
-                <div className="flex items-center space-x-6">
-                  <label className="flex items-center text-white">
-                    <input
-                      type="radio"
-                      id="si"
-                      name="respuesta"
-                      value="si"
-                      checked={hairLengthNeeded === true}
-                      onChange={handleChange}
-                      className="mr-2 text-white"
-                    />
-                    Sí
-                  </label>
-
-                  <label className="flex items-center text-white">
-                    <input
-                      type="radio"
-                      id="no"
-                      name="respuesta"
-                      value="no"
-                      checked={hairLengthNeeded === false} // Si el estado es false, se selecciona "No"
-                      onChange={handleChange}
-                      className="mr-2 text-white"
-                    />
-                    No
-                  </label>
-                </div>
-              </div>
-            </form> */}
-          </div>{" "}
-          {/**esta parte de arriba se queda siempre lo que cambia es lo de abajp */}
+          </div>
           <div>
             {hairLengthNeeded ? (
               <>
@@ -597,8 +597,8 @@ const Services = () => {
                 </div>
               </>
             )}
-          </div>
-          {editing ? (
+          </div> */}
+          {/* {editing ? (
             <button
               className="px-2 py-1 rounded-md my-5 bg-green text-white"
               onClick={saveEdit}
@@ -612,29 +612,37 @@ const Services = () => {
             >
               Agregar Servicio
             </button>
-          )}
-          <div className="overflow-x-auto w-[90%] rounded-md mb-10">
-            <table className="min-w-full table-auto border-collapse">
-              <thead className="bg-gray-200">
+          )} */}
+          <div className="overflow-x-auto w-[90%] rounded-2xl  mb-[8rem]">
+            <table className="min-w-full table-auto border-collapse rounded-2xl">
+              <thead className="bg-g1">
                 <tr>
-                  <th className="px-4 py-2 border text-left">Nombre</th>
-                  <th className="px-4 py-2 border text-left">
+                  <th className="px-4 py-2 border text-center text-white">
+                    Nombre
+                  </th>
+                  <th className="px-4 py-2 border text-center text-white">
                     Tiempo Descanso
                   </th>
                   {/* <th className="px-4 py-2 border text-left">
                     Longitud Cabello
                   </th> */}
-                  <th className="px-4 py-2 border text-left">Duración</th>
+                  <th className="px-4 py-2 border text-center text-white">
+                    Duración
+                  </th>
                   {/* <th className="px-4 py-2 border text-left">Duración Corta</th>
                   <th className="px-4 py-2 border text-left">
                     Duración Mediana
                   </th>
                   <th className="px-4 py-2 border text-left">Duración Larga</th> */}
-                  <th className="px-4 py-2 border text-left">Precio</th>
+                  <th className="px-4 py-2 border text-center text-white">
+                    Precio
+                  </th>
                   {/* <th className="px-4 py-2 border text-left">Precio Corto</th>
                   <th className="px-4 py-2 border text-left">Precio Mediano</th>
                   <th className="px-4 py-2 border text-left">Precio Largo</th> */}
-                  <th className="px-4 py-2 border text-left">Acción</th>
+                  <th className="px-4 py-2 border text-center text-white">
+                    Acción
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -939,7 +947,7 @@ const Services = () => {
               </div>
             )}
           </div> */}
-        </>
+        </div>
       )}
     </div>
   );

@@ -430,12 +430,7 @@ const RestDays = () => {
           </p>
           <div className="flex justify-around my-10 mb-[7rem] bg-white w-[80%] shadow-md rounded-2xl p-5">
             <div className="flex flex-col items-center">
-              <img
-                onClick={disableDays}
-                width={50}
-                src="/images/pause.svg"
-                className="scale-[90%]"
-              />
+              <img onClick={disableDays} width={50} src="/images/pause.svg" />
               <p>Deshabilitar</p>
             </div>
 
