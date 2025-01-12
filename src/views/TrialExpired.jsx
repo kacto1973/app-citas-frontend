@@ -45,22 +45,24 @@ const TrialExpired = () => {
   };
 
   return (
-    <div className="fixed inset-0 min-h-screen  flex items-center justify-center z-20">
-      <div className="w-[85%] h-[48%] bg-softblue shadow-xl   text-white font-normal text-center p-3 rounded-md">
-        <h1 className="font-black text-2xl my-3">Estimado usuario:</h1>
-        <p className="text- mb-8 w-[80%] mx-auto">
-          Su licencia de aplicación ha expirado. El servicio está suspendido
-          hasta que se realice el pago de renovación. Una vez acreditado, podrá
-          usar la plataforma nuevamente sin problemas ya que el pago se refleja
-          inmediatamente.
+    <div className="fixed inset-0 min-h-screen bg-[url('/images/polygrid.svg')] bg-cover flex items-center justify-center z-20">
+      <div className="relative w-[85vw] h-[60vh] shadow-xl bg-white font-normal text-center p-3 rounded-md flex items-center flex-col">
+        <img className="my-8" src="/images/hucha-3d.png" width={100} alt="pig image" />
+        <p className="text-black mb-8 w-[80%] mx-auto">
+          Su licencia de plataforma ha expirado. El servicio está suspendido hasta que se realice
+          el pago de renovación. Una vez acreditado, podrá usar la plataforma de inmediato sin problemas ya que el pago se  refleja
+          al instante.
         </p>
         <button
-          className="bg-green font-black w-[150px] text-white px-2 py-1 rounded-md ml-2"
+          className="bg-g1 font-black w-[150px] text-white px-2 py-1 rounded-md ml-2"
           onClick={handlePayment}
         >
           {loading ? "Cargando..." : "Renovar Licencia"}
         </button>
+        <div className="absolute rounded-t-md top-0 w-full h-[0.7rem] bg-[linear-gradient(90deg,#4C2DFF_0%,#4C2DFF_75%,#4C2DFF_100%)] z-50" />
+
       </div>
+
     </div>
   );
 };
