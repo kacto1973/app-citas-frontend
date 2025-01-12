@@ -14,6 +14,8 @@ import {
 import database from "../../firebaseConfig";
 import { ref, update, get } from "firebase/database";
 import { TrialContext } from "../context/TrialContext";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 const Services = () => {
   const navigate = useNavigate();
@@ -32,15 +34,15 @@ const Services = () => {
 
   const [hairLengthNeeded, setHairLengthNeeded] = useState(false);
 
-  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
-  const [showEditServiceModal, setShowEditServiceModal] = useState(false);
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  //const [showEditServiceModal, setShowEditServiceModal] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
 
   const [name, setName] = useState("");
   //const [extraName, setExtraName] = useState("");
 
-  const [restTime, setRestTime] = useState(0);
+  const [restTime, setRestTime] = useState("");
   //const [extraRestTime, setExtraRestTime] = useState(0);
 
   const [duration, setDuration] = useState("");
@@ -342,6 +344,7 @@ const Services = () => {
         };
 
         await addService(newService, serviceOldName);
+        setEditing(false);
       }
     };
     asyncFunct();
@@ -457,23 +460,92 @@ const Services = () => {
 
           <div
             className={`${
-              showAddServiceModal ? "" : "hidden"
+              showServiceModal ? "" : "hidden"
             } w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
           >
             <div
-              className={`overflow-y-auto fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
+              className={`overflow-y-auto flex flex-col items-center fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
             >
-              <h1 className="font-black text-black text-lg text-center mt-4">
-                Agregar Servicio
+              <h1 className="font-black text-black text-lg text-center my-4">
+               {editing ? "Editar Servicio" : "Agregar Servicio"}
               </h1>
               <button
                 onClick={() => {
-                  setShowAddServiceModal(false);
+                  setShowServiceModal(false);
+                  setEditing(false);
+                  setName("");
+                  setPrice("");
+                  setDuration("");
+                  setRestTime("");
+                  
                 }}
                 className="fixed right-4 top-4 z-50 bg-red text-sm text-white py-1 px-2 rounded-md"
               >
                 X
               </button>
+              {/*<input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nombre del Servicio" className="text-center border border-black p-2 rounded-md w-[70%] my-3 mt-8"  type="text" /> 
+              
+              <input 
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Precio del Servicio" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
+              
+              <input
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              placeholder="Duración (15, 30, 45...mins)" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
+              
+              <input 
+              value={restTime}
+              onChange={(e) => setRestTime(e.target.value)}
+              placeholder="T. Descanso (0, 15, 30...mins)" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
+
+
+              */}
+              <TextField
+              value={name}
+              size="small"
+              margin="normal"
+              onChange={(e) => setName(e.target.value)}
+              id="outlined-basic" label="Nombre del Servicio"
+              className="w-[70%] my-3 mt-10"
+              variant="outlined" />
+
+              <TextField
+              value={price}
+              size="small"
+              margin="normal"
+              onChange={(e) => setPrice(e.target.value)}
+              id="outlined-basic" label="Precio del Servicio"
+              className="w-[70%] my-3"
+              variant="outlined" />
+
+              <TextField
+              value={duration}
+              size="small"
+              margin="normal"
+              onChange={(e) => setDuration(e.target.value)}
+              id="outlined-basic" label="Duración (15, 30, 45...mins)"
+              className="w-[70%] my-3"
+              variant="outlined" />
+
+
+              <TextField
+              value={restTime}
+              size="small"
+              margin="normal"
+              onChange={(e) => setRestTime(e.target.value)}
+              id="outlined-basic" label="T. Descanso (0, 15, 30...mins)"
+              className="w-[70%] my-3"
+              variant="outlined" />
+
+              <button 
+              onClick={editing ? saveEdit : handleAdd}
+              className="bg-g1 text-white py-2 px-4 rounded-md my-4">Confirmar</button>
+
             </div>
           </div>
 
@@ -497,7 +569,7 @@ const Services = () => {
               className="mb-2"
               alt="plus icon"
               onClick={() => {
-                setShowAddServiceModal(true);
+                setShowServiceModal(true);
               }}
             />
           </div>
@@ -648,7 +720,18 @@ const Services = () => {
               <tbody>
                 {services &&
                   services.length > 0 &&
-                  services.map((service) => {
+                  services.filter((service) => {
+                    if (searchQuery === "") {
+                      return service;
+                    } else if (
+                      service.name
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())
+                    ) {
+                      return service;
+                    }
+                  })
+                  .map((service) => {
                     console.log("hola desde servicios`");
                     console.log("SERVICIO", service);
                     return (
@@ -705,6 +788,7 @@ const Services = () => {
                             <button
                               onClick={() => {
                                 handleEdit(service);
+                                setShowServiceModal(true);
                               }}
                               className="px-2 py-1 rounded-md bg-yellow text-white m-3"
                             >

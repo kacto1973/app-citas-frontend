@@ -68,7 +68,7 @@ const AppointmentsHistory = () => {
   }
 
   return (
-    <div className="w-full min-h-screen flex flex-col  items-center bg-black pb-10">
+    <div className="w-full min-h-screen flex flex-col  items-center bg-g10 pb-10">
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">
@@ -76,16 +76,108 @@ const AppointmentsHistory = () => {
           </div>
         </div>
       ) : (
-        <>
-          <h1 className="text-2xl font-black text-white mt-10 mb-2 text-center">
+        <div className="w-full flex flex-col bg-g10 items-center absolute top-[7rem]">
+
+{/* gradiente de arriba */}
+<div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
+          {/* elementos posicionados absolutamente */}
+          <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/calendar_black_icon.svg"
+                width={30}
+                alt="calendar icon"
+                onClick={() => {
+                  navigate("/appointments");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Citas</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/moon_black_icon.svg"
+                width={30}
+                alt="moon icon"
+                onClick={() => {
+                  navigate("/restdays");
+                }}
+              />
+              <p className="font-extrabold text-xs">Descansos</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/people_black_icon.svg"
+                width={30}
+                alt="people icon"
+                onClick={() => {
+                  navigate("/clients");
+                }}
+              />
+              <p className="font-extrabold text-xs">Clientes</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/scissors_black_icon.svg"
+                width={30}
+                alt="scissors icon"
+                onClick={() => {
+                  navigate("/services");
+                }}
+              />
+              <p className="font-extrabold text-xs text-black">Servicios</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <img
+                src="/images/history_purple_icon.svg"
+                width={30}
+                alt="history icon"
+                onClick={() => {
+                  navigate("/appointmentshistory");
+                }}
+              />
+              <p className="font-extrabold text-g1 text-xs">Historial</p>
+            </div>
+          </div>
+          <img
+            className="fixed top-7 left-7 z-50"
+            src="/images/logout.png"
+            width={30}
+            alt="logout"
+            onClick={() => {
+              console.log("logging out...");
+              localStorage.removeItem("8w9j2fjsd");
+              localStorage.removeItem("adminUsername");
+
+              window.location.reload();
+            }}
+          />
+          <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
+            {localStorage.getItem("adminUsername")}
+          </h1>
+          <img
+            className="fixed top-7 right-7 z-50"
+            src="/images/menu.png"
+            width={32}
+            alt="menu"
+            onClick={() => {
+              console.log("menu clicked");
+            }}
+          />
+
+          <h1 className="text-lg font-black text-black mb-2 text-center">
             Historial de Citas
           </h1>
-          <div className="w-[80%] flex flex-col justify-center items-center">
+          <div className="w-[80%] flex flex-col justify-center items-center mb-[8rem] bg-g10">
+            {appointmentsHistory && appointmentsHistory.length > 0 && (
+              <p className="text-black font-medium text-lg mt-5 text-center">
+              Citas pasadas de los últimos 7 días...
+            </p>
+            )}
             {appointmentsHistory && appointmentsHistory.length > 0 ? (
               appointmentsHistory.map((appointment) => {
                 return (
                   <>
-                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md  border-[5px]  border-softgreen shadow-md text-white">
+                    <div className="relative w-[100%]  mt-6 flex flex-col p-5 rounded-md  shadow-md text-black bg-white">
                       <div className="flex flex-row mb-2">
                         <p>
                           Cliente:{" "}
@@ -140,6 +232,7 @@ const AppointmentsHistory = () => {
                             </p>
                           )
                         )}
+                      {/*
                       {appointment.state === "pagado" ? (
                         <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[102px] absolute bottom-0 right-5">
                           Cita Confirmada
@@ -148,18 +241,18 @@ const AppointmentsHistory = () => {
                         <button className="pointer-events-none py-1 px-1 rounded-md my-5 text-xs bg-blue text-white w-[83px] absolute bottom-0 right-5">
                           Sin Anticipo
                         </button>
-                      )}
+                      )} */}
                     </div>
                   </>
                 );
               })
             ) : (
-              <p className="text-white font-black text-xl mt-5 text-center">
+              <p className="text-black font-medium text-lg mt-5 text-center">
                 Actualmente no hay citas pasadas de los últimos 7 días...
               </p>
             )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
