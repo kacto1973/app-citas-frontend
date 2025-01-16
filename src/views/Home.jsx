@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import { getBusinessData } from "../../firebaseFunctions"
 
 
 const Home = () => {
@@ -24,7 +25,23 @@ const Home = () => {
   useEffect(() => {
     console.log('businessID', businessID);
     localStorage.setItem('businessID', businessID)
+
+    // fetch business data
+    const asyncFunc = async () => {
+
+      const businessInfo = await getBusinessData();
+
+      setBusinessData(businessInfo);
+
+    }
+    asyncFunc();
+
   },[])
+
+  useEffect(() => {
+    console.log("business data: " + JSON.stringify(businessData))
+    
+  },[businessData])
 
 
 
@@ -51,11 +68,11 @@ const Home = () => {
 
       {/*business card */}
       <div className='relative w-[80%] flex flex-col items-center bg-white h-[20rem] shadow-md rounded-md'>
-        <div className='w-full h-[40%] bg-[url("images/flowersbanner.webp")] bg-cover'></div>
+        <img src={businessData.banner} className={`w-full h-[40%] bg-cover`} />
         
         {/*logo and business name when fetched */}
         <div className='w-full h-[60%] absolute top-1/2 -translate-y-[65%]  flex flex-col items-center justify-center'>
-          <img src="https://res.cloudinary.com/do8wkypcn/image/upload/v1737050655/app-citas/bazasalon_logo.png" width={90} />
+          <img src={businessData.logo} width={90} />
           <h1 className='text-xl font-bold'>Mónica Baza Salon</h1>
         </div>
         

@@ -11,6 +11,17 @@ const path = `businesses/${businessID}`;
 export const getBusinessData = async () => {
   try{
 
+    const businessRef = ref(database, `${path}/settings`);
+    const businessSnap = await get(businessRef);
+
+    if (businessSnap.exists()) {
+      const businessData = businessSnap.val();
+      
+      //console.log("getbusiness data method result: "+JSON.stringify(businessData))
+
+      return businessData;
+    }
+
   }catch(error){
     console.error('Error: ', error)
     return false
