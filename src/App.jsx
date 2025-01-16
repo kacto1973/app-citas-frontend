@@ -18,6 +18,8 @@ import Services from "./views/Services";
 import AppointmentsHistory from "./views/AppointmentsHistory";
 import ForgotPassword from "./views/ForgotPassword";
 import TrialExpired from "./views/TrialExpired";
+import Home from "./views/Home";
+import UserHelp from "./views/UserHelp";
 import { TrialProvider } from "./context/TrialContext";
 
 const App = () => {
@@ -29,7 +31,7 @@ const App = () => {
     <TrialProvider>
       <Router>
         <Routes>
-          <Route
+          {/* <Route
             path="/" // esta barrita ba a representar el core de todo, el business ID
             element={
               !businessID ? (
@@ -42,8 +44,11 @@ const App = () => {
                 <Appointments />
               ) : null
             }
-          />
+          />*/}
+          
+      
           //////////////
+          
           <Route
             path="/admindashboard"
             element={
@@ -143,6 +148,16 @@ const App = () => {
                 <Navigate to="/" replace />
               )
             }
+          />
+
+          //////////////////
+          <Route
+            path="/:businessID" // esta barrita ba a representar el core de todo, el business ID
+            element={<Home />}
+          />
+          <Route
+            path="/" // esta barrita ba a representar el core de todo, el business ID
+            element={<UserHelp />}
           />
         </Routes>
       </Router>

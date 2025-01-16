@@ -8,6 +8,16 @@ const path = `businesses/${businessID}`;
 
 //Functions that interact with firebase
 
+export const getBusinessData = async () => {
+  try{
+
+  }catch(error){
+    console.error('Error: ', error)
+    return false
+  }
+
+}
+
 export const getAppointmentExpirationTime = async (appointmentId) => {
   try {
     const appointment = await findAppointmentById(appointmentId);
