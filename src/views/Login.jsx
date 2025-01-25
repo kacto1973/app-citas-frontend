@@ -37,11 +37,14 @@ const Login = () => {
       const client = await validateClient(phone);
 
       if (client) {
-        window.location.reload();
-        navigate("/clientdashboard");
-      } else if (!client){
+        console.log("Cliente encontrado redigiriendo a client dashboard");
+        //navigate("/clientdashboard");
+        window.location.href = "/clientdashboard";
+      } else{
+        console.log("Cliente no encontrado redigiriendo a register");
+        //navigate("/register");
+        window.location.href = "/register";
 
-        navigate("/register");
       }
     };
     asyncFunc();

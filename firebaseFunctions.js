@@ -372,6 +372,7 @@ export const validateClient = async (cellphone) => {
       ) {
         clientData = childData;
         return true;
+        console.log("cliente encontrado: ", clientData);
       }
       return false;
     });
@@ -384,6 +385,7 @@ export const validateClient = async (cellphone) => {
       return true; // Usuario encontrado, devolver true
     }
 
+    console.log("No se encontró un cliente con ese número de teléfono");
     return false;
   } catch (error) {
     console.error("Error: ", error);
