@@ -1,10 +1,10 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
-const itemID = localStorage.getItem("businessID");
-const businessID = itemID ? itemID.toLowerCase() : null;
+//const itemID = localStorage.getItem("businessID");
+//const businessID = itemID ? itemID.toLowerCase() : null;
 
-const path = `businesses/${businessID}`;
+const path = `businesses/mb_salon`;
 
 //Functions that interact with firebase
 
@@ -295,16 +295,11 @@ export const findClientByPhoneNumber = async (phoneNumber) => {
 };
 
 export const registerClient = async (
-  fullName,
-  cellphone,
-  username,
-  password
+  fullName, cellphone
 ) => {
   try {
     const clientObject = {
       fullName,
-      username: username.toLowerCase(),
-      password: password.toLowerCase(),
       cellphone,
       activeAppointments: [], // inicialmente no se refleja en FB pero esta presente,
       //consent: true,
@@ -313,36 +308,23 @@ export const registerClient = async (
     //creamos referencia a la coleccion clients en la database
     const clientsRef = ref(database, `${path}/clients`);
 
-    //obtenemos los datos de la coleccion clients
-    const snapshot = await get(clientsRef);
+     //creamos una clave unica para ese cliente usando push
+     const newClientRef = push(clientsRef);
 
-    // Comprobamos si el username y password coinciden con alguno de los clientes
-    const clientFound = Object.values(snapshot.val()).some(
-      (childData) => childData.username === username
-    );
-    //
+     // Guardar el cliente en la base de datos
+     await set(newClientRef, clientObject);
 
-    if (clientFound) {
-      alert("Ese nombre de usuario no está disponible, intente con otro");
-      return false;
-    } else {
-      //creamos una clave unica para ese cliente usando push
-      const newClientRef = push(clientsRef);
+     return true;
+  
 
-      // Guardar el cliente en la base de datos
-      await set(newClientRef, clientObject);
-
-      alert("Usuario registrado con éxito");
-
-      return true;
-    }
+    
   } catch (error) {
     console.error("Error: ", error);
     return false;
   }
 };
 
-export const validateAdmin = async (username, password) => {
+export const validateAdmin = async (password) => {
   try {
     const adminsRef = ref(database, `${path}/admins`);
 
@@ -353,7 +335,6 @@ export const validateAdmin = async (username, password) => {
       let adminUsername = "";
       const foundAdmin = adminsArray.some((admin) => {
         if (
-          admin.username === username.toLowerCase() &&
           admin.password === password.toLowerCase()
         ) {
           adminUsername = admin.username;
@@ -374,7 +355,7 @@ export const validateAdmin = async (username, password) => {
   }
 };
 
-export const validateClient = async (username, password) => {
+export const validateClient = async (cellphone) => {
   try {
     //creamos referencia a la coleccion clients en la database
     const clientsRef = ref(database, `${path}/clients`);
@@ -387,8 +368,7 @@ export const validateClient = async (username, password) => {
     // Comprobamos si el username y password coinciden con alguno de los clientes
     const clientFound = Object.values(snapshot.val()).some((childData) => {
       if (
-        childData.username === username.toLowerCase() &&
-        childData.password === password.toLowerCase()
+        childData.cellphone === cellphone
       ) {
         clientData = childData;
         return true;
@@ -398,7 +378,7 @@ export const validateClient = async (username, password) => {
 
     if (clientFound) {
       localStorage.setItem("p9d4l8rwe", "true");
-      localStorage.setItem("username", clientData.username);
+      //localStorage.setItem("username", clientData.username);
       localStorage.setItem("userFullName", clientData.fullName);
       localStorage.setItem("cellphone", clientData.cellphone);
       return true; // Usuario encontrado, devolver true

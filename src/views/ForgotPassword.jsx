@@ -86,18 +86,7 @@ const ForgotPassword = () => {
         Si ya te registraste y olvidaste tus datos, te los enviaremos a tu
         whatsapp para que puedas iniciar sesión sin problemas
       </p>
-      <img
-        className="absolute bottom-[15%] left-[20%] z-10"
-        src="/images/cellphone3d.png"
-        width={100}
-        alt="cellphone3d"
-      />
-      <img
-        className="absolute bottom-[15%] right-[20%] z-10"
-        src="/images/chatbubble3d.png"
-        width={120}
-        alt="chatbubble3d"
-      />
+      
       <div className="absolute  bg-g4 -bottom-[135%] -right-[160%] w-[200%] h-[200%] rotate-144" />
       <div className="absolute top-0 bg-g4 w-full text-center h-[13%] rounded-b-[30px] flex justify-center items-center">
         <h1 className="text-3xl font-black text-white">Datos</h1>

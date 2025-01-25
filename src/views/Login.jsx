@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { validateClient, validateAdmin } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 import Alert from "@mui/material/Alert";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
-/*esto esta nomas en la rama main */
 
 const Login = () => {
   //useStates
@@ -12,27 +13,35 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [phone, setPhone] = useState("");
+
+  useEffect(() => {
+    localStorage.removeItem("cellphone");
+  },[])
+  
 
   //functions
   const handleLogin = (e) => {
     // Prevenir la recarga
     e.preventDefault();
 
+    if(phone.length !== 10){
+      setError("El número de celular debe tener 10 dígitos");
+      return; 
+    } 
+
+    localStorage.setItem("cellphone", phone);
+
     // Validar el usuario
     const asyncFunc = async () => {
-      const result = await validateClient(username, password);
-      const result2 = await validateAdmin(username, password);
+      const client = await validateClient(phone);
 
-      if (result) {
+      if (client) {
         window.location.reload();
         navigate("/clientdashboard");
-      } else if (result2) {
-        window.location.reload();
-        navigate("/admindashboard");
-      } else {
-        setError("Usuario o contraseña incorrectos, intente nuevamente");
-        setUsername("");
-        setPassword("");
+      } else if (!client){
+
+        navigate("/register");
       }
     };
     asyncFunc();
@@ -52,18 +61,7 @@ const Login = () => {
   return (
     <>
       <div className="bg-[linear-gradient(209deg,#4C2DFF_0%,#DE9FFE_62%,#855F98_100%)] overflow-hidden relative   min-h-screen flex flex-col justify-center items-center">
-        <img
-          className="absolute top-12 left-8 z-10"
-          src="/images/logout.png"
-          width={30}
-          alt="logout"
-          onClick={() => {
-            console.log("logging out of business...");
-            localStorage.removeItem("businessID");
-
-            window.location.reload();
-          }}
-        />
+        
         <img
           src="/images/logoBaza.png"
           alt="logo"
@@ -75,19 +73,19 @@ const Login = () => {
           <h1 className="text-3xl font-black text-white">Bienvenido</h1>
         </div>
         <div className="top-[34%] absolute flex flex-col m-auto w-[85%] rounded-3xl p-5 bg-g7 text-center">
-          <h2 className=" text-black text-2xl font-black">Inicio de Sesión</h2>
+          <h2 className=" text-black text-2xl font-black mb-6">Ingresa tu Celular</h2>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col justify-center items-center">
-              <input
-                type="text"
-                placeholder="Usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                <TextField    
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 onKeyDown={handleKeyDown}
-                required
+                required   
+                type="number"          
                 className="w-[90%] border border-black rounded-md my-4 py-1.5 text-center"
-              />
-              <input
+ id="outlined-basic" label="Tu Nro. Celular (10 dígitos)" variant="outlined" />
+
+              {/*<input
                 type="password"
                 placeholder="Contraseña"
                 value={password}
@@ -95,32 +93,30 @@ const Login = () => {
                 onKeyDown={handleKeyDown}
                 required
                 className="w-[90%] border border-black rounded-md mt-5 mb-4 py-1.5 text-center"
-              />
+              /> */}
               <button
                 type="submit"
-                className="px-2 py-1 rounded-md mt-4 mb-2 bg-g8 text-white w-[120px]"
+                className="px-2 py-1 rounded-md mt-6 m-2 bg-g8 text-white w-[120px]"
               >
-                Iniciar Sesión
+                Confirmar
               </button>
             </div>
           </form>
         </div>
-        <button
-          className="absolute bottom-[15%] text-white text-center  mt-5 mb-5 bg-g9 px-2 py-1 rounded-md w-[120px] cursor-pointer"
-          onClick={handleRegister}
-        >
-          Registrarme
-        </button>
-        <p className="text-white text-base font-black absolute bottom-[8%] text-center w-[90%]">
-          Si es su primera vez aquí, deberá registrarse con el botón de arriba e
-          iniciar sesión posteriormente
-        </p>
-        <p
-          className="absolute bottom-[23%] text-white w-full text-center my-6 underline cursor-pointer"
-          onClick={() => navigate("/forgotpassword")}
-        >
-          Olvidé mi contraseña
-        </p>
+        <img
+        className="absolute bottom-[15%] left-[20%] z-10"
+        src="/images/cellphone3d.png"
+        width={100}
+        alt="cellphone3d"
+      />
+      <img
+        className="absolute bottom-[15%] right-[20%] z-10"
+        src="/images/chatbubble3d.png"
+        width={120}
+        alt="chatbubble3d"
+      />
+        
+        
       </div>
       {error && (
         <div className="z-50 fixed bottom-[5%] left-[50%] -translate-x-1/2 w-[80%]">

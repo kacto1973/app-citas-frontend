@@ -59,7 +59,7 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
           description: description,
           external_reference: {
             appointmentId: appointmentId,
-            business_id: business_id,
+            business_id: "mb_salon",
             type: "unique_payment",
             expirationExactTime: expirationExactTime,
           },

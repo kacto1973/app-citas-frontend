@@ -105,11 +105,11 @@ const ClientDashboard = () => {
 
   const getAppointmentsForClient = (allAppointmentsArray) => {
     console.log("getting em...");
-    const username = localStorage.getItem("username");
+    const cellphone = localStorage.getItem("cellphone");
     let rightAppointments = [];
-    if (username) {
+    if (cellphone) {
       for (const appointment of allAppointmentsArray) {
-        if (appointment.username === username) {
+        if (appointment.cellphone === cellphone) {
           rightAppointments.push(appointment);
         }
       }

@@ -91,6 +91,7 @@ const Services = () => {
     }
   };
 
+ /*
   useEffect(() => {
     const businessID = localStorage.getItem("businessID").toLowerCase();
     const showImagesRef = ref(
@@ -106,7 +107,7 @@ const Services = () => {
       }
     };
     asyncFunc();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     const asyncFunc = async () => {
