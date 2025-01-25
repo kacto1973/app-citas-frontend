@@ -49,6 +49,7 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
 
     const response = await fetch(
       "https://app-citas-backend.vercel.app/api/create-order",
+      //"https://a53b-2806-263-c485-8db7-c195-c5f0-828e-bac1.ngrok-free.app/api/create-order", 
       {
         method: "POST",
         headers: {
@@ -72,8 +73,9 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
     const data = await response.json();
 
     if (data.init_point) {
-      window.open(data.init_point);
-    }
+      window.location.href = data.init_point;
+    } 
+     
     setLoading(false);
   };
 
