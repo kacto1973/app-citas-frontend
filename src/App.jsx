@@ -33,10 +33,10 @@ const App = () => {
     <TrialProvider>
       <Router>
         <Routes>
-           <Route
+          <Route
             path="/" // esta barrita ba a representar el core de todo, el business ID
             element={
-               !clientp9d4l8rwe && !admin8w9j2fjsd ? (
+              !clientp9d4l8rwe && !admin8w9j2fjsd ? (
                 <Login />
               ) : clientp9d4l8rwe ? (
                 <ClientDashboard />
@@ -45,60 +45,34 @@ const App = () => {
               ) : null
             }
           />
-          
-      
           //////////////
-          
           <Route
             path="/admindashboard"
             element={
-              admin8w9j2fjsd ? (
-                <AdminDashboard />
-              ) : (
-                <Navigate to="/" replace />
-              )
+              admin8w9j2fjsd ? <AdminDashboard /> : <Navigate to="/" replace />
             }
           />
           <Route
             path="/register"
-            element={ cellphone ? (<Register />) : (<Navigate to="/" replace />) }
+            element={cellphone ? <Register /> : <Navigate to="/" replace />}
           />
-          <Route
-            path="/adminvalidation"
-            element={<AdminValidation />}
-          />
-
+          <Route path="/adminvalidation" element={<AdminValidation />} />
           <Route
             path="/appointments"
             element={
-              admin8w9j2fjsd ? (
-                <Appointments />
-              ) : (
-                <Navigate to="/" replace />
-              )
+              admin8w9j2fjsd ? <Appointments /> : <Navigate to="/" replace />
             }
           />
           <Route
             path="/clients"
-            element={
-              admin8w9j2fjsd ? (
-                <Clients />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
+            element={admin8w9j2fjsd ? <Clients /> : <Navigate to="/" replace />}
           />
           <Route
             path="/restdays"
             element={
-              admin8w9j2fjsd ? (
-                <RestDays />
-              ) : (
-                <Navigate to="/" replace />
-              )
+              admin8w9j2fjsd ? <RestDays /> : <Navigate to="/" replace />
             }
           />
-          
           <Route
             path="/clientdashboard"
             element={
@@ -119,15 +93,10 @@ const App = () => {
               )
             }
           />
-          
           <Route
             path="/services"
             element={
-              admin8w9j2fjsd  ? (
-                <Services />
-              ) : (
-                <Navigate to="/" replace />
-              )
+              admin8w9j2fjsd ? <Services /> : <Navigate to="/" replace />
             }
           />
           <Route
@@ -140,7 +109,6 @@ const App = () => {
               )
             }
           />
-          
         </Routes>
       </Router>
     </TrialProvider>

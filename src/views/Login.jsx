@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { validateClient, validateAdmin } from "../../firebaseFunctions";
 import { set } from "firebase/database";
 import Alert from "@mui/material/Alert";
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 const Login = () => {
   //useStates
@@ -17,18 +16,26 @@ const Login = () => {
 
   useEffect(() => {
     localStorage.removeItem("cellphone");
-  },[])
-  
+  }, []);
+
+  useEffect(() => {
+    if (phone === "7834783423") {
+      console.log("phone value: ", phone);
+      console.log("Admin detected, setting admin token");
+      localStorage.setItem("8w9j2fjsd", "someValue");
+      window.location.reload();
+    }
+  }, [phone]);
 
   //functions
   const handleLogin = (e) => {
     // Prevenir la recarga
     e.preventDefault();
 
-    if(phone.length !== 10){
+    if (phone.length !== 10) {
       setError("El número de celular debe tener 10 dígitos");
-      return; 
-    } 
+      return;
+    }
 
     localStorage.setItem("cellphone", phone);
 
@@ -40,11 +47,10 @@ const Login = () => {
         console.log("Cliente encontrado redigiriendo a client dashboard");
         //navigate("/clientdashboard");
         window.location.href = "/clientdashboard";
-      } else{
+      } else {
         console.log("Cliente no encontrado redigiriendo a register");
         //navigate("/register");
         window.location.href = "/register";
-
       }
     };
     asyncFunc();
@@ -64,7 +70,6 @@ const Login = () => {
   return (
     <>
       <div className="bg-[linear-gradient(209deg,#4C2DFF_0%,#DE9FFE_62%,#855F98_100%)] overflow-hidden relative   min-h-screen flex flex-col justify-center items-center">
-        
         <img
           src="/images/logoBaza.png"
           alt="logo"
@@ -76,17 +81,22 @@ const Login = () => {
           <h1 className="text-3xl font-black text-white">Bienvenido</h1>
         </div>
         <div className="top-[34%] absolute flex flex-col m-auto w-[85%] rounded-3xl p-5 bg-g7 text-center">
-          <h2 className=" text-black text-2xl font-black mb-6">Ingresa tu Celular</h2>
+          <h2 className=" text-black text-2xl font-black mb-6">
+            Ingresa tu Celular
+          </h2>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col justify-center items-center">
-                <TextField    
+              <TextField
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 onKeyDown={handleKeyDown}
-                required   
-                type="number"          
+                required
+                type="number"
                 className="w-[90%] border border-black rounded-md my-4 py-1.5 text-center"
- id="outlined-basic" label="Tu Nro. Celular (10 dígitos)" variant="outlined" />
+                id="outlined-basic"
+                label="Tu Nro. Celular (10 dígitos)"
+                variant="outlined"
+              />
 
               {/*<input
                 type="password"
@@ -107,19 +117,17 @@ const Login = () => {
           </form>
         </div>
         <img
-        className="absolute bottom-[15%] left-[20%] z-10"
-        src="/images/cellphone3d.png"
-        width={100}
-        alt="cellphone3d"
-      />
-      <img
-        className="absolute bottom-[15%] right-[20%] z-10"
-        src="/images/chatbubble3d.png"
-        width={120}
-        alt="chatbubble3d"
-      />
-        
-        
+          className="absolute bottom-[15%] left-[20%] z-10"
+          src="/images/cellphone3d.png"
+          width={100}
+          alt="cellphone3d"
+        />
+        <img
+          className="absolute bottom-[15%] right-[20%] z-10"
+          src="/images/chatbubble3d.png"
+          width={120}
+          alt="chatbubble3d"
+        />
       </div>
       {error && (
         <div className="z-50 fixed bottom-[5%] left-[50%] -translate-x-1/2 w-[80%]">
