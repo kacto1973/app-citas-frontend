@@ -3,21 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import { useEffect, useState, useContext } from "react";
 import { getAppointments } from "../../firebaseFunctions";
-import { TrialContext } from "../context/TrialContext";
 
 const AppointmentsHistory = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const { isTrialExpired, trialEndDate } = useContext(TrialContext); // Accedemos al contexto
-      const [subModalOpen, setSubModalOpen] = useState(false)
-  
-
-  useEffect(() => {
-    if (isTrialExpired) {
-      navigate("/trialexpired"); // Redirigir de forma imperativa
-    }
-  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
-
   const [appointmentsHistory, setAppointmentsHistory] = useState([]);
 
   useEffect(() => {
@@ -79,9 +68,8 @@ const AppointmentsHistory = () => {
         </div>
       ) : (
         <div className="w-full flex flex-col bg-g10 items-center absolute top-[7rem]">
-
-{/* gradiente de arriba */}
-<div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
+          {/* gradiente de arriba */}
+          <div className="fixed z-10 -top-[675px] left-[50%] -translate-x-1/2 rounded-b-[30px] bg-[linear-gradient(40deg,#4C2DFF_0%,#DE9FFE_100%)] h-[765px] w-[100vw] " />
           {/* elementos posicionados absolutamente */}
           <div className="z-50 fixed bottom-0 bg-white  w-full shadow-black shadow-2xl h-[4.3rem] flex justify-evenly items-center">
             <div className="flex flex-col items-center">
@@ -156,62 +144,6 @@ const AppointmentsHistory = () => {
           <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
             {localStorage.getItem("adminUsername")}
           </h1>
-          <img
-            className="fixed top-7 right-7 z-50"
-            src="/images/menu.png"
-            width={32}
-            alt="menu"
-            onClick={() => {
-              setSubModalOpen(true)
-            }}
-          />
-
-            <div 
-              className={`${subModalOpen ? '' : 'hidden '} w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
-            >
-              <div
-                className={`overflow-y-auto flex flex-col items-center fixed w-[80%] h-[60vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white shadow-black shadow-md rounded-[8px] transform transition-all duration-500 z-50`}
-              >
-              <div className="absolute top-0 w-full h-[0.7rem] bg-[linear-gradient(90deg,#4C2DFF_0%,#DE9FFE_100%)] z-50" />
-                <h1 className="text-xl font-black mt-8 mb-4">Tu Suscripción</h1>
-
-                <img src="/images/bag3d.png" alt="bag image" width={80} />
-
-                <div className="flex flex-col my-6">
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Disfruta de más tiempo libre</p>
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Automatiza el agendado de citas</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Gestiona tu horario cómodamente</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Despreocúpate de los anticipos</p>
-
-                  </div>
-                </div>
-                <p className="text-base font-black text-center">Tu licencia vence el día: <br />
-                 </p>
-                 <p className="text-sm font-normal w-[70%] text-center">{trialEndDate}</p>
-
-                <button
-                  className="bg-g1 text-white py-2 px-4  w-[8rem] rounded-md mt-5"
-                  onClick={() => {
-                    setSubModalOpen(false);
-                  }}  
-                > Cerrar </button>
-
-              </div>
-            </div>
-
 
           <h1 className="text-lg font-black text-black mb-2 text-center">
             Historial de Citas
@@ -219,8 +151,8 @@ const AppointmentsHistory = () => {
           <div className="w-[80%] flex flex-col justify-center items-center mb-[8rem] bg-g10">
             {appointmentsHistory && appointmentsHistory.length > 0 && (
               <p className="text-black font-medium text-lg mt-5 text-center">
-              Citas pasadas de los últimos 7 días...
-            </p>
+                Citas pasadas de los últimos 7 días...
+              </p>
             )}
             {appointmentsHistory && appointmentsHistory.length > 0 ? (
               appointmentsHistory.map((appointment) => {

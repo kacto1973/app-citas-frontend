@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   //cleanseRestDays,
   getAllRestDays,
@@ -9,79 +9,16 @@ import {
 } from "../../firebaseFunctions";
 import database from "../../firebaseConfig";
 import { ref, update } from "firebase/database";
-import { TrialContext } from "../context/TrialContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-
-  const { isTrialExpired, trialEndDate } = useContext(TrialContext); // Accedemos al contexto
-
-  useEffect(() => {
-    if (isTrialExpired) {
-      navigate("/trialexpired"); // Redirigir de forma imperativa
-    }
-  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
-
-  useEffect(() => {
-    const asyncFunc = async () => {
-      try {
-        const businessID = localStorage.getItem("businessID").toLowerCase();
-        const lastSeenRef = ref(database, `businesses/${businessID}/admins`);
-
-        const now = new Date();
-
-        const readableDate = now.toLocaleString("es-MX", {
-          weekday: "long", // Nombre completo del día
-          year: "numeric", // Año con 4 dígitos
-          month: "long", // Nombre completo del mes
-          day: "numeric", // Día del mes
-          hour: "2-digit", // Hora en formato de 2 dígitos
-          minute: "2-digit", // Minutos en formato de 2 dígitos
-          second: "2-digit", // Segundos en formato de 2 dígitos
-          hour12: true, // Formato de 12 horas (true) o 24 horas (false)
-        });
-
-        await update(lastSeenRef, { lastSeen: readableDate });
-        setLoading(false); // Después de completar la actualización, cambiar el estado a false
-      } catch (error) {
-        console.log(error);
-        setLoading(false); // Después de completar la actualización, cambiar el estado a false
-      }
-    };
-    asyncFunc();
-  }, []);
-
-  // useEffect(() => {
-  //   const asyncFunct = async () => {
-  //     //limpiar restdays que ya pasaron
-  //     const restDays = await getAllRestDays();
-  //     if (restDays) {
-  //       const done = await cleanseRestDays(restDays);
-  //       if (done) {
-  //         console.log("restdays limpiados!");
-  //       }
-  //     }
-
-  //     //limpiar appointments que ya pasaron
-
-  //     const done = await cleanseAppointments();
-  //     if (done) {
-  //       console.log("appointments limpiados!");
-  //     }
-  //   };
-
-  //   asyncFunct();
-  // }, []);
 
   return (
     <div
       className="
             relative min-h-screen bg-black w-full flex flex-col justify-center items-center"
     >
-      <p className="text-white font-black text-sm absolute top-[1%] text-center">
-        Su licencia vence el: <br /> {trialEndDate}{" "}
-      </p>
       {loading ? (
         <div className="absolute inset-0 bg-black  flex items-center justify-center z-20">
           <div className="bg-white p-5 rounded-md shadow-md text-center">

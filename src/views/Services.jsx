@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import {
   getServices,
@@ -13,21 +13,13 @@ import {
 } from "../../firebaseFunctions";
 import database from "../../firebaseConfig";
 import { ref, update, get } from "firebase/database";
-import { TrialContext } from "../context/TrialContext";
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 const Services = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const { isTrialExpired, trialEndDate } = useContext(TrialContext); // Accedemos al contexto
-
-  useEffect(() => {
-    if (isTrialExpired) {
-      navigate("/trialexpired"); // Redirigir de forma imperativa
-    }
-  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
   const [showImages, setShowImages] = useState(false);
   const [editing, setEditing] = useState(false);
   //const [extraEditing, setExtraEditing] = useState(false);
@@ -59,8 +51,7 @@ const Services = () => {
   const [mediumPrice, setMediumPrice] = useState(""); // Precio medio
   const [longPrice, setLongPrice] = useState(""); // Precio largo
 
-      const [subModalOpen, setSubModalOpen] = useState(false)
-  
+  const [subModalOpen, setSubModalOpen] = useState(false);
 
   const [services, setServices] = useState([]);
   //const [extraServices, setExtraServices] = useState([]);
@@ -91,7 +82,7 @@ const Services = () => {
     }
   };
 
- /*
+  /*
   useEffect(() => {
     const businessID = localStorage.getItem("businessID").toLowerCase();
     const showImagesRef = ref(
@@ -452,62 +443,6 @@ const Services = () => {
           <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
             {localStorage.getItem("adminUsername")}
           </h1>
-          <img
-            className="fixed top-7 right-7 z-50"
-            src="/images/menu.png"
-            width={32}
-            alt="menu"
-             onClick={() => {
-                setSubModalOpen(true)
-              }}
-          />
-
-<div 
-              className={`${subModalOpen ? '' : 'hidden '} w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
-            >
-              <div
-                className={`overflow-y-auto flex flex-col items-center fixed w-[80%] h-[60vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white shadow-black shadow-md rounded-[8px] transform transition-all duration-500 z-50`}
-              >
-              <div className="absolute top-0 w-full h-[0.7rem] bg-[linear-gradient(90deg,#4C2DFF_0%,#DE9FFE_100%)] z-50" />
-                <h1 className="text-xl font-black mt-8 mb-4">Tu Suscripción</h1>
-
-                <img src="/images/bag3d.png" alt="bag image" width={80} />
-
-                <div className="flex flex-col my-6">
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Disfruta de más tiempo libre</p>
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Automatiza el agendado de citas</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Gestiona tu horario cómodamente</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Despreocúpate de los anticipos</p>
-
-                  </div>
-                </div>
-                <p className="text-base font-black text-center">Tu licencia vence el día: <br />
-                 </p>
-                 <p className="text-sm font-normal w-[70%] text-center">{trialEndDate}</p>
-
-                <button
-                  className="bg-g1 text-white py-2 px-4  w-[8rem] rounded-md mt-5"
-                  onClick={() => {
-                    setSubModalOpen(false);
-                  }}  
-                > Cerrar </button>
-
-              </div>
-            </div>
-
 
           <div
             className={`${
@@ -518,7 +453,7 @@ const Services = () => {
               className={`overflow-y-auto flex flex-col items-center fixed w-[80%] h-[50vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2  bg-white shadow-black shadow-lg rounded-[20px] transform transition-all duration-500 z-50`}
             >
               <h1 className="font-black text-black text-lg text-center my-4">
-               {editing ? "Editar Servicio" : "Agregar Servicio"}
+                {editing ? "Editar Servicio" : "Agregar Servicio"}
               </h1>
               <button
                 onClick={() => {
@@ -528,7 +463,6 @@ const Services = () => {
                   setPrice("");
                   setDuration("");
                   setRestTime("");
-                  
                 }}
                 className="fixed right-4 top-4 z-50 bg-red text-sm text-white py-1 px-2 rounded-md"
               >
@@ -557,46 +491,55 @@ const Services = () => {
 
               */}
               <TextField
-              value={name}
-              size="small"
-              margin="normal"
-              onChange={(e) => setName(e.target.value)}
-              id="outlined-basic" label="Nombre del Servicio"
-              className="w-[70%] my-3 mt-10"
-              variant="outlined" />
+                value={name}
+                size="small"
+                margin="normal"
+                onChange={(e) => setName(e.target.value)}
+                id="outlined-basic"
+                label="Nombre del Servicio"
+                className="w-[70%] my-3 mt-10"
+                variant="outlined"
+              />
 
               <TextField
-              value={price}
-              size="small"
-              margin="normal"
-              onChange={(e) => setPrice(e.target.value)}
-              id="outlined-basic" label="Precio del Servicio"
-              className="w-[70%] my-3"
-              variant="outlined" />
+                value={price}
+                size="small"
+                margin="normal"
+                onChange={(e) => setPrice(e.target.value)}
+                id="outlined-basic"
+                label="Precio del Servicio"
+                className="w-[70%] my-3"
+                variant="outlined"
+              />
 
               <TextField
-              value={duration}
-              size="small"
-              margin="normal"
-              onChange={(e) => setDuration(e.target.value)}
-              id="outlined-basic" label="Duración (15, 30, 45...mins)"
-              className="w-[70%] my-3"
-              variant="outlined" />
-
+                value={duration}
+                size="small"
+                margin="normal"
+                onChange={(e) => setDuration(e.target.value)}
+                id="outlined-basic"
+                label="Duración (15, 30, 45...mins)"
+                className="w-[70%] my-3"
+                variant="outlined"
+              />
 
               <TextField
-              value={restTime}
-              size="small"
-              margin="normal"
-              onChange={(e) => setRestTime(e.target.value)}
-              id="outlined-basic" label="T. Descanso (0, 15, 30...mins)"
-              className="w-[70%] my-3"
-              variant="outlined" />
+                value={restTime}
+                size="small"
+                margin="normal"
+                onChange={(e) => setRestTime(e.target.value)}
+                id="outlined-basic"
+                label="T. Descanso (0, 15, 30...mins)"
+                className="w-[70%] my-3"
+                variant="outlined"
+              />
 
-              <button 
-              onClick={editing ? saveEdit : handleAdd}
-              className="bg-g1 text-white py-2 px-4 rounded-md my-4">Confirmar</button>
-
+              <button
+                onClick={editing ? saveEdit : handleAdd}
+                className="bg-g1 text-white py-2 px-4 rounded-md my-4"
+              >
+                Confirmar
+              </button>
             </div>
           </div>
 
@@ -771,28 +714,31 @@ const Services = () => {
               <tbody>
                 {services &&
                   services.length > 0 &&
-                  services.filter((service) => {
-                    if (searchQuery === "") {
-                      return service;
-                    } else if (
-                      service.name
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())
-                    ) {
-                      return service;
-                    }
-                  })
-                  .map((service) => {
-                    console.log("hola desde servicios`");
-                    console.log("SERVICIO", service);
-                    return (
-                      <tr className="bg-white">
-                        <td className="px-4 py-2 border">{service.name}</td>
-                        <td className="px-4 py-2 border">{service.restTime}</td>
-                        {/* <td className="px-4 py-2 border">
+                  services
+                    .filter((service) => {
+                      if (searchQuery === "") {
+                        return service;
+                      } else if (
+                        service.name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())
+                      ) {
+                        return service;
+                      }
+                    })
+                    .map((service) => {
+                      console.log("hola desde servicios`");
+                      console.log("SERVICIO", service);
+                      return (
+                        <tr className="bg-white">
+                          <td className="px-4 py-2 border">{service.name}</td>
+                          <td className="px-4 py-2 border">
+                            {service.restTime}
+                          </td>
+                          {/* <td className="px-4 py-2 border">
                           {service.hairLength ? "Sí" : "No"}
                         </td> */}
-                        {/* {service.hairLength ? (
+                          {/* {service.hairLength ? (
                           <>
                             <td className="px-4 py-2 border ">N/A</td>
                             <td className="px-4 py-2 border">
@@ -831,38 +777,40 @@ const Services = () => {
                             <td className="px-4 py-2 border">N/A</td>
                           </>
                         )} */}
-                        <td className="px-4 py-2 border">{service.duration}</td>
-                        <td className="px-4 py-2 border">{service.price}</td>
+                          <td className="px-4 py-2 border">
+                            {service.duration}
+                          </td>
+                          <td className="px-4 py-2 border">{service.price}</td>
 
-                        <td className="border">
-                          <div className="flex justify-evenly">
-                            <button
-                              onClick={() => {
-                                handleEdit(service);
-                                setShowServiceModal(true);
-                              }}
-                              className="px-2 py-1 rounded-md bg-yellow text-white m-3"
-                            >
-                              Editar
-                            </button>
-                            <button
-                              onClick={() => {
-                                const userConfirm = confirm(
-                                  `¿Estás seguro de querer borrar: ${service.name}?`
-                                );
-                                if (userConfirm) {
-                                  handleDelete(service);
-                                }
-                              }}
-                              className="px-2 py-1 rounded-md bg-red text-white m-3"
-                            >
-                              Borrar
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          <td className="border">
+                            <div className="flex justify-evenly">
+                              <button
+                                onClick={() => {
+                                  handleEdit(service);
+                                  setShowServiceModal(true);
+                                }}
+                                className="px-2 py-1 rounded-md bg-yellow text-white m-3"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const userConfirm = confirm(
+                                    `¿Estás seguro de querer borrar: ${service.name}?`
+                                  );
+                                  if (userConfirm) {
+                                    handleDelete(service);
+                                  }
+                                }}
+                                className="px-2 py-1 rounded-md bg-red text-white m-3"
+                              >
+                                Borrar
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
               </tbody>
             </table>
           </div>

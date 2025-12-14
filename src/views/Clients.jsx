@@ -1,28 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import { getAllClients, getAppointments } from "../../firebaseFunctions";
 import { useNavigate } from "react-router-dom";
-import { TrialContext } from "../context/TrialContext";
 
 const Clients = () => {
   //use states
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const { isTrialExpired, trialEndDate } = useContext(TrialContext); // Accedemos al contexto
-
-  useEffect(() => {
-    if (isTrialExpired) {
-      navigate("/trialexpired"); // Redirigir de forma imperativa
-    }
-  }, [isTrialExpired]); // El efecto solo se ejecutará cuando `isTrialExpired` cambie
   const [clientsArray, setClientsArray] = useState([]);
   const [clientsLoaded, setClientsLoaded] = useState(false);
   const [filteredClients, setFilteredClients] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(true);
-      const [subModalOpen, setSubModalOpen] = useState(false)
-  
 
   //use effects
   useEffect(() => {
@@ -187,62 +177,6 @@ const Clients = () => {
           <h1 className="fixed top-7 z-50 text-white font-black text-2xl">
             {localStorage.getItem("adminUsername")}
           </h1>
-          <img
-            className="fixed top-7 right-7 z-50"
-            src="/images/menu.png"
-            width={32}
-            alt="menu"
-            onClick={() => {
-              setSubModalOpen(true)
-            }}
-          />
-
-<div 
-              className={`${subModalOpen ? '' : 'hidden '} w-[100vw] h-[100vh] bg-black bg-opacity-50 fixed top-0 left-0 z-50 flex justify-center items-center`}
-            >
-              <div
-                className={`overflow-y-auto flex flex-col items-center fixed w-[80%] h-[60vh] top-[50%] -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white shadow-black shadow-md rounded-[8px] transform transition-all duration-500 z-50`}
-              >
-              <div className="absolute top-0 w-full h-[0.7rem] bg-[linear-gradient(90deg,#4C2DFF_0%,#DE9FFE_100%)] z-50" />
-                <h1 className="text-xl font-black mt-8 mb-4">Tu Suscripción</h1>
-
-                <img src="/images/bag3d.png" alt="bag image" width={80} />
-
-                <div className="flex flex-col my-6">
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Disfruta de más tiempo libre</p>
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Automatiza el agendado de citas</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Gestiona tu horario cómodamente</p>
-
-                  </div>
-                  <div className="flex flex-row items-center mb-3">
-                  <img src="/images/check.svg" alt="checkmarks" width={22} />
-                  <p className="ml-2">Despreocúpate de los anticipos</p>
-
-                  </div>
-                </div>
-                <p className="text-base font-black text-center">Tu licencia vence el día: <br />
-                 </p>
-                 <p className="text-sm font-normal w-[70%] text-center">{trialEndDate}</p>
-
-                <button
-                  className="bg-g1 text-white py-2 px-4  w-[8rem] rounded-md mt-5"
-                  onClick={() => {
-                    setSubModalOpen(false);
-                  }}  
-                > Cerrar </button>
-
-              </div>
-            </div>
-
 
           <div className="w-full flex flex-col justify-center items-center  ">
             <h1 className="text-lg font-black w-[90%] mb-8 text-black text-center">

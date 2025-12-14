@@ -1,33 +1,27 @@
 import database from "./firebaseConfig";
 import { ref, push, set, get, remove } from "firebase/database";
 
-//const itemID = localStorage.getItem("businessID");
-//const businessID = itemID ? itemID.toLowerCase() : null;
-
 const path = `businesses/mb_salon`;
 
 //Functions that interact with firebase
 
 export const getBusinessData = async () => {
-  try{
-
+  try {
     const businessRef = ref(database, `${path}/settings`);
     const businessSnap = await get(businessRef);
 
     if (businessSnap.exists()) {
       const businessData = businessSnap.val();
-      
+
       //console.log("getbusiness data method result: "+JSON.stringify(businessData))
 
       return businessData;
     }
-
-  }catch(error){
-    console.error('Error: ', error)
-    return false
+  } catch (error) {
+    console.error("Error: ", error);
+    return false;
   }
-
-}
+};
 
 export const getAppointmentExpirationTime = async (appointmentId) => {
   try {
@@ -42,27 +36,6 @@ export const getAppointmentExpirationTime = async (appointmentId) => {
     console.error(
       "Error al obtener la fecha de expiración de la cita: " + error.message
     );
-    return false;
-  }
-};
-
-export const validateBusinessID = async (businessIDTyped) => {
-  try {
-    const businessesRef = ref(database, "businesses");
-    const businessesSnap = await get(businessesRef);
-
-    if (businessesSnap.exists()) {
-      const businessesArray = Object.keys(businessesSnap.val());
-      const foundBusiness = businessesArray.some(
-        (business) => business.toLowerCase() === businessIDTyped.toLowerCase()
-      );
-
-      return foundBusiness;
-    }
-    console.log("No se encontró el businessID: " + businessIDTyped);
-    return false;
-  } catch (error) {
-    console.error("Error al obtener el businessID: " + error.message);
     return false;
   }
 };
@@ -294,9 +267,7 @@ export const findClientByPhoneNumber = async (phoneNumber) => {
   }
 };
 
-export const registerClient = async (
-  fullName, cellphone
-) => {
+export const registerClient = async (fullName, cellphone) => {
   try {
     const clientObject = {
       fullName,
@@ -308,16 +279,13 @@ export const registerClient = async (
     //creamos referencia a la coleccion clients en la database
     const clientsRef = ref(database, `${path}/clients`);
 
-     //creamos una clave unica para ese cliente usando push
-     const newClientRef = push(clientsRef);
+    //creamos una clave unica para ese cliente usando push
+    const newClientRef = push(clientsRef);
 
-     // Guardar el cliente en la base de datos
-     await set(newClientRef, clientObject);
+    // Guardar el cliente en la base de datos
+    await set(newClientRef, clientObject);
 
-     return true;
-  
-
-    
+    return true;
   } catch (error) {
     console.error("Error: ", error);
     return false;
@@ -334,9 +302,7 @@ export const validateAdmin = async (password) => {
       const adminsArray = Object.values(adminsSnap.val());
       let adminUsername = "";
       const foundAdmin = adminsArray.some((admin) => {
-        if (
-          admin.password === password.toLowerCase()
-        ) {
+        if (admin.password === password.toLowerCase()) {
           adminUsername = admin.username;
           return true;
         }
@@ -367,9 +333,7 @@ export const validateClient = async (cellphone) => {
 
     // Comprobamos si el username y password coinciden con alguno de los clientes
     const clientFound = Object.values(snapshot.val()).some((childData) => {
-      if (
-        childData.cellphone === cellphone
-      ) {
+      if (childData.cellphone === cellphone) {
         clientData = childData;
         return true;
         console.log("cliente encontrado: ", clientData);

@@ -9,8 +9,6 @@ import TextField from "@mui/material/TextField";
 const Login = () => {
   //useStates
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [phone, setPhone] = useState("");
 

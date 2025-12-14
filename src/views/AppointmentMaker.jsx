@@ -59,25 +59,6 @@ const AppointmentMaker = () => {
   const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
   //useEffect
 
-  // useEffect(() => {
-  //   const asyncFunc = async () => {
-  //     try {
-  //       const businessID = localStorage.getItem("businessID").toLowerCase();
-  //       const imagesRef = ref(
-  //         database,
-  //         `businesses/${businessID}/settings/showImages`
-  //       );
-  //       const imagesSnapshot = await get(imagesRef);
-  //       if (imagesSnapshot.exists()) {
-  //         setShowImages(imagesSnapshot.val());
-  //       }
-  //     } catch (error) {
-  //       console.error("Error al cargar imagenes de referencia", error);
-  //     }
-  //   };
-  //   asyncFunc();
-  // }, []);
-
   useEffect(() => {
     console.log("map ", appointmentsMap);
   }),
