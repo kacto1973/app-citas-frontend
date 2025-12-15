@@ -14,6 +14,8 @@
     "@emotion/styled": "^11.14.0",
     "@mercadopago/sdk-react": "^0.0.19",
     "@mui/material": "^6.3.0",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.91.1",
     "cloudinary-react": "^1.8.1",
     "firebase": "^11.0.2",
     "firebase-admin": "^13.0.1",

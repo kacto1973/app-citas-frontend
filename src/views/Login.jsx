@@ -17,7 +17,7 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    if (phone === "7834783423") {
+    if (phone === "1111") {
       console.log("phone value: ", phone);
       console.log("Admin detected, setting admin token");
       localStorage.setItem("8w9j2fjsd", "someValue");
@@ -72,7 +72,7 @@ const Login = () => {
           src="/images/logoBaza.png"
           alt="logo"
           width={120}
-          className="mx-auto mt-5 absolute top-[13%] rounded-full"
+          className="mx-auto mt-5 absolute top-[13%] rounded-full hidden"
         />
         <div className="absolute  bg-g4 -bottom-[135%] -right-[160%] w-[200%] h-[200%] rotate-144" />
         <div className="absolute top-0 bg-g4 w-full text-center h-[13%] rounded-b-[30px] flex justify-center items-center">

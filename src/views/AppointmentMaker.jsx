@@ -1,6 +1,11 @@
 import React from "react";
 import Calendar from "react-calendar";
+import database from "../../firebaseConfig";
+import Alert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
+import { set, get, ref } from "firebase/database";
+import { useNavigate } from "react-router-dom";
+import { DateTime } from "luxon";
 import {
   getServices,
   getExtraServices,
@@ -9,11 +14,6 @@ import {
   addAppointment,
   getAllRestDays,
 } from "../../firebaseFunctions";
-import database from "../../firebaseConfig";
-import { set, get, ref } from "firebase/database";
-import { useNavigate } from "react-router-dom";
-import { DateTime } from "luxon";
-import Alert from "@mui/material/Alert";
 
 const AppointmentMaker = () => {
   //use states

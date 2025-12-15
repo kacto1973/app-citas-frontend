@@ -6,7 +6,6 @@ import {
   Navigate,
 } from "react-router-dom";
 import Login from "./views/Login";
-import AdminDashboard from "./views/AdminDashboard";
 import Appointments from "./views/Appointments";
 import Clients from "./views/Clients";
 import RestDays from "./views/RestDays";
@@ -37,12 +36,6 @@ const App = () => {
           }
         />
         //////////////
-        <Route
-          path="/admindashboard"
-          element={
-            admin8w9j2fjsd ? <AdminDashboard /> : <Navigate to="/" replace />
-          }
-        />
         <Route
           path="/register"
           element={cellphone ? <Register /> : <Navigate to="/" replace />}
