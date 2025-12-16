@@ -21,48 +21,65 @@ import {
 //////////////////////////////////////////////END OF IMPORTS
 
 const AppointmentMaker = () => {
-  //control states
-  const [error, setError] = useState("");
-
-  //display states
-  const [showServices, setShowServices] = useState(false);
-
-  //
-  const [scrollVisible, setScrollVisible] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [dateDisplayText, setDateDisplayText] = useState("");
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [appointmentsArray, setAppointmentsArray] = useState([]);
-  const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
-
-  const [servicesArray, setServicesArray] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
-  const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
-    useState(0);
-  const [servicesCart, setServicesCart] = useState([]);
-  const [totalCost, setTotalCost] = useState(0);
-  const navigate = useNavigate();
-
-  const [durationInHours, setDurationInHours] = useState(0);
-  const [durationInMinutes, setDurationInMinutes] = useState(0);
-
-  const [appointmentsMap, setAppointmentsMap] = useState({});
-  const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
-    []
-  );
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  // ===== 1. ESTADOS DE AUTENTICACIÓN Y SESIÓN =====
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [userFullName, setUserFullName] = useState(
     localStorage.getItem("userFullName")
   );
-  //times to display con opciones apartadas deshabilitadas y las disponibles
-  const [timesCombobox, setTimesCombobox] = useState([]);
-  const [disabledDays, setDisabledDays] = useState([]);
-  const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
+  const navigate = useNavigate();
 
-  //useEffect
+  // ===== 2. ESTADOS DEL FLUJO DE AGENDACIÓN (MULTI-STEP) =====
+  const [currentStep, setCurrentStep] = useState(1); // 1, 2, 3...
+  const [showServices, setShowServices] = useState(false); // Controla modal de servicios
+
+  // ===== 3. ESTADOS DE SERVICIOS Y CARRITO =====
+  // Catálogos disponibles
+  const [servicesArray, setServicesArray] = useState([]);
+
+  // Selecciones del usuario
+  const [selectedService, setSelectedService] = useState(null);
+
+  // Carrito y cálculos
+  const [servicesCart, setServicesCart] = useState([]);
+  const [totalCost, setTotalCost] = useState(0);
+  const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
+    useState(0);
+  const [durationInHours, setDurationInHours] = useState(0);
+  const [durationInMinutes, setDurationInMinutes] = useState(0);
+
+  // ===== 4. ESTADOS DE DISPONIBILIDAD Y AGENDA =====
+  // Fecha y hora seleccionadas
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [dateDisplayText, setDateDisplayText] = useState(""); // Formato amigable para UI
+
+  // Datos de disponibilidad cargados
+  const [appointmentsArray, setAppointmentsArray] = useState([]); // Todas las citas
+  const [appointmentsLoaded, setAppointmentsLoaded] = useState(false); // Flag de carga
+  const [appointmentsMap, setAppointmentsMap] = useState({}); // Optimización: mapeo por fecha
+  const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
+    []
+  ); // Citas para fecha seleccionada
+
+  // Restricciones de disponibilidad
+  const [disabledDays, setDisabledDays] = useState([]); // Días bloqueados (feriados, descanso)
+  const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false); // Flag de carga
+
+  // Horarios generados dinámicamente
+  const [timesCombobox, setTimesCombobox] = useState([]); // Slots disponibles para el <select>
+
+  // ===== 5. ESTADOS DE UI Y CONTROL =====
+  // Búsqueda y filtrado
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Estados visuales
+  const [scrollVisible, setScrollVisible] = useState(false); // Control de scroll indicator
+
+  // Manejo de errores
+  const [error, setError] = useState("");
+
+  //useEffects
+
   useEffect(() => {
     /*
     fetch disabled days from database and set them in disabledDays state
@@ -145,11 +162,8 @@ const AppointmentMaker = () => {
     setTimesCombobox(availableTimesArray);
   }, [appointmentsOnSelectedDate, selectedDate]);
 
-  // useEffect(() => {
-  //   console.log("appointments of selected date: ", appointmentsOnSelectedDate);
-  // }, [appointmentsOnSelectedDate]);
-
   useEffect(() => {
+    //use effect para fetchear appointments
     const fetchAppointments = async () => {
       const appointments = await getAppointments();
       //const appointments = await getPaidAppointments();
@@ -164,6 +178,11 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
+    {
+      /*
+      junta todas las citas por dia en un objeto para mostrarlas en el calendario
+      */
+    }
     const appointmentsPerDayObject = appointmentsArray.reduce(
       (finalObject, appointment) => {
         const formattedDate = new Date(appointment.selectedDate)
@@ -176,13 +195,13 @@ const AppointmentMaker = () => {
         finalObject[formattedDate].push(appointment);
 
         return finalObject;
-      },
-      {}
+      }
     );
     setAppointmentsMap(appointmentsPerDayObject);
   }, [appointmentsLoaded]);
 
   useEffect(() => {
+    //use effect para fetchear services
     const fetchServices = async () => {
       const services = await getServices();
       if (services) {
@@ -200,10 +219,13 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
-    console.log("servicesArray: ", servicesArray);
-  }, [servicesArray]);
+    {
+      /*
+      Use effect para prevenir que el usuario salga de la pagina sin completar la cita
+      que no se salga por accidente, y así no pierda progreso
+      */
+    }
 
-  useEffect(() => {
     const handleBeforeUnload = (event) => {
       // Mensaje de advertencia
       event.preventDefault();
@@ -219,18 +241,19 @@ const AppointmentMaker = () => {
     };
   }, []);
 
+  {
+    /* 
+    calcular total cost y total duration cada que servicesCart cambie
+    */
+  }
   useEffect(() => {
     calculateTotalCost();
     calculateTotalDurationOfAppointment();
     console.log("servicesCart: ", servicesCart);
   }, [servicesCart]);
 
-  // useEffect(() => {
-  //   console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
-  // }, [totalDurationOfAppointment]);
-
-  // Registrar y limpiar el evento de scroll
   useEffect(() => {
+    // Manejar el evento de scroll para mostrar/ocultar el botón
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -238,8 +261,14 @@ const AppointmentMaker = () => {
   }, []);
 
   //funciones
-
   const isDepositNeeded = () => {
+    {
+      /*
+      Si la cita se puso para hoy o mañana no necesita depósito,
+      solo si es para algún día después de mañana necesita depósito
+    */
+    }
+
     const today = DateTime.now().toISODate();
     const tomorrow = DateTime.now().plus({ days: 1 }).toISODate();
     const selectedDateISO = DateTime.fromJSDate(selectedDate).toISODate();
@@ -260,6 +289,7 @@ const AppointmentMaker = () => {
     }
   };
 
+  //eliminar servicio del carrito
   const deleteServiceFromCart = (service) => {
     const newCart = servicesCart.filter(
       (serviceInCart) => serviceInCart.name !== service.name
@@ -267,12 +297,14 @@ const AppointmentMaker = () => {
     setServicesCart(newCart);
   };
 
+  //agregar servicio al carrito
   const addServiceToCart = (service) => {
     console.log("service: ", service);
     const newCart = [...servicesCart, service];
     setServicesCart(newCart);
   };
 
+  //formatear hora de ISOString a hh:mm AM/PM
   const formatTime = (timeInISOString) => {
     const dateObj = new Date(timeInISOString);
     const time = dateObj.toLocaleTimeString([], {
@@ -282,6 +314,7 @@ const AppointmentMaker = () => {
     return time;
   };
 
+  //formatear fecha de ISOString a YYYY-MM-DD
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Agregar ceros al mes si es necesario
@@ -290,6 +323,7 @@ const AppointmentMaker = () => {
     return `${year}-${month}-${day}`;
   };
 
+  //funcion para colorear los dias inhabilitados de gris
   const isRestDay = (date) => {
     if (disabledDaysLoaded && disabledDays && disabledDays.length > 0) {
       const formattedCurrentDate = formatDate(date);
@@ -307,6 +341,7 @@ const AppointmentMaker = () => {
     }
   };
 
+  //calcula que tan ocupado esta el dia para colorearlo de amarillo, verde, rojo, asi...
   const calculateBusyTimeOfDay = (arrayOfAppointmentsOfDay) => {
     let result = 0;
     for (let index = 0; index < arrayOfAppointmentsOfDay.length; index++) {
