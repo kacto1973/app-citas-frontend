@@ -267,26 +267,7 @@ const ClientDashboard = () => {
                           </span>
                         </p>
                       ))}
-                    {appointment.extraServicesCart &&
-                      appointment.extraServicesCart.map(
-                        (extraService, extraServiceIndex) => (
-                          <p key={extraServiceIndex} className="w-[62%]">
-                            • {extraService.name.toUpperCase()}{" "}
-                            <span className="text-green font-black">
-                              (${extraService.price})
-                            </span>
-                          </p>
-                        )
-                      )}
-                    {/* <button
-                      className="py-1 rounded-md my-5 text-xs bg-blue text-white w-[90px] absolute bottom-0 right-[13%]"
-                      onClick={() => {
-                        //downPayment(appointment.id);
-                        window.open("https://mpago.la/1qdjQMh");
-                      }}
-                    >
-                      Dejar Anticipo
-                    </button> */}
+
                     {appointment.state === "pagado" || forToday || nextDay ? (
                       <p className="py-1 px-1 rounded-md my-5 text-xs bg-green text-white w-[96px] absolute bottom-0 right-5">
                         Cita Confirmada

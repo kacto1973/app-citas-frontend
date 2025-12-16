@@ -188,7 +188,6 @@ export const cancelAppointment = async (appointmentId) => {
 
 export const addAppointment = async (
   servicesCart,
-  extraServicesCart,
   totalCost,
   selectedDate,
   selectedTime,
@@ -212,7 +211,6 @@ export const addAppointment = async (
 
     const appointmentObject = {
       servicesCart,
-      extraServicesCart,
       totalCost,
       selectedDate: dateString,
       selectedTime,
@@ -401,25 +399,6 @@ export const getPaidAppointments = async () => {
   }
 };
 
-export const getExtraServices = async () => {
-  try {
-    //get Database reference
-    const extraServicesRef = ref(database, `${path}/menu/extraServices`);
-
-    //get data from the reference
-    const extraServicesSnapshot = await get(extraServicesRef);
-
-    if (extraServicesSnapshot.exists()) {
-      return extraServicesSnapshot.val();
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Error ocurrido al fetchear extraServices: " + error.message);
-    return false;
-  }
-};
-
 export const deleteService = async (service) => {
   try {
     await remove(ref(database, `${path}/menu/services/${service.name}`));
@@ -454,46 +433,6 @@ export const addService = async (service, serviceOldName) => {
     return true;
   } catch (error) {
     console.error("Error al agregar servicio: " + error.message);
-    return false;
-  }
-};
-
-export const addExtraService = async (service, serviceOldName) => {
-  try {
-    if (serviceOldName) {
-      await remove(
-        ref(database, `${path}/menu/extraServices/${serviceOldName}`)
-      );
-      await set(
-        ref(database, `${path}/menu/extraServices/${service.name}`),
-        service
-      );
-    } else {
-      await set(
-        ref(database, `${path}/menu/extraServices/${service.name}`),
-        service
-      );
-    }
-
-    alert("Servicio extra agregado o editado con éxito");
-    window.location.reload();
-
-    return true;
-  } catch (error) {
-    console.error("Error al agregar servicio extra: " + error.message);
-    return false;
-  }
-};
-
-export const deleteExtraService = async (service) => {
-  try {
-    await remove(ref(database, `${path}/menu/extraServices/${service.name}`));
-
-    alert("Servicio extra eliminado con éxito");
-    window.location.reload();
-    return true;
-  } catch (error) {
-    console.error("Error al eliminar servicio extra: " + error.message);
     return false;
   }
 };

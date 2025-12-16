@@ -1,48 +1,52 @@
+//Components
 import React from "react";
 import Calendar from "react-calendar";
 import database from "../../firebaseConfig";
 import Alert from "@mui/material/Alert";
+//Objects from libraries
 import { useState, useEffect } from "react";
 import { set, get, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
+//services
 import {
   getServices,
-  getExtraServices,
   getAppointments,
   getPaidAppointments,
   addAppointment,
   getAllRestDays,
 } from "../../firebaseFunctions";
+//functions (there are not, not for now)
+
+//////////////////////////////////////////////END OF IMPORTS
 
 const AppointmentMaker = () => {
-  //use states
+  //control states
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [scrollVisible, setScrollVisible] = useState(false);
+
+  //display states
   const [showServices, setShowServices] = useState(false);
+
+  //
+  const [scrollVisible, setScrollVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-  //const [showImages, setShowImages] = useState(false);
   const [dateDisplayText, setDateDisplayText] = useState("");
+
+  const [searchQuery, setSearchQuery] = useState("");
   const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
+
   const [servicesArray, setServicesArray] = useState([]);
-  const [extraServicesArray, setExtraServicesArray] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedExtraService, setSelectedExtraService] = useState(null);
   const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
     useState(0);
+  const [servicesCart, setServicesCart] = useState([]);
+  const [totalCost, setTotalCost] = useState(0);
+  const navigate = useNavigate();
+
   const [durationInHours, setDurationInHours] = useState(0);
   const [durationInMinutes, setDurationInMinutes] = useState(0);
-  const [servicesCart, setServicesCart] = useState([]);
-  const [extraServicesCart, setExtraServicesCart] = useState([]);
-  const [totalCost, setTotalCost] = useState(0);
-  // const [downPaymentTotal, setDownPaymentTotal] = useState(0);
-  // const [downPaymentDone, setDownPaymentDone] = useState(false);
-  // const [dateOfAppointment, setDateOfAppointment] = useState(""); // en iso format
-  const [selectedHairLength, setSelectedHairLength] = useState("");
+
   const [appointmentsMap, setAppointmentsMap] = useState({});
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
     []
@@ -57,14 +61,12 @@ const AppointmentMaker = () => {
   const [timesCombobox, setTimesCombobox] = useState([]);
   const [disabledDays, setDisabledDays] = useState([]);
   const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false);
+
   //useEffect
-
   useEffect(() => {
-    console.log("map ", appointmentsMap);
-  }),
-    [appointmentsMap];
-
-  useEffect(() => {
+    /*
+    fetch disabled days from database and set them in disabledDays state
+    */
     const asyncFunc = async () => {
       let disabledDaysList = await getAllRestDays();
       if (disabledDaysList) {
@@ -76,6 +78,9 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
+    /*
+    1 - genera todos los time slots de 9 a 5pm en intervalos de 15 minutos 
+    */
     const generateTimesArray = () => {
       const timesArray = [];
       const start = 9;
@@ -91,21 +96,27 @@ const AppointmentMaker = () => {
       return timesArray;
     };
 
+    /*
+     Metodo para Determinar si una hora está ocupada en base a las citas existentes
+    */
     const isTimeOccupied = (time) => {
       for (const appointment of appointmentsOnSelectedDate) {
-        const appointmentStart = appointment.selectedTime; // Hora inicial
+        const appointmentStart = appointment.selectedTime;
         const appointmentEnd = addMinutesToTime(
           appointmentStart,
           appointment.totalDurationOfAppointment
         );
 
         if (time >= appointmentStart && time < appointmentEnd) {
-          return true; // Hora está ocupada
+          return true;
         }
       }
       return false;
     };
 
+    /*
+      Método para determinar si una hora ya ha pasado en el día seleccionado
+    */
     const isTimeInThePast = (time) => {
       if (isToday(selectedDate)) {
         const [hr, min] = time.split(":").map(Number);
@@ -113,13 +124,15 @@ const AppointmentMaker = () => {
         const currentHour = now.getHours();
         const currentMinutes = now.getMinutes();
         if (hr < currentHour || (hr === currentHour && min <= currentMinutes)) {
-          return true; // Hora ya ha pasado hoy
+          return true;
         }
       }
       return false;
     };
 
+    //obtenemos los time slots en intervalos de 15 minutos
     const timesArray = generateTimesArray();
+    //filtramos de acuerdo a horas ocupadas o transcurridas
     const availableTimesArray = timesArray
       .filter((time) => !isTimeInThePast(time)) // Filtra las horas transcurridas
       .map((time) => {
@@ -129,7 +142,6 @@ const AppointmentMaker = () => {
         return time;
       });
 
-    console.log(availableTimesArray); // Aquí verás los resultados
     setTimesCombobox(availableTimesArray);
   }, [appointmentsOnSelectedDate, selectedDate]);
 
@@ -191,23 +203,6 @@ const AppointmentMaker = () => {
     console.log("servicesArray: ", servicesArray);
   }, [servicesArray]);
 
-  // useEffect(() => {
-  //   const fetchExtraServices = async () => {
-  //     const extraServices = await getExtraServices();
-  //     if (extraServices) {
-  //       const arrayOfExtraServices = Object.entries(extraServices).map(
-  //         ([key, value]) => ({
-  //           name: key,
-  //           ...value,
-  //         })
-  //       );
-
-  //       setExtraServicesArray(arrayOfExtraServices);
-  //     }
-  //   };
-  //   fetchExtraServices();
-  // }, []);
-
   useEffect(() => {
     const handleBeforeUnload = (event) => {
       // Mensaje de advertencia
@@ -228,7 +223,7 @@ const AppointmentMaker = () => {
     calculateTotalCost();
     calculateTotalDurationOfAppointment();
     console.log("servicesCart: ", servicesCart);
-  }, [servicesCart, extraServicesCart]);
+  }, [servicesCart]);
 
   // useEffect(() => {
   //   console.log("totalDurationOfAppointment: ", totalDurationOfAppointment);
@@ -461,18 +456,9 @@ const AppointmentMaker = () => {
   };
 
   const addAllServicesToCart = () => {
-    if (!selectedService && !selectedExtraService) {
-      alert("Por favor selecciona algún servicio y/o servicio extra primero");
+    if (!selectedService) {
+      alert("Por favor selecciona algún servicio primero");
       return;
-    }
-
-    if (selectedExtraService) {
-      setExtraServicesCart([...extraServicesCart, selectedExtraService]);
-      alert(
-        "Servicio extra agregado exitosamente: " + selectedExtraService.name
-      );
-
-      setSelectedExtraService(null);
     }
 
     if (selectedService) {
@@ -483,34 +469,9 @@ const AppointmentMaker = () => {
         restTime: selectedService.restTime,
       };
 
-      if (selectedService.hairLength === true) {
-        if (!selectedHairLength) {
-          alert("Por favor selecciona la longitud de tu cabello primero");
-          return;
-        }
-        switch (selectedHairLength) {
-          case "short":
-            serviceFormatted.price = selectedService.priceShort;
-            serviceFormatted.duration = selectedService.durationShort;
-            break;
-          case "medium":
-            serviceFormatted.price = selectedService.priceMedium;
-            serviceFormatted.duration = selectedService.durationMedium;
-            break;
-          case "long":
-            serviceFormatted.price = selectedService.priceLong;
-            serviceFormatted.duration = selectedService.durationLong;
-            break;
-        }
-      } else {
-        serviceFormatted.price = selectedService.price;
-        serviceFormatted.duration = selectedService.duration;
-      }
-
       setServicesCart([...servicesCart, serviceFormatted]);
       alert("Servicio agregado exitosamente: " + selectedService.name);
       setSelectedService(null);
-      setSelectedHairLength(null);
     }
   };
 
@@ -521,10 +482,6 @@ const AppointmentMaker = () => {
       total += service.price;
     });
 
-    extraServicesCart.forEach((extraService) => {
-      total += extraService.price;
-    });
-
     setTotalCost(total);
   };
 
@@ -533,10 +490,6 @@ const AppointmentMaker = () => {
 
     servicesCart.forEach((service) => {
       total += service.duration + service.restTime;
-    });
-
-    extraServicesCart.forEach((extraService) => {
-      total += extraService.duration + extraService.restTime;
     });
 
     let horas = Math.floor(total / 60);
@@ -831,8 +784,7 @@ const AppointmentMaker = () => {
             currentStep === 2 ? "" : "hidden"
           } w-full flex flex-col items-center pb-[10rem] bg-g10`}
         >
-          {(servicesCart && servicesCart.length > 0) ||
-          (extraServicesCart && extraServicesCart.length > 0) ? (
+          {servicesCart && servicesCart.length > 0 ? (
             <>
               <h1 className=" text-black text-2xl font-black mb-8 ">
                 Seleccione el día
@@ -915,8 +867,8 @@ const AppointmentMaker = () => {
             currentStep === 3 ? "" : "hidden"
           } w-full flex flex-col items-center`}
         >
-          {((servicesCart && servicesCart.length > 0) ||
-            (extraServicesCart && extraServicesCart.length > 0)) &&
+          {servicesCart &&
+          servicesCart.length > 0 &&
           selectedDate !== null &&
           selectedTime !== null &&
           selectedTime !== "" ? (
@@ -956,14 +908,6 @@ const AppointmentMaker = () => {
                     </span>
                   </p>
                 ))}
-                {extraServicesCart.map((extraService, extraServiceIndex) => (
-                  <p key={extraServiceIndex} className="text-black  font-bold">
-                    • {extraService.name.toUpperCase()}{" "}
-                    <span className="font-black text-green">
-                      (${extraService.price})
-                    </span>
-                  </p>
-                ))}
               </div>
               <p className="my-8 text-center text-sm w-[80%]">{`${
                 isDepositNeeded()
@@ -988,7 +932,6 @@ const AppointmentMaker = () => {
 
                   const success = await addAppointment(
                     servicesCart,
-                    extraServicesCart,
                     totalCost,
                     selectedDate,
                     selectedTime,
