@@ -167,7 +167,7 @@ const AppointmentMaker = () => {
     const fetchAppointments = async () => {
       const appointments = await getAppointments();
       //const appointments = await getPaidAppointments();
-      console.log("appointments cargadosssm  ", appointments);
+      console.log("appointments cargados  ", appointments);
       if (appointments) {
         //console.log(appointments);
         setAppointmentsArray(appointments);
@@ -183,20 +183,29 @@ const AppointmentMaker = () => {
       junta todas las citas por dia en un objeto para mostrarlas en el calendario
       */
     }
-    const appointmentsPerDayObject = appointmentsArray.reduce(
-      (finalObject, appointment) => {
-        const formattedDate = new Date(appointment.selectedDate)
-          .toISOString()
-          .split("T")[0];
-        if (!finalObject[formattedDate]) {
-          finalObject[formattedDate] = [];
-        }
 
-        finalObject[formattedDate].push(appointment);
+    console.log("appointments cargadas: ", appointmentsArray);
 
-        return finalObject;
-      }
-    );
+    var appointmentsPerDayObject = {};
+
+    if (appointmentsArray.length > 0) {
+      appointmentsPerDayObject = appointmentsArray.reduce(
+        (finalObject, appointment) => {
+          const formattedDate = new Date(appointment.selectedDate)
+            .toISOString()
+            .split("T")[0];
+          if (!finalObject[formattedDate]) {
+            finalObject[formattedDate] = [];
+          }
+
+          finalObject[formattedDate].push(appointment);
+
+          return finalObject;
+        },
+        {} //no borrar, es importante para valor inicial
+      );
+    }
+    console.log("appointmentsPerDayObject: ", appointmentsPerDayObject);
     setAppointmentsMap(appointmentsPerDayObject);
   }, [appointmentsLoaded]);
 
@@ -351,6 +360,7 @@ const AppointmentMaker = () => {
     return result;
   };
 
+  //Valida que el timeslot seleccionado se adapta al horario del negocio
   const validateTime = (clickedTime) => {
     let indexOfClickedTime = 0;
     timesCombobox.some((timeblock, index) => {
@@ -449,17 +459,17 @@ const AppointmentMaker = () => {
     const formattedDate = date.toISOString().split("T")[0];
 
     if (appointmentsMap[formattedDate]) {
-      const freeMinutes = calculateBusyTimeOfDay(
+      const busyMinutes = calculateBusyTimeOfDay(
         appointmentsMap[formattedDate]
       );
 
-      if (freeMinutes <= 160) {
+      if (busyMinutes <= 160) {
         //lowkey free
         return "!bg-lime-400		 !text-black border border-gray-500";
-      } else if (freeMinutes > 160 && freeMinutes <= 320) {
+      } else if (busyMinutes > 160 && busyMinutes <= 320) {
         //available
         return "!bg-amber-300	 !text-black border border-gray-500";
-      } else if (freeMinutes > 320) {
+      } else if (busyMinutes > 320) {
         //busy
         return "!bg-rose-400 !text-black border border-gray-500";
       }
