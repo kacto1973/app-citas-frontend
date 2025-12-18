@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import {
-  findAppointmentById,
-  getAppointmentExpirationTime,
-} from "../../firebaseFunctions";
-import { get, set } from "firebase/database";
+import { findAppointmentById } from "../../firebaseFunctions";
 
-const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
+const PaymentComponent = ({ classNames, appointmentId }) => {
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
@@ -36,10 +32,6 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
       }
     }
 
-    // const expirationExactTime = await getAppointmentExpirationTime(
-    //   appointmentId
-    // );
-
     const expirationExactTime = appointment.expiresAt;
 
     const response = await fetch(
@@ -59,11 +51,9 @@ const PaymentComponent = ({ classNames, appointmentId, business_id }) => {
             type: "unique_payment",
             expirationExactTime: expirationExactTime,
           },
-          //business_id: business_id,
         }),
       }
     );
-    console.log("el business id que se va a enviar como cuerpo ", business_id);
 
     const data = await response.json();
 
