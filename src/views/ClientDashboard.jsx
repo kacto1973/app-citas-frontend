@@ -6,40 +6,23 @@ import PaymentComponent from "../components/PaymentComponent";
 import { DateTime } from "luxon";
 
 const ClientDashboard = () => {
-  //use states
+  // Navigation
   const navigate = useNavigate();
-  const [appointmentsOfClient, setAppointmentsOfClient] = useState([]);
+
+  // Loading states
   const [appointmentsOfClientLoaded, setAppointmentsOfClientLoaded] =
     useState(false);
-  const [allAppointmentsArray, setAllAppointmentsArray] = useState([]);
   const [allAppointmentsArrayLoaded, setAllAppointmentsArrayLoaded] =
     useState(false);
-  // const [reload, setReload] = useState(false);
+
+  // Client appointments
+  const [appointmentsOfClient, setAppointmentsOfClient] = useState([]);
+
+  // All appointments
+  const [allAppointmentsArray, setAllAppointmentsArray] = useState([]);
+
+  // UI states
   const [bannerShown, setBannerShown] = useState(false);
-
-  //use effects
-
-  // useEffect(() => {
-  //   const syncFunc = async () => {
-  //     const allAppointments = await getAppointments();
-
-  //     if (allAppointments) {
-  //       setAllAppointmentsArray(allAppointments);
-  //       //setAllAppointmentsArrayLoaded(true);
-  //     } else {
-  //       console.log("de TODOS los appointments, no hubo nada que fetchear");
-  //     }
-
-  //     const clientAppointments = getAppointmentsForClient(allAppointments);
-  //     if (clientAppointments) {
-  //       setAppointmentsOfClient(clientAppointments);
-  //       //setAppointmentsOfClientLoaded(true);
-  //     } else {
-  //       console.log("No hubo appointments que jalar para ese usuario");
-  //     }
-  //   };
-  //   syncFunc();
-  // }, [reload]);
 
   useEffect(() => {
     const bannerShown = localStorage.getItem("bannerShown");

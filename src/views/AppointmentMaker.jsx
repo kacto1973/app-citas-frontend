@@ -21,63 +21,53 @@ import {
 //////////////////////////////////////////////END OF IMPORTS
 
 const AppointmentMaker = () => {
-  // ===== 1. ESTADOS DE AUTENTICACIÓN Y SESIÓN =====
+  // User information
   const [username, setUsername] = useState(localStorage.getItem("username"));
   const [userFullName, setUserFullName] = useState(
     localStorage.getItem("userFullName")
   );
+
+  // Navigation
   const navigate = useNavigate();
 
-  // ===== 2. ESTADOS DEL FLUJO DE AGENDACIÓN (MULTI-STEP) =====
+  // Wizard/Step control
   const [currentStep, setCurrentStep] = useState(1); // 1, 2, 3...
+
+  // Services states
   const [showServices, setShowServices] = useState(false); // Controla modal de servicios
-
-  // ===== 3. ESTADOS DE SERVICIOS Y CARRITO =====
-  // Catálogos disponibles
   const [servicesArray, setServicesArray] = useState([]);
-
-  // Selecciones del usuario
   const [selectedService, setSelectedService] = useState(null);
-
-  // Carrito y cálculos
   const [servicesCart, setServicesCart] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Cost and duration states
   const [totalCost, setTotalCost] = useState(0);
   const [totalDurationOfAppointment, setTotalDurationOfAppointment] =
     useState(0);
   const [durationInHours, setDurationInHours] = useState(0);
   const [durationInMinutes, setDurationInMinutes] = useState(0);
 
-  // ===== 4. ESTADOS DE DISPONIBILIDAD Y AGENDA =====
-  // Fecha y hora seleccionadas
+  // Date and time selection
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [dateDisplayText, setDateDisplayText] = useState(""); // Formato amigable para UI
+  const [timesCombobox, setTimesCombobox] = useState([]); // Slots disponibles para el <select>
 
-  // Datos de disponibilidad cargados
+  // Appointments states
   const [appointmentsArray, setAppointmentsArray] = useState([]); // Todas las citas
-  const [appointmentsLoaded, setAppointmentsLoaded] = useState(false); // Flag de carga
   const [appointmentsMap, setAppointmentsMap] = useState({}); // Optimización: mapeo por fecha
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
     []
   ); // Citas para fecha seleccionada
+  const [appointmentsLoaded, setAppointmentsLoaded] = useState(false); // Flag de carga
 
-  // Restricciones de disponibilidad
+  // Disabled days states
   const [disabledDays, setDisabledDays] = useState([]); // Días bloqueados (feriados, descanso)
   const [disabledDaysLoaded, setDisabledDaysLoaded] = useState(false); // Flag de carga
 
-  // Horarios generados dinámicamente
-  const [timesCombobox, setTimesCombobox] = useState([]); // Slots disponibles para el <select>
-
-  // ===== 5. ESTADOS DE UI Y CONTROL =====
-  // Búsqueda y filtrado
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Estados visuales
+  // UI states
   const [scrollVisible, setScrollVisible] = useState(false); // Control de scroll indicator
-
-  // Manejo de errores
   const [error, setError] = useState("");
-
   //useEffects
 
   useEffect(() => {
@@ -178,11 +168,13 @@ const AppointmentMaker = () => {
   }, []);
 
   useEffect(() => {
-    {
-      /*
-      junta todas las citas por dia en un objeto para mostrarlas en el calendario
-      */
+    /*
+    Use effect que convierte el array de citas en un objeto donde cada key es una fecha
+    Ejemplo:
+    {"2024-12-31": [cita1, cita2],
+    "2025-01-01": [cita3]
     }
+    */
 
     console.log("appointments cargadas: ", appointmentsArray);
 

@@ -3,16 +3,22 @@ import { getAllClients, getAppointments } from "../../firebaseFunctions";
 import { useNavigate } from "react-router-dom";
 
 const Clients = () => {
-  //use states
+  // Navigation
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
 
-  const [clientsArray, setClientsArray] = useState([]);
+  // Loading states
+  const [loading, setLoading] = useState(true);
   const [clientsLoaded, setClientsLoaded] = useState(false);
+
+  // Clients states
+  const [clientsArray, setClientsArray] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
+
+  // Search
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Appointments
   const [appointmentsArray, setAppointmentsArray] = useState([]);
-  const [appointmentsLoaded, setAppointmentsLoaded] = useState(true);
 
   //use effects
   useEffect(() => {
@@ -27,16 +33,11 @@ const Clients = () => {
       let appointmentsList = await getAppointments();
       if (appointmentsList) {
         setAppointmentsArray(appointmentsList);
-        setAppointmentsLoaded(true);
       }
       setLoading(false);
     };
     asyncFunc();
   }, []);
-
-  useEffect(() => {
-    console.log("CLIENTS ARR ", clientsArray);
-  }, [clientsLoaded]);
 
   useEffect(() => {
     const filteredClients = clientsArray.filter((client) => {

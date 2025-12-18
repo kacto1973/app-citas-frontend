@@ -96,15 +96,6 @@ const Login = () => {
                 variant="outlined"
               />
 
-              {/*<input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={handleKeyDown}
-                required
-                className="w-[90%] border border-black rounded-md mt-5 mb-4 py-1.5 text-center"
-              /> */}
               <button
                 type="submit"
                 className="px-2 py-1 rounded-md mt-6 m-2 bg-g8 text-white w-[120px]"

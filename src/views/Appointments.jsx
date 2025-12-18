@@ -1,7 +1,10 @@
+//Components
+import Calendar from "react-calendar";
 import React from "react";
+//Objects from libraries
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Calendar from "react-calendar";
+//Services
 import {
   getAppointments,
   getAllRestDays,
@@ -9,21 +12,27 @@ import {
 } from "../../firebaseFunctions";
 
 const Appointments = () => {
+  // Loading states
   const [loading, setLoading] = useState(true);
-
-  const [subModalOpen, setSubModalOpen] = useState(false);
-
-  const navigate = useNavigate();
-  const [dateDisplayText, setDateDisplayText] = useState("");
-  const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
+  const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
+
+  // Navigation
+  const navigate = useNavigate();
+
+  // Date-related states
+  const [selectedDate, setSelectedDate] = useState("");
+  const [dateDisplayText, setDateDisplayText] = useState("");
+
+  // Appointments states
+  const [appointmentsArray, setAppointmentsArray] = useState([]);
   const [appointmentsMap, setAppointmentsMap] = useState({});
   const [appointmentsOnSelectedDate, setAppointmentsOnSelectedDate] = useState(
     []
   );
-  const [selectedDate, setSelectedDate] = useState("");
+
+  // Rest days states
   const [allRestDays, setAllRestDays] = useState([]);
-  const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
 
   useEffect(() => {
     const fetchRestDays = async () => {
@@ -51,6 +60,13 @@ const Appointments = () => {
   }, []);
 
   useEffect(() => {
+    /*
+    Use effect que convierte el array de citas en un objeto donde cada key es una fecha
+    Ejemplo:
+    {"2024-12-31": [cita1, cita2],
+    "2025-01-01": [cita3]
+    }
+    */
     const appointmentsPerDayObject = appointmentsArray.reduce(
       (finalObject, appointment) => {
         const formattedDate = new Date(appointment.selectedDate)

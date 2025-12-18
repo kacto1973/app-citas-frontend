@@ -14,59 +14,29 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
 const Services = () => {
+  // Navigation
   const navigate = useNavigate();
+
+  // Loading states
   const [loading, setLoading] = useState(true);
 
-  const [showImages, setShowImages] = useState(false);
+  // Modal states
+  const [showServiceModal, setShowServiceModal] = useState(false);
+
+  // Edit mode
   const [editing, setEditing] = useState(false);
 
-  const [showServiceModal, setShowServiceModal] = useState(false);
-  //const [showEditServiceModal, setShowEditServiceModal] = useState(false);
-
+  // Search
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Service form fields
   const [name, setName] = useState("");
-
   const [restTime, setRestTime] = useState("");
-
   const [duration, setDuration] = useState("");
-
   const [price, setPrice] = useState("");
 
-  const [subModalOpen, setSubModalOpen] = useState(false);
+  // Services data
   const [services, setServices] = useState([]);
-  const [serviceOldName, setServiceOldName] = useState("");
-
-  const handleToggle = () => {
-    setShowImages((prev) => !prev);
-    onToggle(!showImages);
-  };
-
-  const onToggle = (value) => {
-    const businessID = localStorage.getItem("businessID").toLowerCase();
-    const showImagesRef = ref(database, `businesses/${businessID}/settings/`);
-    update(showImagesRef, {
-      showImages: value,
-    });
-  };
-
-  /*
-  useEffect(() => {
-    const businessID = localStorage.getItem("businessID").toLowerCase();
-    const showImagesRef = ref(
-      database,
-      `businesses/${businessID}/settings/showImages`
-    );
-
-    const asyncFunc = async () => {
-      const showImagesSnap = await get(showImagesRef);
-      if (showImagesSnap.exists()) {
-        setShowImages(showImagesSnap.val());
-        console.log(showImagesSnap.val());
-      }
-    };
-    asyncFunc();
-  }, []); */
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -237,28 +207,7 @@ const Services = () => {
               >
                 X
               </button>
-              {/*<input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nombre del Servicio" className="text-center border border-black p-2 rounded-md w-[70%] my-3 mt-8"  type="text" /> 
-              
-              <input 
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Precio del Servicio" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
-              
-              <input
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              placeholder="Duración (15, 30, 45...mins)" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
-              
-              <input 
-              value={restTime}
-              onChange={(e) => setRestTime(e.target.value)}
-              placeholder="T. Descanso (0, 15, 30...mins)" className="text-center border border-black  p-2 rounded-md w-[70%] my-3"  type="number" />
 
-
-              */}
               <TextField
                 value={name}
                 size="small"

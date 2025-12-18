@@ -11,16 +11,24 @@ import {
 } from "../../firebaseFunctions";
 
 const RestDays = () => {
+  // Navigation
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
 
-  const [appointmentsArray, setAppointmentsArray] = useState([]);
+  // Loading states
+  const [loading, setLoading] = useState(true);
   const [appointmentsLoaded, setAppointmentsLoaded] = useState(false);
-  const [appointmentsMap, setAppointmentsMap] = useState({});
-  const [range, setRange] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [allRestDays, setAllRestDays] = useState([]);
   const [allRestDaysLoaded, setAllRestDaysLoaded] = useState(false);
+
+  // Appointments states
+  const [appointmentsArray, setAppointmentsArray] = useState([]);
+  const [appointmentsMap, setAppointmentsMap] = useState({});
+
+  // Date selection
+  const [selectedDate, setSelectedDate] = useState("");
+  const [range, setRange] = useState([]);
+
+  // Rest days
+  const [allRestDays, setAllRestDays] = useState([]);
 
   useEffect(() => {
     const fetchRestDays = async () => {
@@ -107,19 +115,6 @@ const RestDays = () => {
       }
     }
 
-    // if (allRestDaysLoaded && allRestDays && allRestDays.length > 0) {
-    //   const formattedCurrentDate = formatDate(date);
-    //   const isRestDay = allRestDays.some((restday) => {
-    //     if (restday === formattedCurrentDate) {
-    //       return true;
-    //     }
-    //     return false;
-    //   });
-    //   if (isRestDay) {
-    //     return "!bg-fuchsia-600 !text-black border border-gray-500";
-    //   }
-    // }
-
     if (range && Array.isArray(range) && range.length > 0) {
       if (date >= range[0] && date <= range[1]) {
         return "!bg-cyan-400	 !text-black border border-gray-500";
@@ -168,7 +163,12 @@ const RestDays = () => {
     return `${year}-${month}-${day}`;
   };
 
+  /**
+   * Habilita días que estaban marcados como descanso
+   * Convierte días de descanso (grises oscuro) en días laborables (blancos)
+   */
   const enableDays = () => {
+    // Validar que se haya seleccionado un rango completo (inicio y fin)
     if (!range || range.length === 0 || range.length === 1) {
       alert(
         "Seleccione primero un rango de días de descanso para activar (solo grises oscuro)"
@@ -176,11 +176,14 @@ const RestDays = () => {
       return;
     }
 
+    // Obtener fechas de inicio y fin del rango
     let startDate = range[0];
     let endDate = range[1];
+    // Crear copias para no mutar las fechas originales
     let startCopy = new Date(range[0]);
     let endCopy = new Date(range[1]);
 
+    // Validar que todos los días del rango sean días de descanso
     while (startDate <= endDate) {
       if (!isRestDay(startDate)) {
         alert("No puedes activar días que ya están habilitados");
@@ -188,25 +191,33 @@ const RestDays = () => {
         setSelectedDate("");
         return;
       }
-
-      startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+      startDate.setDate(startDate.getDate() + 1); // Avanzar al siguiente día
     }
 
+    // Crear array con los días formateados que se van a remover de descanso
     let daysToRemove = [];
     while (startCopy <= endCopy) {
       const formattedDate = formatDate(startCopy);
       daysToRemove.push(formattedDate);
-      startCopy.setDate(startCopy.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+      startCopy.setDate(startCopy.getDate() + 1); // Avanzar al siguiente día
     }
+
     console.log("removiendo dias ", daysToRemove);
+
+    // Función asíncrona para remover los días de descanso de Firebase
     const asyncFunc = async () => {
       await removeRestDays(daysToRemove);
-      window.location.reload();
+      window.location.reload(); // Recargar página para reflejar cambios
     };
     asyncFunc();
   };
 
+  /**
+   * Deshabilita días laborables convirtiéndolos en días de descanso
+   * Convierte días laborables (blancos) en días de descanso (grises oscuro)
+   */
   const disableDays = () => {
+    // Validar que se haya seleccionado un rango completo (inicio y fin)
     if (!range || range.length === 0 || range.length === 1) {
       alert(
         "Seleccione primero un rango de días para establecerlos como descanso (solo blancos)"
@@ -214,19 +225,23 @@ const RestDays = () => {
       return;
     }
 
-    //let restDaysArray = [];
+    // Obtener fechas de inicio y fin del rango
     let startDate = range[0];
     let endDate = range[1];
+    // Crear copias para no mutar las fechas originales
     let startCopy = new Date(range[0]);
     let endCopy = new Date(range[1]);
 
     console.log("pre for values of not copies");
     console.log("start ", startDate);
     console.log("end ", endDate);
+
+    // Validar que no haya citas en el rango y que no sean días ya desactivados
     while (startDate <= endDate) {
       const formattedDate = formatDate(startDate);
-
       console.log("formattedDates ", formattedDate);
+
+      // Verificar si existe una cita en este día
       if (formattedDate in appointmentsMap) {
         alert(
           "Hay una cita de por medio en el rango seleccionado, inténtelo de nuevo"
@@ -234,29 +249,35 @@ const RestDays = () => {
         setRange([]);
         setSelectedDate("");
         return;
-      } else if (isRestDay(startDate)) {
+      }
+      // Verificar si el día ya es de descanso
+      else if (isRestDay(startDate)) {
         alert("No puedes desactivar días que ya estaban desactivados");
         setRange([]);
         setSelectedDate("");
         return;
       }
-      startDate.setDate(startDate.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+
+      startDate.setDate(startDate.getDate() + 1); // Avanzar al siguiente día
     }
 
     console.log("post for values: ");
     console.log("start C ", startCopy);
     console.log("end C", endCopy);
+
+    // Crear array con los días formateados que se van a agregar como descanso
     let newDays = [];
     while (startCopy <= endCopy) {
       const formattedDate = formatDate(startCopy);
       console.log("formatted dates ", formattedDate);
       newDays.push(formattedDate);
-      startCopy.setDate(startCopy.getDate() + 1); // Esto maneja el cambio de mes y año automáticamente
+      startCopy.setDate(startCopy.getDate() + 1); // Avanzar al siguiente día
     }
 
+    // Función asíncrona para agregar los días de descanso a Firebase
     const asyncFunc = async () => {
       await addRestDays(newDays);
-      window.location.reload();
+      window.location.reload(); // Recargar página para reflejar cambios
     };
     asyncFunc();
   };

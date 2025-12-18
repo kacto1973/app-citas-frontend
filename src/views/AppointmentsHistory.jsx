@@ -5,8 +5,13 @@ import { useEffect, useState, useContext } from "react";
 import { getAppointments } from "../../firebaseFunctions";
 
 const AppointmentsHistory = () => {
+  // Navigation
   const navigate = useNavigate();
+
+  // Loading states
   const [loading, setLoading] = useState(true);
+
+  // Appointments history
   const [appointmentsHistory, setAppointmentsHistory] = useState([]);
 
   useEffect(() => {
