@@ -1,3 +1,6 @@
+.env
+temp-file-firebaseFunctions.txt
+
 # Logs
 logs
 *.log
