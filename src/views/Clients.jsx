@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { getAllClients, getAppointments } from "../../firebaseFunctions";
+import { getAllClients, getAppointments } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 const Clients = () => {

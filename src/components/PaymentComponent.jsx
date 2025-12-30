@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { findAppointmentById } from "../../firebaseFunctions";
+import { findAppointmentById } from "../services/api";
 
 const PaymentComponent = ({ classNames, appointmentId }) => {
   const [loading, setLoading] = useState(false);
@@ -35,8 +35,7 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
     const expirationExactTime = appointment.expiresAt;
 
     const response = await fetch(
-      "https://app-citas-backend.vercel.app/api/create-order",
-      //"https://a53b-2806-263-c485-8db7-c195-c5f0-828e-bac1.ngrok-free.app/api/create-order",
+      `${import.meta.env.VITE_API_URL}/api/create-order`,
       {
         method: "POST",
         headers: {
@@ -47,7 +46,7 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
           description: description,
           external_reference: {
             appointmentId: appointmentId,
-            business_id: "mb_salon",
+            business_id: import.meta.env.VITE_BUSINESS_ID,
             type: "unique_payment",
             expirationExactTime: expirationExactTime,
           },

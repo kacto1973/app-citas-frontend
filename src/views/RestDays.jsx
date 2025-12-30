@@ -8,7 +8,7 @@ import {
   getAllRestDays,
   getPaidAppointments,
   removeRestDays,
-} from "../../firebaseFunctions";
+} from "../services/api";
 
 const RestDays = () => {
   // Navigation

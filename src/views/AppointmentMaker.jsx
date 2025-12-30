@@ -15,7 +15,7 @@ import {
   getPaidAppointments,
   addAppointment,
   getAllRestDays,
-} from "../../firebaseFunctions";
+} from "../services/api";
 //functions (there are not, not for now)
 
 //////////////////////////////////////////////END OF IMPORTS

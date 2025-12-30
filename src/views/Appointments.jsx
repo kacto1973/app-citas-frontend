@@ -9,7 +9,7 @@ import {
   getAppointments,
   getAllRestDays,
   getPaidAppointments,
-} from "../../firebaseFunctions";
+} from "../services/api";
 
 const Appointments = () => {
   // Loading states

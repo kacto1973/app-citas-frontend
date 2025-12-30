@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerClient } from "../../firebaseFunctions";
+import { registerClient } from "../services/api";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";

@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useEffect, useState, useContext } from "react";
-import { getAppointments } from "../../firebaseFunctions";
+import { getAppointments } from "../services/api";
 
 const AppointmentsHistory = () => {
   // Navigation

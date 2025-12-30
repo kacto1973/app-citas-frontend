@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getAppointments, cancelAppointment } from "../../firebaseFunctions";
+import { getAppointments, cancelAppointment } from "../services/api";
 import { useEffect, useState } from "react";
 import PaymentComponent from "../components/PaymentComponent";
 import { DateTime } from "luxon";
