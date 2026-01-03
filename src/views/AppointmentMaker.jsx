@@ -1,11 +1,9 @@
 //Components
 import React from "react";
 import Calendar from "react-calendar";
-import database from "../../firebaseConfig";
 import Alert from "@mui/material/Alert";
 //Objects from libraries
 import { useState, useEffect } from "react";
-import { set, get, ref } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import { DateTime } from "luxon";
 //services

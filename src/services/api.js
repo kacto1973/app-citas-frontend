@@ -9,6 +9,12 @@ const api = axios.create({
 
 /* ===================== BUSINESS ===================== */
 
+/* 
+Ya no usamos esta función, originalmente trae la configuración del negocio
+pero como seguiré single tenant por ahora no es necesaria 
+*/
+
+/*
 export const getBusinessData = async () => {
   try {
     const { data } = await api.get("/business/settings");
@@ -18,6 +24,7 @@ export const getBusinessData = async () => {
     return false;
   }
 };
+*/
 
 /* ===================== APPOINTMENTS ===================== */
 

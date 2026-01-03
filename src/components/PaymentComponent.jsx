@@ -35,7 +35,7 @@ const PaymentComponent = ({ classNames, appointmentId }) => {
     const expirationExactTime = appointment.expiresAt;
 
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/create-order`,
+      `${import.meta.env.VITE_API_URL}/api/payments/create-order`,
       {
         method: "POST",
         headers: {

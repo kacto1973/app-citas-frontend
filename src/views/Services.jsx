@@ -4,9 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import { getServices, addService, deleteService } from "../services/api";
-import database from "../../firebaseConfig";
-import { ref, update, get } from "firebase/database";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
 const Services = () => {

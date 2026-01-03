@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateClient, validateAdmin } from "../services/api";
-import { set } from "firebase/database";
 import Alert from "@mui/material/Alert";
-import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
 const Login = () => {
